@@ -20,84 +20,44 @@
 #  USA.
 #
 
-DESTDIR =
-BINDIR = /usr/bin
-MANDIR = /usr/share/man
-ETCDIR = /etc
+.SUFFIXES: .cc .o
+include config.mk
 
-VERSION = 5.40.7
-NAME = pkgutils-$(VERSION)
+SRC = $(wildcard *.cc)
+OBJ = $(SRC:.cc=.o)
+BIN = pkgadd
+MAN = pkgadd.8 pkginfo.8 pkgrm.8
 
-CXXFLAGS += -DNDEBUG
-CXXFLAGS += -O2 -Wall -pedantic -D_GNU_SOURCE -DVERSION=\"$(VERSION)\" \
-	    -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
-
-LIBARCHIVELIBS := $(shell pkg-config --libs --static libarchive)
-
-LDFLAGS += -static $(LIBARCHIVELIBS)
-
-OBJECTS = main.o pkgutil.o pkgadd.o pkgrm.o pkginfo.o
-
-MANPAGES = pkgadd.8 pkgrm.8 pkginfo.8 pkgmk.8 rejmerge.8 pkgmk.conf.5
-
-all: pkgadd pkgmk rejmerge man
-
-pkgadd: .depend $(OBJECTS)
-	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS)
-
-pkgmk: pkgmk.in
-
-rejmerge: rejmerge.in
-
-man: $(MANPAGES)
-
-mantxt: man $(MANPAGES:=.txt)
-
-%.8.txt: %.8
-	nroff -mandoc -c $< | col -bx > $@
+all: $(BIN) $(MAN)
 
 %: %.in
 	sed -e "s/#VERSION#/$(VERSION)/" $< > $@
 
-.depend:
-	$(CXX) $(CXXFLAGS) -MM $(OBJECTS:.o=.cc) > .depend
+.cc.o:
+	$(CXX) -c -o $@ $< $(CXXFLAGS) $(CPPFLAGS)
 
-ifeq (.depend,$(wildcard .depend))
-include .depend
-endif
-
-.PHONY:	install clean distclean dist
-
-dist: distclean
-	rm -rf $(NAME) $(NAME).tar.gz
-	git archive --format=tar --prefix=$(NAME)/ HEAD | tar -x
-	git log > $(NAME)/ChangeLog
-	tar cJvf $(NAME).tar.xz $(NAME)
-	rm -rf $(NAME)
+$(BIN): $(OBJ)
+	$(LD) -o $@ $^ $(LDFLAGS)
 
 install: all
-	install -D -m0755 pkgadd $(DESTDIR)$(BINDIR)/pkgadd
+	install -D -m0755 pkgadd      $(DESTDIR)$(BINDIR)/pkgadd
 	install -D -m0644 pkgadd.conf $(DESTDIR)$(ETCDIR)/pkgadd.conf
-	install -D -m0755 pkgmk $(DESTDIR)$(BINDIR)/pkgmk
-	install -D -m0755 rejmerge $(DESTDIR)$(BINDIR)/rejmerge
-	install -D -m0644 pkgmk.conf $(DESTDIR)$(ETCDIR)/pkgmk.conf
-	install -D -m0644 rejmerge.conf $(DESTDIR)$(ETCDIR)/rejmerge.conf
-	install -D -m0644 pkgadd.8 $(DESTDIR)$(MANDIR)/man8/pkgadd.8
-	install -D -m0644 pkgrm.8 $(DESTDIR)$(MANDIR)/man8/pkgrm.8
-	install -D -m0644 pkginfo.8 $(DESTDIR)$(MANDIR)/man8/pkginfo.8
-	install -D -m0644 pkgmk.8 $(DESTDIR)$(MANDIR)/man8/pkgmk.8
-	install -D -m0644 rejmerge.8 $(DESTDIR)$(MANDIR)/man8/rejmerge.8
-	install -D -m0644 pkgmk.conf.5 $(DESTDIR)$(MANDIR)/man5/pkgmk.conf.5
+	install -D -m0644 pkgadd.8    $(DESTDIR)$(MANDIR)/man8/pkgadd.8
+	install -D -m0644 pkgrm.8     $(DESTDIR)$(MANDIR)/man8/pkgrm.8
+	install -D -m0644 pkginfo.8   $(DESTDIR)$(MANDIR)/man8/pkginfo.8
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkgrm
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkginfo
 
-clean:
-	rm -f .depend
-	rm -f $(OBJECTS)
-	rm -f $(MANPAGES)
-	rm -f $(MANPAGES:=.txt)
+uninstall:
+	rm -f  $(DESTDIR)$(BINDIR)/pkgadd
+	rm -f  $(DESTDIR)$(ETCDIR)/pkgadd.conf
+	rm -f  $(DESTDIR)$(MANDIR)/pkgadd.8
+	rm -f  $(DESTDIR)$(MANDIR)/pkgrm.8
+	rm -f  $(DESTDIR)$(MANDIR)/pkginfo.8
+	unlink $(DESTDIR)$(BINDIR)/pkgrm
+	unlink $(DESTDIR)$(BINDIR)/pkginfo
 
-distclean: clean
-	rm -f pkgadd pkginfo pkgrm pkgmk rejmerge
+clean:
+	rm -f $(OBJ) $(MAN) $(BIN)
 
 # End of file

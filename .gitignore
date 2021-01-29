@@ -1,8 +1,4 @@
-.depend
 *.o
 *.8
 *.5
 pkgadd
-pkgmk
-rejmerge
-
