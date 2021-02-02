@@ -40,13 +40,15 @@ $(BIN): $(OBJ)
 	$(LD) -o $@ $^ $(LDFLAGS)
 
 install: all
-	install -D -m0755 pkgadd      $(DESTDIR)$(BINDIR)/pkgadd
-	install -D -m0644 pkgadd.conf $(DESTDIR)$(ETCDIR)/pkgadd.conf
-	install -D -m0644 pkgadd.8    $(DESTDIR)$(MANDIR)/man8/pkgadd.8
-	install -D -m0644 pkgrm.8     $(DESTDIR)$(MANDIR)/man8/pkgrm.8
-	install -D -m0644 pkginfo.8   $(DESTDIR)$(MANDIR)/man8/pkginfo.8
+	install -Dm0755 pkgadd      $(DESTDIR)$(BINDIR)/pkgadd
+	install -Dm0644 pkgadd.conf $(DESTDIR)$(ETCDIR)/pkgadd.conf
+	install -Dm0644 pkgadd.8    $(DESTDIR)$(MANDIR)/man8/pkgadd.8
+	install -Dm0644 pkgrm.8     $(DESTDIR)$(MANDIR)/man8/pkgrm.8
+	install -Dm0644 pkginfo.8   $(DESTDIR)$(MANDIR)/man8/pkginfo.8
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkgrm
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkginfo
+	install -Dm0755 bash_completion \
+		$(DESTDIR)$(ETCDIR)/bash_completion.d/pkgutils
 
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/pkgadd
@@ -56,6 +58,7 @@ uninstall:
 	rm -f  $(DESTDIR)$(MANDIR)/pkginfo.8
 	unlink $(DESTDIR)$(BINDIR)/pkgrm
 	unlink $(DESTDIR)$(BINDIR)/pkginfo
+	rm -f  $(DESTDIR)$(ETCDIR)/bash_completion.d/pkgutils
 
 clean:
 	rm -f $(OBJ) $(MAN) $(BIN)
