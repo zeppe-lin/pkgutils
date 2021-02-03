@@ -47,8 +47,6 @@ install: all
 	install -Dm0644 pkginfo.8   $(DESTDIR)$(MANDIR)/man8/pkginfo.8
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkgrm
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkginfo
-	install -Dm0755 bash_completion \
-		$(DESTDIR)$(ETCDIR)/bash_completion.d/pkgutils
 
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/pkgadd
@@ -58,7 +56,6 @@ uninstall:
 	rm -f  $(DESTDIR)$(MANDIR)/pkginfo.8
 	unlink $(DESTDIR)$(BINDIR)/pkgrm
 	unlink $(DESTDIR)$(BINDIR)/pkginfo
-	rm -f  $(DESTDIR)$(ETCDIR)/bash_completion.d/pkgutils
 
 clean:
 	rm -f $(OBJ) $(MAN) $(BIN)
