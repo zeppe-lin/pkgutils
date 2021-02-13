@@ -87,38 +87,6 @@ _pkgrm ()
 }
 complete -F _pkgrm -o filenames pkgrm
 
-#pkgmk completion
-_pkgmk ()
-{
-	local cur prev
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-	prev=${COMP_WORDS[COMP_CWORD-1]}
-
-	case "$prev" in
-	--help|-h)
-		return 0
-		;;
-	-do|--download-only)
-		return 0
-		;;
-	-utd|--up-to-date)
-		return 0
-		;;
-	--config-file|-cf)
-		if [ -z $BASH_COMPLETION ]; then
-			_filedir
-		else
-			COMPREPLY=( $( compgen -f $cur ) )
-		fi
-		return 0
-		;;
-	esac
-
-	COMPREPLY=( $( compgen -W "$( pkgmk --help | awk '/--/ { printf "%2s ", $2 }' )" -- $cur ) )
-}
-complete -F _pkgmk -o filenames pkgmk
-
 #pkgadd completion
 _pkgadd ()
 {
