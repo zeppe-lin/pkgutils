@@ -104,7 +104,7 @@ _pkgadd ()
 	esac
 
 	if [[ $cur == -* ]]; then
-		COMPREPLY=( $( compgen -W "$( pkgmk --help | awk '/--/ { printf "%2s ", $2 }' )" -- $cur ) )
+		COMPREPLY=( $( compgen -W "$( pkgadd --help | awk '/--/ { printf "%2s ", $2 }' )" -- $cur ) )
 	else
 		COMPREPLY=( $( compgen -f -X '!*.pkg.tar.gz' -- $cur ) $( compgen -d -- $cur ) )
 	fi
