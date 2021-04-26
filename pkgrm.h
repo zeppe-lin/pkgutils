@@ -27,9 +27,13 @@
 
 class pkgrm : public pkgutil {
 public:
-	pkgrm() : pkgutil("pkgrm") {}
-	virtual void run(int argc, char** argv);
-	virtual void print_help() const;
+  pkgrm() : pkgutil("pkgrm") {}
+
+  virtual void run(int argc, char** argv);
+  virtual void print_help() const;
 };
 
 #endif /* PKGRM_H */
+
+// vim:sw=2:ts=2:sts=2:et:cc=72
+// End of file.
