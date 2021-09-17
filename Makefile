@@ -1,37 +1,17 @@
-#
-#  pkgutils
-#
-#  Copyright (c) 2000-2005 by Per Liden <per@fukt.bth.se>
-#  Copyright (c) 2006-2017 by CRUX team (http://crux.nu)
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
-#  USA.
-#
 
 .SUFFIXES: .cc .o
 include config.mk
 
-SRC = $(wildcard *.cc)
+SRC = $(wildcard src/*.cc)
 OBJ = $(SRC:.cc=.o)
+SCD = $(wildcard man/*.scd)
+MAN = $(SCD:.scd=)
 BIN = pkgadd
-MAN = pkgadd.8 pkginfo.8 pkgrm.8
 
 all: $(BIN) $(MAN)
 
-%: %.in
-	sed -e "s/#VERSION#/$(VERSION)/" $< > $@
+%: %.scd
+	sed -e "s/#VERSION#/$(VERSION)/" $< | scdoc > $@
 
 .cc.o:
 	$(CXX) -c -o $@ $< $(CXXFLAGS) $(CPPFLAGS)
@@ -40,11 +20,9 @@ $(BIN): $(OBJ)
 	$(LD) -o $@ $^ $(LDFLAGS)
 
 install: all
-	install -m 755 -D pkgadd      $(DESTDIR)$(BINDIR)/pkgadd
-	install -m 644 -D pkgadd.conf $(DESTDIR)$(ETCDIR)/pkgadd.conf
-	install -m 644 -D pkgadd.8    $(DESTDIR)$(MANDIR)/man8/pkgadd.8
-	install -m 644 -D pkgrm.8     $(DESTDIR)$(MANDIR)/man8/pkgrm.8
-	install -m 644 -D pkginfo.8   $(DESTDIR)$(MANDIR)/man8/pkginfo.8
+	install -m 755 -D pkgadd              $(DESTDIR)$(BINDIR)/pkgadd
+	install -m 644 -D pkgadd.conf.example $(DESTDIR)$(ETCDIR)/pkgadd.conf
+	install -m 644 -D -t $(DESTDIR)$(MANDIR)/man8/ $(MAN)
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkgrm
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkginfo
 
@@ -60,4 +38,4 @@ uninstall:
 clean:
 	rm -f $(OBJ) $(MAN) $(BIN)
 
-# End of file
+# End of file.

@@ -6,6 +6,12 @@ which are used for managing software packages.
 
 It is a fork of CRUX' pkgutils.
 
+Dependencies
+------------
+
+- g++
+- make
+- scdoc
 
 Copyright
 ---------
