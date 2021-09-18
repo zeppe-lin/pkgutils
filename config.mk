@@ -13,8 +13,7 @@ CXXFLAGS  += -Wall -Wextra -pedantic
 CPPFLAGS  = -D_POSIX_SOURCE -D_GNU_SOURCE -DVERSION=\"$(VERSION)\" \
             -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DNDEBUG
 
-#LDFLAGS  += -static $(shell pkg-config --libs --static libarchive)
-LDFLAGS   += -static -larchive -lacl -llzma -lzstd -llz4 -lbz2 -lz
+LDFLAGS  += -static $(shell pkg-config --libs --static libarchive)
 #LDFLAGS  += -larchive
 
 # End of file.
