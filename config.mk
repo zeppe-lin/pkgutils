@@ -1,19 +1,18 @@
-NAME      = pkgutils
-VERSION   = 5.40.7
+# pkgutils version
+VERSION = 5.41
 
-BINDIR    = /usr/sbin
-MANDIR    = /usr/share/man
-ETCDIR    = /etc
+# paths
+PREFIX  = /usr/local
+BINDIR  = $(PREFIX)/sbin
+MANDIR  = $(PREFIX)/share/man
+ETCDIR  = /etc
 
-CXX      ?= g++
-LD        = $(CXX)
-
-CXXFLAGS  += -Wall -Wextra -pedantic
-
-CPPFLAGS  = -D_POSIX_SOURCE -D_GNU_SOURCE -DVERSION=\"$(VERSION)\" \
+# flags
+CXXFLAGS += -Wall -Wextra -pedantic
+CPPFLAGS += -D_POSIX_SOURCE -D_GNU_SOURCE -DVERSION=\"$(VERSION)\" \
             -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DNDEBUG
+LDFLAGS += --static $(shell pkg-config --libs --static libarchive)
 
-LDFLAGS  += -static $(shell pkg-config --libs --static libarchive)
-#LDFLAGS  += -larchive
-
-# End of file.
+# compiler and linker
+CXX ?= g++
+LD = $(CXX)
