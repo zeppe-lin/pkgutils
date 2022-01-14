@@ -1,0 +1,65 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkginfo - display software package information
+
+=head1 SYNOPSIS
+
+B<pkginfo> [I<OPTION>]
+
+=head1 DESCRIPTION
+
+B<pkginfo> is a package management utility, which displays information about
+software packages that are installed on the system or that reside in a
+particular directory.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options too.
+
+=over 8
+
+=item B<-i>, B<--installed>
+
+List installed packages and their version.
+
+=item B<-l>, B<--list> I<PKGNAME|FILE>
+
+List files owned by the specified package or contained in file.
+
+=item B<-o>, B<--owner> I<PATTERN>
+
+List owner(s) of file(s) matching I<PATTERN>.
+
+=item B<-f>, B<--footprint> I<FILE>
+
+Print footprint for I<FILE>. This feature is mainly used by
+L<pkgmk(8)|https://github.com/zeppe-lin/pkgmk/blob/master/pkgmk.8.pod>
+for creating and comparing footprints.
+
+=item B<-r>, B<--root> I<PATH>
+
+Specify alternate installation root (default is C</>). This should be used if
+you want to display information about a package that is installed on a
+temporary mounted partition, which is "owned" by another system. By using
+this option you specify which package database to use.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 SEE ALSO
+
+L<pkgadd(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkgadd.8.pod>,
+L<pkgrm(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkgrm.8.pod>
+
+=cut

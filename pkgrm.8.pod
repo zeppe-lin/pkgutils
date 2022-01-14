@@ -1,0 +1,46 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgrm - remove software packages
+
+=head1 SYNOPSIS
+
+B<pkgrm> [I<OPTION>] I<PKGNAME>
+
+=head1 DESCRIPTION
+
+B<pkgrm> is a package management utility, which removes/uninstalls a
+previously installed software packages.
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options too.
+
+=over 8
+
+=item B<-r>, B<--root> I<PATH>
+
+Specify alternate installation root (default is C</>). This should be used if
+you want to remove a package from a temporary mounted partition, which is
+"owned" by another system. By using this option you not only specify where
+the software is installed, but you also specify which package database to use.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 SEE ALSO
+
+L<pkgadd(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkgadd.8.pod>,
+L<pkginfo(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkginfo.8.pod>
+
+=cut

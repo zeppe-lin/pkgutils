@@ -1,0 +1,105 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgadd - install software package
+
+=head1 SYNOPSIS
+
+B<pkgadd> [I<OPTION>]... I<FILE>
+
+=head1 DESCRIPTION
+
+B<pkgadd> is a package management utility, which installs a software package.
+A package is an archive of files (.pkg.tar.gz, .pkg.tar.bz2 or .pkg.tar.xz).
+
+=head1 OPTIONS
+
+Mandatory arguments to long options are mandatory for short options too.
+
+=over 8
+
+=item B<-u>, B<--upgrade>
+
+Upgrade/replace package with the same name as I<FILE>.
+
+=item B<-f>, B<--force>
+
+Force installation, overwrite conflicting files. If the package that is about
+to be installed contains files that are already installed this option will
+cause all those files to be overwritten.
+
+I<This option should be used with care, preferably not at all>.
+
+=item B<-r>, B<--root> I<PATH>
+
+Specify alternate installation root (default is C</>). This should I<not> be
+used as a way to install software into e.g. F</usr/local> instead of F</usr>.
+Instead this should be used if you want to install a package on a temporary
+mounted partition, which is "owned" by another system. By using this option
+you not only specify where the software should be installed, but you also
+specify which package database to use.
+
+=item B<-v>, B<--version>
+
+Print version and exit.
+
+=item B<-h>, B<--help>
+
+Print help and exit.
+
+=back
+
+=head1 CONFIGURATION
+
+B<pkgadd> is configured by the file F</etc/pkgadd.conf>. This file can
+contain rules, that are built out of three fragments: I<event>, I<pattern>
+and I<action>. The event describes in what kind of situation this rule
+applies. Currently there are two types of events: B<UPGRADE> and B<INSTALL>.
+B<UPGRADE> rules are applied when a package is installed over an existing
+version, and B<INSTALL> rules are applied in any case. The pattern is a
+regular expression. The action applicable to both the B<UPGRADE> and
+B<INSTALL> event is B<YES> and B<NO>. More than one rule of the same event
+type is allowed, in which case the first rule will have the lowest priority
+and the last rule will have the highest priority.
+
+Example:
+
+  UPGRADE         ^etc/.*$                NO
+  UPGRADE         ^var/log/.*$            NO
+  UPGRADE         ^etc/X11/.*$            YES
+  UPGRADE         ^etc/X11/XF86Config$    NO
+
+The above example will cause B<pkgadd> to never upgrade anything in F</etc/>
+or F</var/log/> (subdirectories included), except files in F</etc/X11/>
+(subdirectories included), unless it is the file F</etc/X11/XF86Config>.
+The default rule is to upgrade/install everything, rules in this file are
+exceptions to that rule.
+
+(B<NOTE!> The I<pattern> should never contain an initial C</> since you are
+referring to the files in the package, not the files on the disk.)
+
+If B<pkgadd> finds that a specific file should not be upgraded it will
+install it under F</var/lib/pkg/rejected/>. The user is then free to
+examine/use/remove that file manually or use
+L<rejmerge(8)|https://github.com/zeppe-lin/rejmerge/blob/rejmerge.8.pod>
+to manage rejected files.
+
+=head1 FILES
+
+=over 8
+
+=item F</etc/pkgadd.conf>
+
+Configuration file for B<pkgadd>.
+
+=back
+
+=head1 SEE ALSO
+
+L<pkgrm(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkgrm.8.pod>,
+L<pkginfo(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkginfo.8.pod>
+
+=cut
