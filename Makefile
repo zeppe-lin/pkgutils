@@ -1,41 +1,31 @@
-
-.SUFFIXES: .cc .o
 include config.mk
 
-SRC = $(wildcard src/*.cc)
-OBJ = $(SRC:.cc=.o)
-SCD = $(wildcard man/*.scd)
-MAN = $(SCD:.scd=)
-BIN = pkgadd
+SRCS = $(wildcard *.cc)
+OBJS = $(SRCS:.cc=.o)
 
-all: $(BIN) $(MAN)
+all: pkgadd pkgadd.8 pkgrm.8 pkginfo.8
 
-%: %.scd
-	sed -e "s/#VERSION#/$(VERSION)/" $< | scdoc > $@
+%: %.pod
+	pod2man --nourls -r $(VERSION) -c ' ' -n $(basename $@) -s 8 $< > $@
 
 .cc.o:
-	$(CXX) -c -o $@ $< $(CXXFLAGS) $(CPPFLAGS)
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $< -o $@
 
-$(BIN): $(OBJ)
-	$(LD) -o $@ $^ $(LDFLAGS)
+pkgadd: $(OBJS)
+	$(CXX) $^ $(LDFLAGS) -o $@
 
 install: all
-	install -m 755 -D pkgadd              $(DESTDIR)$(BINDIR)/pkgadd
-	install -m 644 -D pkgadd.conf.example $(DESTDIR)$(ETCDIR)/pkgadd.conf
-	install -m 644 -D -t $(DESTDIR)$(MANDIR)/man8/ $(MAN)
+	install -d $(DESTDIR)$(BINDIR) $(DESTDIR)$(MANDIR)/man8/
+	install -m 755 -D pkgadd $(DESTDIR)$(BINDIR)/
+	install -m 644 -D -t $(DESTDIR)$(MANDIR)/man8/ pkgadd.8 pkgrm.8 pkginfo.8
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkgrm
 	ln -sf pkgadd $(DESTDIR)$(BINDIR)/pkginfo
 
 uninstall:
-	rm -f  $(DESTDIR)$(BINDIR)/pkgadd
-	rm -f  $(DESTDIR)$(ETCDIR)/pkgadd.conf
-	rm -f  $(DESTDIR)$(MANDIR)/pkgadd.8
-	rm -f  $(DESTDIR)$(MANDIR)/pkgrm.8
-	rm -f  $(DESTDIR)$(MANDIR)/pkginfo.8
-	unlink $(DESTDIR)$(BINDIR)/pkgrm
-	unlink $(DESTDIR)$(BINDIR)/pkginfo
+	(cd $(DESTDIR)$(BINDIR)       && rm pkgadd   pkgrm   pkginfo)
+	(cd $(DESTDIR)$(MANDIR)/man8/ && rm pkgadd.8 pkgrm.8 pkginfo.8)
 
 clean:
-	rm -f $(OBJ) $(MAN) $(BIN)
+	rm -f $(OBJS) pkgadd pkgadd.8 pkgrm.8 pkginfo.8
 
-# End of file.
+.PHONY: all install uninstall clean
