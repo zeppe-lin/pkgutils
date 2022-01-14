@@ -1,9 +1,9 @@
 //
 //  pkgutils
-// 
+//
 //  Copyright (c) 2000-2005 Per Liden
 //  Copyright (c) 2006-2017 by CRUX team (http://crux.nu)
-// 
+//
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation; either version 2 of the License, or
@@ -16,7 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 //  USA.
 //
 
@@ -155,7 +155,7 @@ void pkginfo::run(int argc, char** argv)
 
       unsigned int width =
         result.begin()->first.length(); // Width of "Package"
-      
+
       for (packages_t::const_iterator i = packages.begin();
                                       i != packages.end(); ++i)
       {
@@ -172,9 +172,9 @@ void pkginfo::run(int argc, char** argv)
           }
         }
       }
-      
+
       regfree(&preg);
-      
+
       if (result.size() > 1)
       {
         for (vector<pair<string, string> >::const_iterator i = result.begin(); i != result.end(); ++i)
@@ -194,15 +194,17 @@ void pkginfo::run(int argc, char** argv)
 void pkginfo::print_help() const
 {
   cout
-    << "usage: " << utilname << " [options]" << endl
-    << "options:" << endl
-    << "  -i, --installed             list installed packages" << endl
-    << "  -l, --list <package|file>   list files in <package> or <file>" << endl
-    << "  -o, --owner <pattern>       list owner(s) of file(s) matching <pattern>" << endl
-    << "  -f, --footprint <file>      print footprint for <file>" << endl
-    << "  -r, --root <path>           specify alternative installation root" << endl
-    << "  -v, --version               print version and exit" << endl
-    << "  -h, --help                  print help and exit" << endl;
+    << "Usage: " << utilname << " [OPTION]"                                       << endl
+    << "Display software package information."                                    << endl
+                                                                                  << endl
+    << "Mandatory arguments to long options are mandatory for short options too." << endl
+    << "  -i, --installed             list installed packages"                    << endl
+    << "  -l, --list PACKAGE|FILE     list files in PACKAGE or FILE"              << endl
+    << "  -o, --owner PATTERN         list owner(s) of file(s) matching PATTERN"  << endl
+    << "  -f, --footprint FILE        print footprint for FILE"                   << endl
+    << "  -r, --root PATH             specify alternative installation root"      << endl
+    << "  -v, --version               print version and exit"                     << endl
+    << "  -h, --help                  print help and exit"                        << endl;
 }
 
 // vim:sw=2:ts=2:sts=2:et:cc=72

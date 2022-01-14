@@ -1,9 +1,9 @@
 //
 //  pkgutils
-// 
+//
 //  Copyright (c) 2000-2005 Per Liden
 //  Copyright (c) 2006-2017 by CRUX team (http://crux.nu)
-// 
+//
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation; either version 2 of the License, or
@@ -16,7 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 //  USA.
 //
 
@@ -94,10 +94,10 @@ void pkgutil::db_open(const string& path)
     {
       string file;
       getline(in, file);
-         
+
       if (file.empty())
         break; // End of record
-         
+
       info.files.insert(info.files.end(), file);
     }
     if (!info.files.empty())
@@ -303,7 +303,7 @@ void pkgutil::db_rm_files(set<string>         files,
       i->second.files.erase(*j);
     }
   }
-   
+
 #ifndef NDEBUG
   cerr << "Removing files:" << endl;
   copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
@@ -338,7 +338,7 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
                                        const pkginfo_t&  info)
 {
   set<string> files;
-   
+
   // Find conflicting files in database
   for (packages_t::const_iterator i = packages.begin();
                                   i != packages.end(); ++i)
@@ -350,7 +350,7 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
            inserter(files, files.end()));
     }
   }
-  
+
 #ifndef NDEBUG
   cerr << "Conflicts phase 1 (conflicts in database):" << endl;
   copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
@@ -464,7 +464,7 @@ pair<string, pkgutil::pkginfo_t>
           archive_errno(archive));
     }
   }
-   
+
   if (i == 0)
   {
     if (archive_errno(archive) == 0)
@@ -758,7 +758,7 @@ void pkgutil::pkg_footprint(string& filename) const
     }
 
     cout << '\n';
-    
+
     if (S_ISREG(mode) && archive_read_data_skip(archive))
       throw runtime_error_with_errno("could not read " + filename,
           archive_errno(archive));
@@ -902,7 +902,7 @@ bool file_empty(const string& filename)
 
   if (lstat(filename.c_str(), &buf) == -1)
     return false;
-  
+
   return (S_ISREG(buf.st_mode) && buf.st_size == 0);
 }
 
@@ -922,7 +922,7 @@ bool file_equal(const string&  file1,
   {
     ifstream f1(file1.c_str());
     ifstream f2(file2.c_str());
-  
+
     if (!f1 || !f2)
       return false;
 
@@ -984,7 +984,7 @@ bool permissions_equal(const string&  file1,
 
   if (lstat(file2.c_str(), &buf2) == -1)
     return false;
-  
+
   return (buf1.st_mode == buf2.st_mode)
        &&(buf1.st_uid  == buf2.st_uid)
        &&(buf1.st_gid  == buf2.st_gid);

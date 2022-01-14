@@ -1,9 +1,9 @@
 //
 //  pkgutils
-// 
+//
 //  Copyright (c) 2000-2005 Per Liden
 //  Copyright (c) 2006-2017 by CRUX team (http://crux.nu)
-// 
+//
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation; either version 2 of the License, or
@@ -16,7 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 //  USA.
 //
 
@@ -160,14 +160,16 @@ void pkgadd::run(int argc, char** argv)
 void pkgadd::print_help() const
 {
   cout
-    << "usage: " << utilname << " [options] <file>" << endl
-    << "options:" << endl
-    << "  -u, --upgrade        upgrade package with the same name" << endl
-    << "  -f, --force          force install, overwrite conflicting files" << endl
-    << "  -r, --root <path>    specify alternative installation root" << endl
-    << "  -c, --config <file>  use alternate configuration file" << endl 
-    << "  -v, --version        print version and exit" << endl
-    << "  -h, --help           print help and exit" << endl;
+    << "Usage: " << utilname << " [OPTION]... FILE"                               << endl
+    << "Install software package."                                                << endl
+                                                                                  << endl
+    << "Mandatory arguments to long options are mandatory for short options too." << endl
+    << "  -u, --upgrade        upgrade package with the same name"                << endl
+    << "  -f, --force          force install, overwrite conflicting files"        << endl
+    << "  -r, --root PATH      specify alternative installation root"             << endl
+    << "  -c, --config FILE    use alternate configuration file"                  << endl
+    << "  -v, --version        print version and exit"                            << endl
+    << "  -h, --help           print help and exit"                               << endl;
 }
 
 vector<rule_t> pkgadd::read_config(string file) const
