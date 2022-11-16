@@ -1,24 +1,5 @@
-//
-//  pkgutils
-//
-//  Copyright (c) 2000-2005 Per Liden
-//  Copyright (c) 2006-2017 by CRUX team (http://crux.nu)
-//
-//  This program is free software; you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation; either version 2 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-//  USA.
-//
+// This file is a part of pkgutils.
+// See COPYING and COPYRIGHT files for corresponding information.
 
 #if (__GNUC__ < 3)
 # error This program requires GCC 3.x to compile.
@@ -84,5 +65,5 @@ int main(int argc, char** argv)
   return EXIT_SUCCESS;
 }
 
-// vim:sw=2:ts=2:sts=2:et:cc=72
+// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
 // End of file.
