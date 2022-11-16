@@ -1,3 +1,6 @@
+# This file is a part of pkgutils.
+# See COPYING and COPYRIGHT files for corresponding information.
+
 =pod
 
 =encoding UTF-8
@@ -17,16 +20,18 @@ previously installed software packages.
 
 =head1 OPTIONS
 
-Mandatory arguments to long options are mandatory for short options too.
+Mandatory arguments to long options are mandatory for short options
+too.
 
 =over 8
 
 =item B<-r>, B<--root> I<PATH>
 
-Specify alternate installation root (default is C</>). This should be used if
-you want to remove a package from a temporary mounted partition, which is
-"owned" by another system. By using this option you not only specify where
-the software is installed, but you also specify which package database to use.
+Specify alternate installation root (default is C</>).  This should be
+used if you want to remove a package from a temporary mounted
+partition, which is "owned" by another system.  By using this option
+you not only specify where the software is installed, but you also
+specify which package database to use.
 
 =item B<-v>, B<--version>
 
@@ -40,7 +45,9 @@ Print help and exit.
 
 =head1 SEE ALSO
 
-L<pkgadd(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkgadd.8.pod>,
-L<pkginfo(8)|https://github.com/zeppe-lin/pkgutils/blob/master/pkginfo.8.pod>
+L<pkgadd(8)>, L<pkginfo(8)>.
 
 =cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+# End of file.
