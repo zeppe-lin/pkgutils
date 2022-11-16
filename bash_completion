@@ -1,121 +1,102 @@
-# Bash programmable completion for pkgutils
-#
-# Copyright (c) Håvard Moen <vanilje@netcom.no>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
+# Bash programmable completion for pkgutils.
+# This file is a part of pkgutils.
+# See COPYING and COPYRIGHT files for corresponding information.
 
 _pkginfo ()
 {
-	local cur prev
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-	prev=${COMP_WORDS[COMP_CWORD-1]}
+  local cur prev
+  COMPREPLY=()
+  cur=${COMP_WORDS[COMP_CWORD]}
+  prev=${COMP_WORDS[COMP_CWORD-1]}
 
-	case "$prev" in
-	-l|--list)
-		COMPREPLY=( $( compgen -W \
-			" $( pkginfo -i | awk '{ printf "%s ", $1 }' ) " \
-			-- $cur ) )
-		return 0
-		;;
-	-i|--installed)
-		return 0
-		;;
-	-h|--help)
-		return 0
-		;;
-	-v|--version)
-		return 0
-		;;
-	-o|--owner|-r|--root)
-		if [ -z $BASH_COMPLETION ]; then
-			_filedir
-		else
-			COMPREPLY=( $( compgen -f $cur ) )
-		fi
-		return 0
-		;;
-	esac
+  case "$prev" in
+  -l|--list)
+    COMPREPLY=($(compgen -W \
+      "$(pkginfo -i | awk '{ printf "%s ", $1 }')" -- $cur))
+    return 0
+    ;;
+  -i|--installed)
+    return 0
+    ;;
+  -h|--help)
+    return 0
+    ;;
+  -v|--version)
+    return 0
+    ;;
+  -o|--owner|-r|--root)
+    if [ -z $BASH_COMPLETION ]; then
+      _filedir
+    else
+      COMPREPLY=($(compgen -f $cur))
+    fi
+    return 0
+    ;;
+  esac
 
-	COMPREPLY=( $( compgen -W \
-		" $( pkginfo --help | awk '/--/ { printf "%2s ", $2 }' ) " \
-		-- $cur ) )
+  COMPREPLY=($(compgen -W \
+    "$(pkginfo --help | awk '/--/ { printf "%2s ", $2 }')" -- $cur))
 }
 complete -F _pkginfo -o filenames pkginfo
 
 _pkgrm ()
 {
-	local cur prev
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-	prev=${COMP_WORDS[COMP_CWORD-1]}
+  local cur prev
+  COMPREPLY=()
+  cur=${COMP_WORDS[COMP_CWORD]}
+  prev=${COMP_WORDS[COMP_CWORD-1]}
 
-	case "$prev" in
-	-h|--help)
-		return 0
-		;;
-	-v|--version)
-		return 0
-		;;
-	-r|--root)
-		if [ -z $BASH_COMPLETION ]; then
-			_filedir
-		else
-			COMPREPLY=( $( compgen -f $cur ) )
-		fi
-		return 0
-		;;
-	esac
+  case "$prev" in
+  -h|--help)
+    return 0
+    ;;
+  -v|--version)
+    return 0
+    ;;
+  -r|--root)
+    if [ -z $BASH_COMPLETION ]; then
+      _filedir
+    else
+      COMPREPLY=($( compgen -f $cur))
+    fi
+    return 0
+    ;;
+  esac
 
-	if [[ $cur == -* ]]; then
-		COMPREPLY=( $( compgen -W \
-			" $( pkgrm --help | awk '/--/ { printf "%2s ", $2 }' ) " \
-			-- $cur ) )
-	else
-		COMPREPLY=( $( compgen -W \
-			" $( pkginfo -i | awk ' { printf "%s ", $1 } ' ) " \
-			-- $cur ) )
-	fi
+  if [[ $cur == -* ]]; then
+    COMPREPLY=($(compgen -W \
+      "$(pkgrm --help | awk '/--/ { printf "%2s ", $2 }')" -- $cur))
+  else
+    COMPREPLY=($(compgen -W \
+      "$(pkginfo -i | awk '{ printf "%s ", $1 }')" -- $cur))
+  fi
 }
 complete -F _pkgrm -o filenames pkgrm
 
 _pkgadd ()
 {
-	local cur prev
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-	prev=${COMP_WORDS[COMP_CWORD-1]}
+  local cur prev
+  COMPREPLY=()
+  cur=${COMP_WORDS[COMP_CWORD]}
+  prev=${COMP_WORDS[COMP_CWORD-1]}
 
-	case "$prev" in
-	-h|--help)
-		return 0
-		;;
-	-v|--version)
-		return 0
-	esac
+  case "$prev" in
+  -h|--help)
+    return 0
+    ;;
+  -v|--version)
+    return 0
+  esac
 
-	if [[ $cur == -* ]]; then
-		COMPREPLY=( $( compgen -W \
-			"$( pkgadd --help | awk '/--/ { printf "%2s ", $2 }' )" \
-			-- $cur ) )
-	else
-		COMPREPLY=( $( compgen -f -X '!*.pkg.tar.gz' -- $cur ) \
-			$( compgen -d -- $cur ) )
-	fi
+  if [[ $cur == -* ]]; then
+    COMPREPLY=($(compgen -W \
+      "$(pkgadd --help | awk '/--/{ printf "%2s ", $2 }')" -- $cur))
+  else
+    COMPREPLY=($(compgen -f -X '!*.pkg.tar.gz' -- $cur) \
+      $(compgen -d -- $cur))
+  fi
 }
 complete -F _pkgadd -o filenames pkgadd
 
+# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
 # End of file.
