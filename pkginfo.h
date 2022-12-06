@@ -1,4 +1,3 @@
-// This file is a part of pkgutils.
 // See COPYING and COPYRIGHT files for corresponding information.
 
 #ifndef PKGINFO_H

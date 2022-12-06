@@ -1,4 +1,3 @@
-# This file is a part of pkgutils.
 # See COPYING and COPYRIGHT files for corresponding information.
 
 =pod
@@ -106,7 +105,7 @@ Configuration file for B<pkgadd>.
 
 =head1 SEE ALSO
 
-L<pkgrm(8)>, L<pkginfo(8)>.
+L<pkgrm(8)>, L<pkginfo(8)>
 
 =cut
 

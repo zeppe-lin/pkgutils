@@ -1,4 +1,3 @@
-# This file is a part of pkgutils.
 # See COPYING and COPYRIGHT files for corresponding information.
 
 =pod
@@ -62,7 +61,7 @@ Print help and exit.
 
 =head1 SEE ALSO
 
-L<pkgadd(8)>, L<pkgrm(8)>.
+L<pkgadd(8)>, L<pkgrm(8)>
 
 =cut
 
