@@ -1,4 +1,3 @@
-# This file is a part of pkgutils.
 # See COPYING and COPYRIGHT files for corresponding information.
 
 include config.mk
@@ -10,18 +9,19 @@ all: pkgadd pkgadd.8 pkgrm.8 pkginfo.8
 
 %: %.pod
 	pod2man --nourls -r ${VERSION} -c ' ' -n $(basename $@) \
-		-s 8 $< > $@
+		-s 8 $<  >  $@
 
 .cc.o:
 	${CXX} -c ${CXXFLAGS} ${CPPFLAGS} $< -o $@
 
 pkgadd: ${OBJS}
-	${CXX} $^ ${LDFLAGS} -o $@
+	${LD} $^ ${LDFLAGS} -o $@
 
 install: all
-	install -m 0755 -Dt ${DESTDIR}${BINDIR}/      pkgadd
-	install -m 0644 -Dt ${DESTDIR}${MANDIR}/man8/ \
-		pkgadd.8 pkgrm.8 pkginfo.8
+	mkdir -p ${DESTDIR}${BINDIR}
+	mkdir -p ${DESTDIR}${MANDIR}/man8
+	cp -f pkgadd ${DESTDIR}${BINDIR}/
+	cp -f pkgadd.8 pkgrm.8 pkginfo.8 ${DESTDIR}${MANDIR}/man8/
 	ln -sf pkgadd ${DESTDIR}${BINDIR}/pkgrm
 	ln -sf pkgadd ${DESTDIR}${BINDIR}/pkginfo
 
