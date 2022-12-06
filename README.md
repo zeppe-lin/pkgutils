@@ -9,6 +9,7 @@ This pkgutils distribution is a fork of CRUX' pkgutils as of commit
 (Plain Old Documentation).  Added bash completion.
 
 The original sources can be downloaded from:
+
   1.
     git clone git://crux.nu/tools/pkgutils.git
     git checkout 9ca0da6
