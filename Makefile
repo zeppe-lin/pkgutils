@@ -17,6 +17,10 @@ all: pkgadd pkgadd.8 pkgrm.8 pkginfo.8
 pkgadd: ${OBJS}
 	${LD} $^ ${LDFLAGS} -o $@
 
+check:
+	@podchecker *.pod
+	@grep -Eiho "https?://[^\"\\'> ]+" *.* | httpx -silent -fc 200 -sc
+
 install: all
 	mkdir -p ${DESTDIR}${BINDIR}
 	mkdir -p ${DESTDIR}${MANDIR}/man8
