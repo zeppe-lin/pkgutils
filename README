@@ -18,7 +18,6 @@ ABOUT pkgutils
     1. git://crux.nu/tools/pkgutils.git                         (git)
     2. https://crux.nu/gitweb/?p=tools/pkgutils.git;a=summary   (web)
 
-
 REQUIREMENTS
 
     Build time:
@@ -28,11 +27,8 @@ REQUIREMENTS
     * libarchive(3)
 
     Tests:
-    * podchecker(1pm)
-    check PODs for errors
-    * httpx(1)
-    check URLs for non-200 response code
-
+    * podchecker(1pm): check PODs for errors
+    * httpx(1): check URLs for non-200 response code
 
 INSTALL
 
@@ -42,14 +38,12 @@ INSTALL
     The shell commands "make && make check" should build and start
     some tests.  See "Makefile" for additional information.
 
-
 LICENSE
 
     pkgutils is licensed through the GNU General Public License v2 or
     later <https://gnu.org/licenses/gpl.html>.
     Read the COPYING file for copying conditions.
     Read the COPYRIGHT file for copyright notices.
-
 
 vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
 End of file.
