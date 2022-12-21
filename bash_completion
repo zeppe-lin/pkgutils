@@ -71,7 +71,7 @@ _pkginfo()
             _filedir -d
             return
             ;;
-        --footprint | -f)
+        --footprint | -f | --owner | -o)
             _filedir
             return
             ;;
