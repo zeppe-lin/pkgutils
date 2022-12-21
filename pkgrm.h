@@ -3,6 +3,7 @@
 #ifndef PKGRM_H
 #define PKGRM_H
 
+#include <getopt.h>
 #include "pkgutil.h"
 
 class pkgrm : public pkgutil {
@@ -10,6 +11,7 @@ public:
   pkgrm() : pkgutil("pkgrm") {}
 
   virtual void run(int argc, char** argv);
+  virtual void print_version() const;
   virtual void print_help() const;
 };
 

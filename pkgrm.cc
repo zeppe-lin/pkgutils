@@ -1,38 +1,58 @@
 // See COPYING and COPYRIGHT files for corresponding information.
 
-#include "pkgrm.h"
 #include <unistd.h>
+#include "pkgrm.h"
+
+static int do_version = 0, do_help = 0, show_verbose = 0;
 
 void pkgrm::run(int argc, char** argv)
 {
   //
   // Check command line options
   //
-  string o_package;
-  string o_root;
+  static struct option longopts[] = {
+    { "root",     required_argument,  NULL,           'r' },
+    { "verbose",  no_argument,        &show_verbose,  1   },
+    { "version",  no_argument,        &do_version,    1   },
+    { "help",     no_argument,        &do_help,       1   },
+    { 0,          0,                  0,              0   },
+  };
 
-  for (int i = 1; i < argc; i++)
+  int opt;
+  string o_root, o_package = argv[argc-1];
+
+  while ((opt = getopt_long(argc, argv, ":hvr:V", longopts, 0)) != -1)
   {
-    string option(argv[i]);
-
-    if (option == "-r" || option == "--root")
-    {
-      assert_argument(argv, argc, i);
-      o_root = argv[i + 1];
-      i++;
-    }
-    else if (option[0] == '-' || !o_package.empty())
-    {
-      throw runtime_error("invalid option " + option);
-    }
-    else
-    {
-      o_package = option;
+    switch (opt) {
+    case 'r':
+      o_root = optarg;
+      break;
+    case 'V':
+      show_verbose = 1;
+      break;
+    case 'v':
+      do_version = 1;
+      break;
+    case 'h':
+      do_help = 1;
+      break;
+    case ':':
+      throw runtime_error(optopt + ": missing argument\n");
+    case '?':
+      throw runtime_error(optopt + ": invalid option\n");
     }
   }
 
-  if (o_package.empty())
-    throw runtime_error("option missing");
+  if (do_version)
+    return print_version();
+  else if (do_help)
+    return print_help();
+
+  if (optind == argc || o_package.empty())
+    throw runtime_error("missing package name");
+
+  //else if (argc > 2)
+  //  throw runtime_error("too many arguments");
 
   //
   // Check UID
@@ -50,10 +70,18 @@ void pkgrm::run(int argc, char** argv)
     if (!db_find_pkg(o_package))
       throw runtime_error("package " + o_package + " not installed");
 
+    if (show_verbose)
+      cout << "removing " << o_package << endl;
+
     db_rm_pkg(o_package);
     ldconfig();
     db_commit();
   }
+}
+
+void pkgrm::print_version() const
+{
+  cout << utilname << " (pkgutils) " << VERSION << endl;
 }
 
 void pkgrm::print_help() const
@@ -62,7 +90,7 @@ void pkgrm::print_help() const
   cout << R"END(Remove software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -r, --root <path>   specify alternative installation root
+  -r, --root=PATH     specify alternative installation root
   -v, --version       print version and exit
   -h, --help          print help and exit
 )END";
