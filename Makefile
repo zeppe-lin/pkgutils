@@ -23,6 +23,7 @@ check:
 	@grep -Eiho "https?://[^\"\\'> ]+" *.* | httpx -silent -fc 200 -sc
 
 install: all
+	mkdir -p ${DESTDIR}${PREFIX}/bin
 	mkdir -p ${DESTDIR}${PREFIX}/sbin
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	mkdir -p ${DESTDIR}${MANPREFIX}/man5
@@ -31,8 +32,8 @@ install: all
 	cp -f pkginfo.1        ${DESTDIR}${MANPREFIX}/man1/
 	cp -f pkgadd.conf.5    ${DESTDIR}${MANPREFIX}/man5/
 	cp -f pkgadd.8 pkgrm.8 ${DESTDIR}${MANPREFIX}/man8/
-	ln -sf /sbin/pkgadd    ${DESTDIR}${PREFIX}/sbin/pkgrm
-	ln -sf /sbin/pkgadd    ${DESTDIR}${PREFIX}/bin/pkginfo
+	ln -sf pkgadd          ${DESTDIR}${PREFIX}/sbin/pkgrm
+	ln -sf ../sbin/pkgadd  ${DESTDIR}${PREFIX}/bin/pkginfo
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/pkginfo
