@@ -173,18 +173,18 @@ void pkginfo::run(int argc, char** argv)
 
 void pkginfo::print_help() const
 {
-  cout
-    << "Usage: " << utilname << " [OPTION]"                                       << endl
-    << "Display software package information."                                    << endl
-                                                                                  << endl
-    << "Mandatory arguments to long options are mandatory for short options too." << endl
-    << "  -i, --installed             list installed packages"                    << endl
-    << "  -l, --list PACKAGE|FILE     list files in PACKAGE or FILE"              << endl
-    << "  -o, --owner PATTERN         list owner(s) of file(s) matching PATTERN"  << endl
-    << "  -f, --footprint FILE        print footprint for FILE"                   << endl
-    << "  -r, --root PATH             specify alternative installation root"      << endl
-    << "  -v, --version               print version and exit"                     << endl
-    << "  -h, --help                  print help and exit"                        << endl;
+  cout << "Usage: " << utilname << " [OPTION]" << endl;
+  cout << R"END(Display software package information.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -i, --installed             list installed packages
+  -l, --list PACKAGE|FILE     list files in PACKAGE or FILE
+  -o, --owner PATTERN         list owner(s) of file(s) matching PATTERN
+  -f, --footprint FILE        print footprint for FILE
+  -r, --root PATH             specify alternative installation root
+  -v, --version               print version and exit
+  -h, --help                  print help and exit
+)END";
 }
 
 // vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
