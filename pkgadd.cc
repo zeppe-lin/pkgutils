@@ -139,17 +139,17 @@ void pkgadd::run(int argc, char** argv)
 
 void pkgadd::print_help() const
 {
-  cout
-    << "Usage: " << utilname << " [OPTION]... FILE"                               << endl
-    << "Install software package."                                                << endl
-                                                                                  << endl
-    << "Mandatory arguments to long options are mandatory for short options too." << endl
-    << "  -u, --upgrade        upgrade package with the same name"                << endl
-    << "  -f, --force          force install, overwrite conflicting files"        << endl
-    << "  -r, --root PATH      specify alternative installation root"             << endl
-    << "  -c, --config FILE    use alternate configuration file"                  << endl
-    << "  -v, --version        print version and exit"                            << endl
-    << "  -h, --help           print help and exit"                               << endl;
+  cout << "Usage: " << utilname << " [OPTION]... FILE" << endl;
+  cout << R"END(Install software package.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -u, --upgrade        upgrade package with the same name
+  -f, --force          force install, overwrite conflicting files
+  -r, --root PATH      specify alternative installation root
+  -c, --config FILE    use alternative configuration file
+  -v, --version        print version and exit
+  -h, --help           print help and exit
+)END";
 }
 
 vector<rule_t> pkgadd::read_config(string file) const
