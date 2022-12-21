@@ -7,7 +7,7 @@
 #include <vector>
 #include <set>
 
-#define PKGADD_CONF             "/etc/pkgadd.conf"
+#define PKGADD_CONF             SYSCONFDIR"/pkgadd.conf"
 #define PKGADD_CONF_MAXLINE     1024
 
 enum rule_event_t {
