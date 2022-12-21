@@ -45,6 +45,10 @@ by another system.  By using this option you not only specify where
 the software should be installed, but you also specify which package
 database to use.
 
+=item B<-V>, B<--verbose>
+
+Explain what is being done.
+
 =item B<-v>, B<--version>
 
 Print version and exit.
