@@ -1,98 +1,97 @@
-# Bash programmable completion for pkgutils.
-# See COPYING and COPYRIGHT files for corresponding information.
+# pkgutils completion
 
-_pkginfo() {
-  local cur prev
-  COMPREPLY=()
-  cur=${COMP_WORDS[COMP_CWORD]}
-  prev=${COMP_WORDS[COMP_CWORD-1]}
+_avail_pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
 
-  case "$prev" in
-  -l|--list)
-    COMPREPLY=($(compgen -W \
-      "$(pkginfo -i | awk '{printf "%s ", $1}')" -- $cur))
-    return 0
-    ;;
-  -i|--installed)
-    return 0
-    ;;
-  -h|--help)
-    return 0
-    ;;
-  -v|--version)
-    return 0
-    ;;
-  -o|--owner|-r|--root)
-    if [ -z $BASH_COMPLETION ]; then
-      _filedir
+_pkgrm()
+{
+    local cur prev words cword split
+    _init_completion -s || return
+
+    case $prev in
+        --help | --version | -!(-*)[hv])
+            return
+            ;;
+        --root | -r)
+            _filedir -d
+            return
+            ;;
+    esac
+
+    $split && return
+
+    if [[ $cur == -* ]]; then
+        COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+        [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
     else
-      COMPREPLY=($(compgen -f $cur))
+        COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
     fi
-    return 0
-    ;;
-  esac
+} &&
+    complete -F _pkgrm pkgrm
 
-  COMPREPLY=($(compgen -W \
-    "$(pkginfo --help | awk '/--/{printf "%2s ", $2}')" -- $cur))
-}
-complete -F _pkginfo -o filenames pkginfo
+_pkgadd()
+{
+    local cur prev words cword split
+    _init_completion -s || return
 
-_pkgrm() {
-  local cur prev
-  COMPREPLY=()
-  cur=${COMP_WORDS[COMP_CWORD]}
-  prev=${COMP_WORDS[COMP_CWORD-1]}
+    case $prev in
+        --help | --version | -!(-*)[hv])
+            return
+            ;;
+        --root | -r)
+            _filedir -d
+            return
+            ;;
+        --config | -c)
+            _filedir
+            return
+            ;;
+    esac
 
-  case "$prev" in
-  -h|--help)
-    return 0
-    ;;
-  -v|--version)
-    return 0
-    ;;
-  -r|--root)
-    if [ -z $BASH_COMPLETION ]; then
-      _filedir
+    $split && return
+
+    if [[ $cur == -* ]]; then
+        COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+        [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
     else
-      COMPREPLY=($(compgen -f $cur))
+        _filedir
     fi
-    return 0
-    ;;
-  esac
+} &&
+    complete -F _pkgadd pkgadd
 
-  if [[ $cur == -* ]]; then
-    COMPREPLY=($(compgen -W \
-      "$(pkgrm --help | awk '/--/{printf "%2s ", $2}')" -- $cur))
-  else
-    COMPREPLY=($(compgen -W \
-      "$(pkginfo -i | awk '{printf "%s ", $1}')" -- $cur))
-  fi
-}
-complete -F _pkgrm -o filenames pkgrm
+_pkginfo()
+{
+    local cur prev words cword split
+    _init_completion -s || return
 
-_pkgadd() {
-  local cur prev
-  COMPREPLY=()
-  cur=${COMP_WORDS[COMP_CWORD]}
-  prev=${COMP_WORDS[COMP_CWORD-1]}
+    case $prev in
+        --help | --version | -!(-*)[hv])
+            return
+            ;;
+        --root | -r)
+            _filedir -d
+            return
+            ;;
+        --footprint | -f)
+            _filedir
+            return
+            ;;
+        --list | -l)
+            if [[ $cur == ./* || $cur == /* ]]; then
+                _filedir
+            else
+                COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
+            fi
+            return
+            ;;
+    esac
 
-  case "$prev" in
-  -h|--help)
-    return 0
-    ;;
-  -v|--version)
-    return 0
-  esac
+    if [[ $cur == -* ]]; then
+        COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+        [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+        return
+    fi
+} &&
+    complete -F _pkginfo pkginfo
 
-  if [[ $cur == -* ]]; then
-    COMPREPLY=($(compgen -W \
-      "$(pkgadd --help | awk '/--/{printf "%2s ", $2}')" -- $cur))
-  else
-    COMPREPLY=($(compgen -f -X '!*.pkg.tar.gz' -- $cur) \
-      $(compgen -d -- $cur))
-  fi
-}
-complete -F _pkgadd -o filenames pkgadd
-
-# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+# vim:ft=bash:sw=4:ts=4:sts=4:et:cc=72
 # End of file.
