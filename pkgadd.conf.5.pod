@@ -82,6 +82,10 @@ to manage rejected files.
 Configuration file for
 L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>.
 
+=item F</var/lib/pkg/rejected/>
+
+Directory where rejected files are stored.
+
 =back
 
 =head1 SEE ALSO
