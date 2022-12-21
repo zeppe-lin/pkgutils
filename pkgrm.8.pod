@@ -24,7 +24,7 @@ too.
 
 =over 8
 
-=item B<-r>, B<--root> I<PATH>
+=item B<-r>, B<--root>=I<PATH>
 
 Specify alternate installation root (default is C</>).  This should be
 used if you want to remove a package from a temporary mounted
