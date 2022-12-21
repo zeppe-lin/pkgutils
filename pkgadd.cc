@@ -172,6 +172,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -f, --force          force install, overwrite conflicting files
   -r, --root=PATH      specify alternative installation root
   -c, --config=FILE    use alternative configuration file
+  -V, --verbose        explain what is being done
   -v, --version        print version and exit
   -h, --help           print help and exit
 )END";
