@@ -3,13 +3,14 @@
 #include <unistd.h>
 #include "pkgrm.h"
 
-static int do_version = 0, do_help = 0, show_verbose = 0;
-
 void pkgrm::run(int argc, char** argv)
 {
   //
   // Check command line options
   //
+  static int do_version = 0, do_help = 0, show_verbose = 0;
+  static string o_root, o_package;
+  int opt;
   static struct option longopts[] = {
     { "root",     required_argument,  NULL,           'r' },
     { "verbose",  no_argument,        &show_verbose,  1   },
@@ -18,11 +19,9 @@ void pkgrm::run(int argc, char** argv)
     { 0,          0,                  0,              0   },
   };
 
-  int opt;
-  string o_root, o_package = argv[argc-1];
-
   while ((opt = getopt_long(argc, argv, ":hvr:V", longopts, 0)) != -1)
   {
+    char ch = optopt;
     switch (opt) {
     case 'r':
       o_root = optarg;
@@ -37,9 +36,9 @@ void pkgrm::run(int argc, char** argv)
       do_help = 1;
       break;
     case ':':
-      throw runtime_error(optopt + ": missing argument\n");
+      throw runtime_error("-"s + ch + ": missing option argument\n");
     case '?':
-      throw runtime_error(optopt + ": invalid option\n");
+      throw runtime_error("-"s + ch + ": invalid option\n");
     }
   }
 
@@ -48,11 +47,12 @@ void pkgrm::run(int argc, char** argv)
   else if (do_help)
     return print_help();
 
-  if (optind == argc || o_package.empty())
+  if (optind == argc)
     throw runtime_error("missing package name");
+  else if (argc - optind > 1)
+    throw runtime_error("too many arguments");
 
-  //else if (argc > 2)
-  //  throw runtime_error("too many arguments");
+  o_package = argv[optind];
 
   //
   // Check UID
