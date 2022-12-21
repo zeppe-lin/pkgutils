@@ -8,6 +8,8 @@ ABOUT pkgutils
     commit 9ca0da6 (Sat Nov 17 2018) with the following differences:
     * parsing arguments with getopt
     * the man pages have been rewritten in POD
+    * the man page pkgadd(8) have been split into 2: pkgadd(8) and
+      pkgadd.conf(5)
     * added bash completion
     * build files have been rewritten
     See git log for further differences.
