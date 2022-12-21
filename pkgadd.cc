@@ -12,26 +12,24 @@ void pkgadd::run(int argc, char** argv)
   //
   // Check command line options
   //
-
-  static int o_version = 0, o_help = 0, o_verbose = 0, o_upgrade = 0,
-             o_force = 0;
-  static string o_root, o_config = PKGADD_CONF,
-                o_package = argv[argc-1];
+  static int do_version = 0, do_help = 0, show_verbose = 0;
+  static int o_upgrade = 0, o_force = 0;
+  static string o_root, o_config = PKGADD_CONF, o_package;
   int opt;
-
   static struct option longopts[] = {
-    { "root",     required_argument,  NULL,        'r' },
-    { "config",   required_argument,  NULL,        'c' },
-    { "upgrade",  no_argument,        &o_upgrade,  'u' },
-    { "force",    no_argument,        &o_force,    'f' },
-    { "verbose",  no_argument,        &o_verbose,  1   },
-    { "version",  no_argument,        &o_version,  1   },
-    { "help",     no_argument,        &o_help,     1   },
-    { 0,          0,                  0,            0   },
+    { "root",     required_argument,  NULL,           'r' },
+    { "config",   required_argument,  NULL,           'c' },
+    { "upgrade",  no_argument,        &o_upgrade,     'u' },
+    { "force",    no_argument,        &o_force,       'f' },
+    { "verbose",  no_argument,        &show_verbose,  1   },
+    { "version",  no_argument,        &do_version,    1   },
+    { "help",     no_argument,        &do_help,       1   },
+    { 0,          0,                  0,              0   },
   };
 
   while ((opt = getopt_long(argc, argv, ":hvr:c:ufV", longopts, 0)) != -1)
   {
+    char ch = optopt;
     switch (opt) {
     case 'r':
       o_root = optarg;
@@ -46,24 +44,24 @@ void pkgadd::run(int argc, char** argv)
       o_force = 1;
       break;
     case 'V':
-      o_verbose = 1;
+      show_verbose = 1;
       break;
     case 'v':
-      o_version = 1;
+      do_version = 1;
       break;
     case 'h':
-      o_help = 1;
+      do_help = 1;
       break;
     case ':':
-      throw runtime_error(optopt + ": missing argument\n");
+      throw runtime_error("-"s + ch + ": missing option argument\n");
     case '?':
-      throw runtime_error(optopt + ": invalid option\n");
+      throw runtime_error("-"s + ch + ": invalid option\n");
     }
   }
 
-  if (o_version)
+  if (do_version)
     return print_version();
-  else if (o_help)
+  else if (do_help)
     return print_help();
 
   if (optind == argc)
@@ -140,7 +138,7 @@ void pkgadd::run(int argc, char** argv)
     db_commit();
     try
     {
-      if (o_verbose)
+      if (show_verbose)
         cout << (o_upgrade ? "upgrading " : "installing ")
              << package.first << endl;
 
