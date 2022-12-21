@@ -3,6 +3,7 @@
 #ifndef PKGINFO_H
 #define PKGINFO_H
 
+#include <getopt.h>
 #include "pkgutil.h"
 
 class pkginfo : public pkgutil {
@@ -10,6 +11,7 @@ public:
   pkginfo() : pkgutil("pkginfo") {}
 
   virtual void run(int argc, char** argv);
+  virtual void print_version() const;
   virtual void print_help() const;
 };
 

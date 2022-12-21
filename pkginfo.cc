@@ -12,53 +12,64 @@ void pkginfo::run(int argc, char** argv)
   //
   // Check command line options
   //
-  int     o_footprint_mode = 0;
-  int     o_installed_mode = 0;
-  int     o_list_mode      = 0;
-  int     o_owner_mode     = 0;
-  string  o_root;
-  string  o_arg;
+  static int o_footprint_mode = 0;
+  static int o_installed_mode = 0;
+  static int o_list_mode = 0;
+  static int o_owner_mode = 0;
+  static int do_version = 0;
+  static int do_help = 0;
+  static string o_root;
+  static string o_arg;
+  int opt;
+  static struct option longopts[] = {
+    { "root",       required_argument,  NULL,               'r' },
+    { "list",       required_argument,  NULL,               'l' },
+    { "owner",      required_argument,  NULL,               'o' },
+    { "footprint",  required_argument,  NULL,               'f' },
+    { "installed",  no_argument,        &o_installed_mode,  1   },
+    { "version",    no_argument,        &do_version,        1   },
+    { "help",       no_argument,        &do_help,           1   },
+  };
 
-  for (int i = 1; i < argc; ++i)
+  while ((opt = getopt_long(argc, argv, ":hvr:l:o:f:iV", longopts, 0)) != -1)
   {
-    string option(argv[i]);
-
-    if (option == "-r" || option == "--root")
-    {
-      assert_argument(argv, argc, i);
-      o_root = argv[i + 1];
-      i++;
-    }
-    else if (option == "-i" || option == "--installed")
-    {
-      o_installed_mode += 1;
-    }
-    else if (option == "-l" || option == "--list")
-    {
-      assert_argument(argv, argc, i);
-      o_list_mode += 1;
-      o_arg = argv[i + 1];
-      i++;
-    }
-    else if (option == "-o" || option == "--owner")
-    {
-      assert_argument(argv, argc, i);
-      o_owner_mode += 1;
-      o_arg = argv[i + 1];
-      i++;
-    }
-    else if (option == "-f" || option == "--footprint")
-    {
-      assert_argument(argv, argc, i);
-      o_footprint_mode += 1;
-      o_arg = argv[i + 1];
-      i++;
-    }
-    else
-    {
-      throw runtime_error("invalid option " + option);
+    char ch = optopt;
+    switch (opt) {
+    case 'r':
+      o_root = optarg;
+      break;
+    case 'i':
+      o_installed_mode = 1;
+      break;
+    case 'l':
+      o_list_mode = 1;
+      o_arg = optarg;
+      break;
+    case 'o':
+      o_owner_mode = 1;
+      o_arg = optarg;
+      break;
+    case 'f':
+      o_footprint_mode = 1;
+      o_arg = optarg;
+      break;
+    case 'v':
+      do_version = 1;
+      break;
+    case 'h':
+      do_help = 1;
+      break;
+    case ':':
+      throw runtime_error("-"s + ch + ": missing option argument\n");
+    case '?':
+      throw runtime_error("-"s + ch + ": invalid option\n");
     }
   }
+
+  if (do_version)
+    return print_version();
+  else if (do_help)
+    return print_help();
 
   if (o_footprint_mode + o_installed_mode + o_list_mode + o_owner_mode == 0)
     throw runtime_error("option missing");
@@ -171,6 +182,11 @@ void pkginfo::run(int argc, char** argv)
   }
 }
 
+void pkginfo::print_version() const
+{
+  cout << utilname << " (pkgutils) " << VERSION << endl;
+}
+
 void pkginfo::print_help() const
 {
   cout << "Usage: " << utilname << " [OPTION]" << endl;
@@ -178,9 +194,9 @@ void pkginfo::print_help() const
 
 Mandatory arguments to long options are mandatory for short options too.
   -i, --installed             list installed packages
-  -l, --list PACKAGE|FILE     list files in PACKAGE or FILE
-  -o, --owner PATTERN         list owner(s) of file(s) matching PATTERN
-  -f, --footprint FILE        print footprint for FILE
+  -l, --list=PACKAGE|FILE     list files in PACKAGE or FILE
+  -o, --owner=PATTERN         list owner(s) of file(s) matching PATTERN
+  -f, --footprint=FILE        print footprint for FILE
   -r, --root PATH             specify alternative installation root
   -v, --version               print version and exit
   -h, --help                  print help and exit
