@@ -1,12 +1,10 @@
-# See COPYING and COPYRIGHT files for corresponding information.
-
-# pkgutils version if undefined
+# pkgutils version
 VERSION = 5.41
 
 # paths
-PREFIX  = /usr/local
-BINDIR  = ${PREFIX}/sbin
-MANDIR  = ${PREFIX}/share/man
+PREFIX     = /usr/local
+MANPREFIX  = ${PREFIX}/share/man
+SYSCONFDIR = ${PREFIX}/etc
 
 # flags
 CXXFLAGS = -Wall -Wextra -pedantic
@@ -17,6 +15,3 @@ LDFLAGS  = -static $(shell pkg-config --libs --static libarchive)
 # compiler
 CXX = c++
 LD  = ${CXX}
-
-# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
-# End of file.
