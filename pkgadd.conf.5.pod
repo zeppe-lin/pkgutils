@@ -1,0 +1,94 @@
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+pkgadd.conf - configuration file for pkgadd
+
+=head1 SYNOPSIS
+
+B<@SYSCONFDIR@/pkgadd.conf>
+
+=head1 DESCRIPTION
+
+This manual page describes the format of the F<pkgadd.conf> file.
+This file can be used to alter the way
+L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html> upgrade and/or
+install the package.
+
+B<pkgadd.conf> file contain rules, that are built out of three
+fragments: I<EVENT>, I<PATTERN> and I<ACTION>.  The I<EVENT> describes
+in what kind of situation this rule applies.  Currently there are two
+types of events: B<UPGRADE> and B<INSTALL>.  B<UPGRADE> rules are
+applied when a package is installed over an existing version, and
+B<INSTALL> rules are applied in any case.  The I<PATTERN> is a regular
+expression.  The I<ACTION> applicable to both the B<UPGRADE> and
+B<INSTALL> event is B<YES> and B<NO>.  More than one rule of the same
+I<EVENT> type is allowed, in which case the first rule will have the
+lowest priority and the last rule will have the highest priority.
+
+For example:
+
+  UPGRADE  ^etc/.*$              NO
+  UPGRADE  ^var/log/.*$          NO
+  UPGRADE  ^etc/X11/.*$          YES
+  UPGRADE  ^etc/X11/XF86Config$  NO
+
+The above example will cause
+L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html> to never
+upgrade anything in F</etc> or F</var/log> (subdirectories included),
+except files in F</etc/X11> (subdirectories included), unless it is
+the files F</etc/X11/XF86Config>.  The default rule is to
+upgrade/install everything, rules in this file are exceptions to that
+rule.
+
+B<NOTE!> The I<PATTERN> should never contain an initial C</> since you
+are referring to the files in the package, not the files on the disk.
+
+If L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html> finds that a
+specific file should not be upgraded it will install it under
+F</var/lib/pkg/rejected/>.  The user is then free to
+examine/use/remove that file manually or use
+L<rejmerge(8)|https://zeppe-lin.github.io/rejmerge.8.html>
+to manage rejected files.
+
+=head1 EXAMPLE
+
+  #
+  # @SYSCONFDIR@/pkgadd.conf: pkgadd(8) configuration
+  #
+  # See pkgadd.conf(5) for more information.
+  #
+
+  # Default rule (implicit)
+  #UPGRADE    ^.*$                       YES
+
+  UPGRADE     ^var/log/.*$               NO
+  UPGRADE     ^var/spool/\w*cron/.*$     NO
+  UPGRADE     ^var/run/utmp$             NO
+
+  UPGRADE     ^etc/rc.*$                 YES
+  UPGRADE     ^etc/rc\.conf$             NO
+
+  # End of file.
+
+=head1 FILES
+
+=over 8
+
+=item F<@SYSCONFDIR@/pkgadd.conf>
+
+Configuration file for
+L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>.
+
+=back
+
+=head1 SEE ALSO
+
+L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>
+
+=cut
+
+# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+# End of file.
