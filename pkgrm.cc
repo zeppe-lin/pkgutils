@@ -91,6 +91,7 @@ void pkgrm::print_help() const
 
 Mandatory arguments to long options are mandatory for short options too.
   -r, --root=PATH     specify alternative installation root
+  -V, --verbose       explain what is being done
   -v, --version       print version and exit
   -h, --help          print help and exit
 )END";
