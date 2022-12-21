@@ -49,7 +49,7 @@ Print help and exit.
 =head1 SEE ALSO
 
 L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>,
-L<pkginfo(8)|https://zeppe-lin.github.io/pkginfo.8.html>
+L<pkginfo(1)|https://zeppe-lin.github.io/pkginfo.1.html>
 
 =cut
 
