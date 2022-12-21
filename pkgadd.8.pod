@@ -35,7 +35,7 @@ this option will cause all those files to be overwritten.
 
 I<This option should be used with care, preferably not at all>.
 
-=item B<-r>, B<--root> I<PATH>
+=item B<-r>, B<--root>=I<PATH>
 
 Specify alternate installation root (default is C</>).  This should
 I<not> be used as a way to install software into e.g. F</usr/local>
