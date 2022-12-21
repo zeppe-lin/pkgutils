@@ -58,14 +58,14 @@ void pkgrm::run(int argc, char** argv)
 
 void pkgrm::print_help() const
 {
-  cout
-    << "Usage: " << utilname << " [OPTION] PKGNAME"                               << endl
-    << "Remove software package."                                                 << endl
-                                                                                  << endl
-    << "Mandatory arguments to long options are mandatory for short options too." << endl
-    << "  -r, --root <path>   specify alternative installation root"              << endl
-    << "  -v, --version       print version and exit"                             << endl
-    << "  -h, --help          print help and exit"                                << endl;
+  cout << "Usage: " << utilname << " [OPTION] PKGNAME" << endl;
+  cout << R"END(Remove software package.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -r, --root <path>   specify alternative installation root
+  -v, --version       print version and exit
+  -h, --help          print help and exit
+)END";
 }
 
 // vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
