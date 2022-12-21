@@ -12,48 +12,66 @@ void pkgadd::run(int argc, char** argv)
   //
   // Check command line options
   //
-  string  o_root;
-  string  o_config;
-  string  o_package;
-  bool    o_upgrade = false;
-  bool    o_force   = false;
 
-  for (int i = 1; i < argc; i++)
+  static int o_version = 0, o_help = 0, o_verbose = 0, o_upgrade = 0,
+             o_force = 0;
+  static string o_root, o_config = PKGADD_CONF,
+                o_package = argv[argc-1];
+  int opt;
+
+  static struct option longopts[] = {
+    { "root",     required_argument,  NULL,        'r' },
+    { "config",   required_argument,  NULL,        'c' },
+    { "upgrade",  no_argument,        &o_upgrade,  'u' },
+    { "force",    no_argument,        &o_force,    'f' },
+    { "verbose",  no_argument,        &o_verbose,  1   },
+    { "version",  no_argument,        &o_version,  1   },
+    { "help",     no_argument,        &o_help,     1   },
+    { 0,          0,                  0,            0   },
+  };
+
+  while ((opt = getopt_long(argc, argv, ":hvr:c:ufV", longopts, 0)) != -1)
   {
-    string option(argv[i]);
-
-    if (option == "-r" || option == "--root")
-    {
-      assert_argument(argv, argc, i);
-      o_root = argv[i + 1];
-      i++;
-    }
-    else if (option == "-c" || option == "--config")
-    {
-      assert_argument(argv, argc, i);
-      o_config = argv[i + 1];
-      i++;
-    }
-    else if (option == "-u" || option == "--upgrade")
-    {
-      o_upgrade = true;
-    }
-    else if (option == "-f" || option == "--force")
-    {
-      o_force = true;
-    }
-    else if (option[0] == '-' || !o_package.empty())
-    {
-      throw runtime_error("invalid option " + option);
-    }
-    else
-    {
-      o_package = option;
+    switch (opt) {
+    case 'r':
+      o_root = optarg;
+      break;
+    case 'c':
+      o_config = optarg;
+      break;
+    case 'u':
+      o_upgrade = 1;
+      break;
+    case 'f':
+      o_force = 1;
+      break;
+    case 'V':
+      o_verbose = 1;
+      break;
+    case 'v':
+      o_version = 1;
+      break;
+    case 'h':
+      o_help = 1;
+      break;
+    case ':':
+      throw runtime_error(optopt + ": missing argument\n");
+    case '?':
+      throw runtime_error(optopt + ": invalid option\n");
     }
   }
 
-  if (o_package.empty())
-    throw runtime_error("option missing");
+  if (o_version)
+    return print_version();
+  else if (o_help)
+    return print_help();
+
+  if (optind == argc)
+    throw runtime_error("missing package name");
+  else if (argc - optind > 1)
+    throw runtime_error("too many arguments");
+
+  o_package = argv[optind];
 
   //
   // Check UID
@@ -117,11 +135,15 @@ void pkgadd::run(int argc, char** argv)
       keep_list = make_keep_list(package.second.files, config_rules);
       db_rm_pkg(package.first, keep_list);
     }
-   
+
     db_add_pkg(package.first, package.second);
     db_commit();
     try
     {
+      if (o_verbose)
+        cout << (o_upgrade ? "upgrading " : "installing ")
+             << package.first << endl;
+
       pkg_install(o_package, keep_list, non_install_files, installed);
     }
     catch (runtime_error&)
@@ -137,6 +159,11 @@ void pkgadd::run(int argc, char** argv)
   }
 }
 
+void pkgadd::print_version() const
+{
+  cout << utilname << " (pkgutils) " << VERSION << endl;
+}
+
 void pkgadd::print_help() const
 {
   cout << "Usage: " << utilname << " [OPTION]... FILE" << endl;
@@ -145,8 +172,8 @@ void pkgadd::print_help() const
 Mandatory arguments to long options are mandatory for short options too.
   -u, --upgrade        upgrade package with the same name
   -f, --force          force install, overwrite conflicting files
-  -r, --root PATH      specify alternative installation root
-  -c, --config FILE    use alternative configuration file
+  -r, --root=PATH      specify alternative installation root
+  -c, --config=FILE    use alternative configuration file
   -v, --version        print version and exit
   -h, --help           print help and exit
 )END";

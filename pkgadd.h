@@ -3,9 +3,10 @@
 #ifndef PKGADD_H
 #define PKGADD_H
 
-#include "pkgutil.h"
 #include <vector>
 #include <set>
+#include <getopt.h>
+#include "pkgutil.h"
 
 #define PKGADD_CONF             SYSCONFDIR"/pkgadd.conf"
 #define PKGADD_CONF_MAXLINE     1024
@@ -26,6 +27,7 @@ public:
   pkgadd() : pkgutil("pkgadd") {}
 
   virtual void run(int argc, char** argv);
+  virtual void print_version() const;
   virtual void print_help() const;
 
 private:
