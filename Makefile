@@ -9,7 +9,7 @@ all: pkgadd pkgadd.8 pkgadd.conf.5 pkgrm.8 pkginfo.1
 
 %: %.pod
 	pod2man --nourls -r ${VERSION} -c "Package Management Utilities" \
-		-n $(basename $@) -s $(subst .,,$(suffix $@)) - > $@
+		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
 
 .cc.o:
 	${CXX} -c ${CXXFLAGS} ${CPPFLAGS} $< -o $@
