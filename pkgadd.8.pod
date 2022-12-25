@@ -63,7 +63,7 @@ Print help and exit.
 
 =over 8
 
-=item F<@SYSCONFDIR@/pkgadd.conf>
+=item F</etc/pkgadd.conf>
 
 Default configuration file.
 

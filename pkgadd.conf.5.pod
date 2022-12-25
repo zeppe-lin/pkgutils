@@ -8,7 +8,7 @@ pkgadd.conf - configuration file for pkgadd
 
 =head1 SYNOPSIS
 
-B<@SYSCONFDIR@/pkgadd.conf>
+B</etc/pkgadd.conf>
 
 =head1 DESCRIPTION
 
@@ -56,7 +56,7 @@ to manage rejected files.
 =head1 EXAMPLE
 
   #
-  # @SYSCONFDIR@/pkgadd.conf: pkgadd(8) configuration
+  # /etc/pkgadd.conf: pkgadd(8) configuration
   #
   # See pkgadd.conf(5) for more information.
   #
@@ -77,7 +77,7 @@ to manage rejected files.
 
 =over 8
 
-=item F<@SYSCONFDIR@/pkgadd.conf>
+=item F</etc/pkgadd.conf>
 
 Configuration file for
 L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>.
