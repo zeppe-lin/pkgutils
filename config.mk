@@ -1,5 +1,5 @@
 # pkgutils version
-VERSION = 5.42
+VERSION = 5.41
 
 # flags
 CXXFLAGS = -Wall -Wextra -pedantic
