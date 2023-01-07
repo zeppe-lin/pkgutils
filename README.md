@@ -8,7 +8,7 @@ This *pkgutils* distribution is a fork of CRUX' *pkgutils* as of
 commit 9ca0da6 (Sat Nov 17 2018) with the following differences:
   * parsing arguments with getopt
   * the man pages have been rewritten in POD format
-  * the man page pkgadd(8) have been split into 2:
+  * the man page pkgadd(8) have been split into two:
     pkgadd(8) and pkgadd.conf(5)
   * added bash completion
   * build files have been rewritten
