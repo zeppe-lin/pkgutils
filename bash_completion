@@ -4,96 +4,93 @@ _avail_pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
 
 _pkgrm()
 {
-    local cur prev words cword split
-    _init_completion -s || return
+  local cur prev words cword split
+  _init_completion -s || return
 
-    case $prev in
-        --help | --version | -!(-*)[hv])
-            return
-            ;;
-        --root | -r)
-            _filedir -d
-            return
-            ;;
-    esac
+  case $prev in
+  --help | --version | -!(-*)[hv])
+    return
+    ;;
+  --root | -r)
+    _filedir -d
+    return
+    ;;
+  esac
 
-    $split && return
+  $split && return
 
-    if [[ $cur == -* ]]; then
-        COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
-        [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
-    else
-        COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
-    fi
-} &&
-    complete -F _pkgrm pkgrm
+  if [[ $cur == -* ]]; then
+    COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+    [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+  else
+    COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
+  fi
+} && complete -F _pkgrm pkgrm
 
 _pkgadd()
 {
-    local cur prev words cword split
-    _init_completion -s || return
+  local cur prev words cword split
+  _init_completion -s || return
 
-    case $prev in
-        --help | --version | -!(-*)[hv])
-            return
-            ;;
-        --root | -r)
-            _filedir -d
-            return
-            ;;
-        --config | -c)
-            _filedir
-            return
-            ;;
-    esac
+  case $prev in
+  --help | --version | -!(-*)[hv])
+    return
+    ;;
+  --root | -r)
+    _filedir -d
+    return
+    ;;
+  --config | -c)
+    _filedir
+    return
+    ;;
+  esac
 
-    $split && return
+  $split && return
 
-    if [[ $cur == -* ]]; then
-        COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
-        [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
-    else
-        _filedir
-    fi
-} &&
-    complete -F _pkgadd pkgadd
+  if [[ $cur == -* ]]; then
+    COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+    [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+  else
+    _filedir
+  fi
+} && complete -F _pkgadd pkgadd
 
 _pkginfo()
 {
-    local cur prev words cword split
-    _init_completion -s || return
+  local cur prev words cword split
+  _init_completion -s || return
 
-    case $prev in
-        --help | --version | -!(-*)[hv])
-            return
-            ;;
-        --root | -r)
-            _filedir -d
-            return
-            ;;
-        --footprint | -f | --owner | -o)
-            _filedir
-            return
-            ;;
-        --list | -l)
-            if [[ $cur == ./* || $cur == /* ]]; then
-                _filedir
-            else
-                COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
-            fi
-            return
-            ;;
-    esac
-
-    $split && return
-
-    if [[ $cur == -* ]]; then
-        COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
-        [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
-        return
+  case $prev in
+  --help | --version | -!(-*)[hv])
+    return
+    ;;
+  --root | -r)
+    _filedir -d
+    return
+    ;;
+  --footprint | -f | --owner | -o)
+    _filedir
+    return
+    ;;
+  --list | -l)
+    if [[ $cur == ./* || $cur == /* ]]; then
+      _filedir
+    else
+      COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
     fi
-} &&
-    complete -F _pkginfo pkginfo
+    return
+    ;;
+  esac
 
-# vim:ft=bash:sw=4:ts=4:sts=4:et:cc=72
+  $split && return
+
+  if [[ $cur == -* ]]; then
+    COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+    [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+    return
+  fi
+} && complete -F _pkginfo pkginfo
+
+# vim:ft=bash:sw=2:ts=2:sts=2:et:cc=72
 # End of file.
