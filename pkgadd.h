@@ -34,7 +34,7 @@ private:
   vector<rule_t> read_config(string file) const;
 
   set<string> make_keep_list(const set<string>&     files,
-                 const vector<rule_t>&  rules) const;
+                             const vector<rule_t>&  rules) const;
 
   set<string> apply_install_rules(const string&          name,
                                   pkginfo_t&             info,
