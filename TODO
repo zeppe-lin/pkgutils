@@ -1,8 +1,6 @@
 TODO pkgutils
 
-    [ ] Fix compilation warnings.
-    [ ] Make print_help and print_version as a private methods?
+	[ ] Fix compilation warnings.
+	[ ] Make print_help and print_version as a private methods?
 
-
-vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
 End of file.
