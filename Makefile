@@ -35,7 +35,7 @@ install: all install-dirs
 	cp -f pkgadd           ${DESTDIR}/usr/sbin/
 	chmod 0755             ${DESTDIR}/usr/sbin/pkgadd
 	cp -f pkginfo.1        ${DESTDIR}/usr/share/man/man1/
-	chmod 0644             ${DESTDIR}/usr/share/man/man1/pkgadd.1
+	chmod 0644             ${DESTDIR}/usr/share/man/man1/pkginfo.1
 	cp -f pkgadd.conf.5    ${DESTDIR}/usr/share/man/man5/
 	chmod 0644             ${DESTDIR}/usr/share/man/man5/pkgadd.conf.5
 	cp -f pkgadd.8 pkgrm.8 ${DESTDIR}/usr/share/man/man8/
