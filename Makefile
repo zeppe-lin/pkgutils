@@ -24,16 +24,23 @@ check:
 	@grep -Eiho "https?://[^\"\\'> ]+" *.* | xargs -P10 -I{} \
 		curl -o /dev/null -sw "[%{http_code}] %{url}\n" '{}'
 
-install: all
+install-dirs:
 	mkdir -p ${DESTDIR}/usr/bin
 	mkdir -p ${DESTDIR}/usr/sbin
 	mkdir -p ${DESTDIR}/usr/share/man/man1
 	mkdir -p ${DESTDIR}/usr/share/man/man5
 	mkdir -p ${DESTDIR}/usr/share/man/man8
+
+install: all install-dirs
 	cp -f pkgadd           ${DESTDIR}/usr/sbin/
+	chmod 0755             ${DESTDIR}/usr/sbin/pkgadd
 	cp -f pkginfo.1        ${DESTDIR}/usr/share/man/man1/
+	chmod 0644             ${DESTDIR}/usr/share/man/man1/pkgadd
 	cp -f pkgadd.conf.5    ${DESTDIR}/usr/share/man/man5/
+	chmod 0644             ${DESTDIR}/usr/share/man/man5/pkgadd.conf.5
 	cp -f pkgadd.8 pkgrm.8 ${DESTDIR}/usr/share/man/man8/
+	chmod 0644             ${DESTDIR}/usr/share/man/man8/pkgadd.8
+	chmod 0644             ${DESTDIR}/usr/share/man/man8/pkgrm.8
 	ln -sf pkgadd          ${DESTDIR}/usr/sbin/pkgrm
 	ln -sf ../sbin/pkgadd  ${DESTDIR}/usr/bin/pkginfo
 
