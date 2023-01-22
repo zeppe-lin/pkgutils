@@ -14,7 +14,7 @@ commit 9ca0da6 (Sat Nov 17 2018) with the following differences:
   * added bash completion
   * build files have been rewritten
 
-See git log for further differences.
+See git log for complete/further differences.
 
 The original sources can be downloaded from:
   1. git://crux.nu/tools/pkgutils.git                        (git)
