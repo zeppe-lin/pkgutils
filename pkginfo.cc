@@ -33,7 +33,7 @@ void pkginfo::run(int argc, char** argv)
 
   while ((opt = getopt_long(argc, argv, ":hvr:l:o:f:iV", longopts, 0)) != -1)
   {
-    char ch = optopt;
+    char ch = static_cast<char>(optopt);
     switch (opt) {
     case 'r':
       o_root = optarg;

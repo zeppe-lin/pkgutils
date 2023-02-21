@@ -21,7 +21,7 @@ void pkgrm::run(int argc, char** argv)
 
   while ((opt = getopt_long(argc, argv, ":hvr:V", longopts, 0)) != -1)
   {
-    char ch = optopt;
+    char ch = static_cast<char>(optopt);
     switch (opt) {
     case 'r':
       o_root = optarg;
