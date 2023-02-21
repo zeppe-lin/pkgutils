@@ -35,6 +35,10 @@ this option will cause all those files to be overwritten.
 
 I<This option should be used with care, preferably not at all>.
 
+=item B<-c>, B<--config>=I<FILE>
+
+Specify alternate configuration file.
+
 =item B<-r>, B<--root>=I<PATH>
 
 Specify alternate installation root (default is C</>).  This should
