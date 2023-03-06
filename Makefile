@@ -26,33 +26,33 @@ check:
 		curl -o /dev/null -sw "[%{http_code}] %{url}\n" '{}'
 
 install-dirs:
-	mkdir -p ${DESTDIR}/usr/bin
-	mkdir -p ${DESTDIR}/usr/sbin
-	mkdir -p ${DESTDIR}/usr/share/man/man1
-	mkdir -p ${DESTDIR}/usr/share/man/man5
-	mkdir -p ${DESTDIR}/usr/share/man/man8
+	mkdir -p ${DESTDIR}${PREFIX}/bin
+	mkdir -p ${DESTDIR}${PREFIX}/sbin
+	mkdir -p ${DESTDIR}${MANPREFIX}/man1
+	mkdir -p ${DESTDIR}${MANPREFIX}/man5
+	mkdir -p ${DESTDIR}${MANPREFIX}/man8
 
 install: all install-dirs
-	cp -f pkgadd           ${DESTDIR}/usr/sbin/
-	chmod 0755             ${DESTDIR}/usr/sbin/pkgadd
-	cp -f pkginfo.1        ${DESTDIR}/usr/share/man/man1/
-	chmod 0644             ${DESTDIR}/usr/share/man/man1/pkginfo.1
-	cp -f pkgadd.conf.5    ${DESTDIR}/usr/share/man/man5/
-	chmod 0644             ${DESTDIR}/usr/share/man/man5/pkgadd.conf.5
-	cp -f pkgadd.8 pkgrm.8 ${DESTDIR}/usr/share/man/man8/
-	chmod 0644             ${DESTDIR}/usr/share/man/man8/pkgadd.8
-	chmod 0644             ${DESTDIR}/usr/share/man/man8/pkgrm.8
-	ln -sf pkgadd          ${DESTDIR}/usr/sbin/pkgrm
-	ln -sf ../sbin/pkgadd  ${DESTDIR}/usr/bin/pkginfo
+	cp -f pkgadd           ${DESTDIR}${PREFIX}/sbin/
+	cp -f pkginfo.1        ${DESTDIR}${MANPREFIX}/man1/
+	cp -f pkgadd.conf.5    ${DESTDIR}${MANPREFIX}/man5/
+	cp -f pkgadd.8 pkgrm.8 ${DESTDIR}${MANPREFIX}/man8/
+	ln -sf pkgadd          ${DESTDIR}${PREFIX}/sbin/pkgrm
+	ln -sf ../sbin/pkgadd  ${DESTDIR}${PREFIX}/bin/pkginfo
+	chmod 0755             ${DESTDIR}${PREFIX}/sbin/pkgadd
+	chmod 0644             ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
+	chmod 0644             ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
+	chmod 0644             ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
+	chmod 0644             ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
 
 uninstall:
-	rm -f ${DESTDIR}/usr/bin/pkginfo
-	rm -f ${DESTDIR}/usr/sbin/pkgadd
-	rm -f ${DESTDIR}/usr/sbin/pkgrm
-	rm -f ${DESTDIR}/usr/share/man/man1/pkginfo.1
-	rm -f ${DESTDIR}/usr/share/man/man5/pkgadd.conf.5
-	rm -f ${DESTDIR}/usr/share/man/man8/pkgadd.8
-	rm -f ${DESTDIR}/usr/share/man/man8/pkgrm.8
+	rm -f ${DESTDIR}${PREFIX}/bin/pkginfo
+	rm -f ${DESTDIR}${PREFIX}/sbin/pkgadd
+	rm -f ${DESTDIR}${PREFIX}/sbin/pkgrm
+	rm -f ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
+	rm -f ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
+	rm -f ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
+	rm -f ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
 
 clean:
 	rm -f ${OBJS} pkgadd pkgadd.8 pkgadd.conf.5 pkgrm.8 pkginfo.1
