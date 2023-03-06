@@ -57,4 +57,4 @@ uninstall:
 clean:
 	rm -f ${OBJS} pkgadd pkgadd.8 pkgadd.conf.5 pkgrm.8 pkginfo.1
 
-.PHONY: all install uninstall clean
+.PHONY: all check install-dirs install uninstall clean
