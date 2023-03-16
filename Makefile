@@ -14,8 +14,7 @@ MAN8 = pkgadd.8 pkgrm.8
 all: pkgadd ${MAN1} ${MAN5} ${MAN8}
 
 %: %.pod
-	pod2man --nourls -r "${NAME} ${VERSION}"  \
-		-c "Package Management Utilities" \
+	pod2man --nourls -r "${NAME} ${VERSION}" -c "${DESCRIPTION}" \
 		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
 
 .cc.o:
@@ -23,15 +22,15 @@ all: pkgadd ${MAN1} ${MAN5} ${MAN8}
 
 pkgadd: ${OBJS}
 	${LD} ${OBJS} ${LDFLAGS} -o $@
+	ln -sf pkgadd pkgrm
+	ln -sf pkgadd pkginfo
 
-install-dirs:
+install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	mkdir -p ${DESTDIR}${PREFIX}/sbin
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	mkdir -p ${DESTDIR}${MANPREFIX}/man5
 	mkdir -p ${DESTDIR}${MANPREFIX}/man8
-
-install: all install-dirs
 	cp -f pkgadd  ${DESTDIR}${PREFIX}/sbin/
 	cp -f ${MAN1} ${DESTDIR}${MANPREFIX}/man1/
 	cp -f ${MAN5} ${DESTDIR}${MANPREFIX}/man5/

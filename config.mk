@@ -1,6 +1,7 @@
 # project metadata
 NAME = pkgutils
 VERSION = 5.41
+DESCRIPTION = Package Management Utilities
 
 # paths
 PREFIX = /usr
