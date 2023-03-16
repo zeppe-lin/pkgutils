@@ -11,7 +11,7 @@ MAN1 = pkginfo.1
 MAN5 = pkgadd.conf.5
 MAN8 = pkgadd.8 pkgrm.8
 
-all: ${BIN8} ${MAN1} ${MAN5} ${MAN8}
+all: pkgadd ${MAN1} ${MAN5} ${MAN8}
 
 %: %.pod
 	pod2man --nourls -r "${NAME} ${VERSION}"  \
@@ -22,7 +22,7 @@ all: ${BIN8} ${MAN1} ${MAN5} ${MAN8}
 	${CXX} -c ${CXXFLAGS} ${CPPFLAGS} $< -o $@
 
 pkgadd: ${OBJS}
-	${LD} $^ ${LDFLAGS} -o $@
+	${LD} ${OBJS} ${LDFLAGS} -o $@
 
 install-dirs:
 	mkdir -p ${DESTDIR}${PREFIX}/bin
@@ -36,7 +36,7 @@ install: all install-dirs
 	cp -f ${MAN1} ${DESTDIR}${MANPREFIX}/man1/
 	cp -f ${MAN5} ${DESTDIR}${MANPREFIX}/man5/
 	cp -f ${MAN8} ${DESTDIR}${MANPREFIX}/man8/
-	cd ${DESTDIR}${PREFIX}/sbin    && chmod 0755 ${BIN8}
+	cd ${DESTDIR}${PREFIX}/sbin    && chmod 0755 pkgadd
 	cd ${DESTDIR}${MANPREFIX}/man1 && chmod 0644 ${MAN1}
 	cd ${DESTDIR}${MANPREFIX}/man5 && chmod 0644 ${MAN5}
 	cd ${DESTDIR}${MANPREFIX}/man8 && chmod 0644 ${MAN8}
