@@ -1,4 +1,4 @@
-// See COPYING and COPYRIGHT files for corresponding information.
+/* See COPYING and COPYRIGHT files for corresponding information. */
 
 #include "pkginfo.h"
 #include <iterator>
@@ -9,9 +9,9 @@
 
 void pkginfo::run(int argc, char** argv)
 {
-  //
-  // Check command line options
-  //
+  /*
+   * Check command line options.
+   */
   static int o_footprint_mode = 0;
   static int o_installed_mode = 0;
   static int o_list_mode = 0;
@@ -79,16 +79,16 @@ void pkginfo::run(int argc, char** argv)
 
   if (o_footprint_mode)
   {
-    //
-    // Make footprint
-    //
+    /*
+     * Make footprint.
+     */
     pkg_footprint(o_arg);
   }
   else
   {
-    //
-    // Modes that require the database to be opened
-    //
+    /*
+     * Modes that require the database to be opened.
+     */
     {
       db_lock lock(o_root, false);
       db_open(o_root);
@@ -96,9 +96,9 @@ void pkginfo::run(int argc, char** argv)
 
     if (o_installed_mode)
     {
-      //
-      // List installed packages
-      //
+      /*
+       * List installed packages.
+       */
       for (packages_t::const_iterator i = packages.begin();
           i != packages.end(); ++i)
       {
@@ -107,9 +107,9 @@ void pkginfo::run(int argc, char** argv)
     }
     else if (o_list_mode)
     {
-      //
-      // List package or file contents
-      //
+      /*
+       * List package or file contents.
+       */
       if (db_find_pkg(o_arg))
       {
         copy(packages[o_arg].files.begin(),
@@ -131,9 +131,9 @@ void pkginfo::run(int argc, char** argv)
     }
     else
     {
-      //
-      // List owner(s) of file or directory
-      //
+      /*
+       * List owner(s) of file or directory.
+       */
       regex_t preg;
       if (regcomp(&preg, o_arg.c_str(), REG_EXTENDED | REG_NOSUB))
       {
@@ -145,7 +145,7 @@ void pkginfo::run(int argc, char** argv)
       result.push_back(pair<string, string>("Package", "File"));
 
       unsigned int width =
-        result.begin()->first.length(); // Width of "Package"
+        result.begin()->first.length(); /* width of "Package" */
 
       for (packages_t::const_iterator i = packages.begin();
                                       i != packages.end(); ++i)
@@ -203,5 +203,5 @@ Mandatory arguments to long options are mandatory for short options too.
 )END";
 }
 
-// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
-// End of file.
+/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+ * End of file. */

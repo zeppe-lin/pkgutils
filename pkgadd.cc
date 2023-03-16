@@ -1,4 +1,4 @@
-// See COPYING and COPYRIGHT files for corresponding information.
+/* See COPYING and COPYRIGHT files for corresponding information. */
 
 #include "pkgadd.h"
 #include <fstream>
@@ -9,9 +9,9 @@
 
 void pkgadd::run(int argc, char** argv)
 {
-  //
-  // Check command line options
-  //
+  /*
+   * Check command line options.
+   */
   static int do_version = 0, do_help = 0, show_verbose = 0;
   static int o_upgrade = 0, o_force = 0;
   static string o_root, o_config = PKGADD_CONF, o_package;
@@ -71,15 +71,15 @@ void pkgadd::run(int argc, char** argv)
 
   o_package = argv[optind];
 
-  //
-  // Check UID
-  //
+  /*
+   * Check UID.
+   */
   if (getuid())
     throw runtime_error("only root can install/upgrade packages");
 
-  //
-  // Install/upgrade package
-  //
+  /*
+   * Install or upgrade package.
+   */
   {
     db_lock lock(o_root, true);
     db_open(o_root);
@@ -110,10 +110,10 @@ void pkgadd::run(int argc, char** argv)
         set<string> keep_list;
         if (o_upgrade)
         {
-          // Don't remove files matching the rules in configuration
+          /* don't remove files matching the rules in configuration */
           keep_list = make_keep_list(conflicting_files, config_rules);
         }
-        // Remove unwanted conflicts
+        /* remove unwanted conflicts */
         db_rm_files(conflicting_files, keep_list);
       }
       else
@@ -296,7 +296,7 @@ set<string> pkgadd::apply_install_rules(const string&          name,
                                         pkginfo_t&             info,
                                         const vector<rule_t>&  rules)
 {
-  // TODO: better algo(?)
+  /* TODO: better algo(?) */
   set<string> install_set;
   set<string> non_install_set;
   vector<rule_t> found;
@@ -371,5 +371,5 @@ bool pkgadd::rule_applies_to_file(const rule_t&  rule,
   return ret;
 }
 
-// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
-// End of file.
+/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+ * End of file. */

@@ -1,13 +1,13 @@
-// See COPYING and COPYRIGHT files for corresponding information.
+/* See COPYING and COPYRIGHT files for corresponding information. */
 
 #include <unistd.h>
 #include "pkgrm.h"
 
 void pkgrm::run(int argc, char** argv)
 {
-  //
-  // Check command line options
-  //
+  /*
+   * Check command line options.
+   */
   static int do_version = 0, do_help = 0, show_verbose = 0;
   static string o_root, o_package;
   int opt;
@@ -54,15 +54,15 @@ void pkgrm::run(int argc, char** argv)
 
   o_package = argv[optind];
 
-  //
-  // Check UID
-  //
+  /*
+   * Check UID.
+   */
   if (getuid())
     throw runtime_error("only root can remove packages");
 
-  //
-  // Remove package
-  //
+  /*
+   * Remove package.
+   */
   {
     db_lock lock(o_root, true);
     db_open(o_root);
@@ -97,5 +97,5 @@ Mandatory arguments to long options are mandatory for short options too.
 )END";
 }
 
-// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
-// End of file.
+/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+ * End of file. */

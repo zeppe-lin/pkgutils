@@ -1,4 +1,4 @@
-// See COPYING and COPYRIGHT files for corresponding information.
+/* See COPYING and COPYRIGHT files for corresponding information. */
 
 #ifndef PKGUTIL_H
 #define PKGUTIL_H
@@ -45,7 +45,9 @@ public:
   void print_version() const;
 
 protected:
-  // Database
+  /*
+   * Database.
+   */
   void db_open(const string& path);
 
   void db_commit();
@@ -65,7 +67,9 @@ protected:
   set<string> db_find_conflicts(const string&     name,
                                 const pkginfo_t&  info);
 
-  // Tar.gz
+  /*
+   * Tar.gz.
+   */
   pair<string, pkginfo_t> pkg_open(const string& filename) const;
 
   void pkg_install(const string&       filename,
@@ -105,7 +109,9 @@ public:
     : runtime_error(msg + string(": ") + strerror(e)) {}
 };
 
-// Utility functions
+/*
+ * Utility functions.
+ */
 void assert_argument(char** argv, int argc, int index);
 
 string itos(unsigned int value);
@@ -129,5 +135,5 @@ void file_remove(const string&  basedir,
 
 #endif /* PKGUTIL_H */
 
-// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
-// End of file.
+/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+ * End of file. */

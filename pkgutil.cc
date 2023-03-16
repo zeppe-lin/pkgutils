@@ -1,4 +1,4 @@
-// See COPYING and COPYRIGHT files for corresponding information.
+/* See COPYING and COPYRIGHT files for corresponding information. */
 
 #include "pkgutil.h"
 #include <iostream>
@@ -37,7 +37,9 @@ using __gnu_cxx::stdio_filebuf;
 pkgutil::pkgutil(const string& name)
   : utilname(name)
 {
-  // Ignore signals
+  /*
+   * Ignore signals.
+   */
   struct sigaction sa;
   memset(&sa, 0, sizeof(sa));
   sa.sa_handler = SIG_IGN;
@@ -49,7 +51,9 @@ pkgutil::pkgutil(const string& name)
 
 void pkgutil::db_open(const string& path)
 {
-  // Read database
+  /*
+   * Read database.
+   */
   root = trim_filename(path + "/");
   const string filename = root + PKG_DB;
 
@@ -64,7 +68,9 @@ void pkgutil::db_open(const string& path)
 
   while (!in.eof())
   {
-    // Read record
+    /*
+     * Read record.
+     */
     string name;
     pkginfo_t info;
     getline(in, name);
@@ -76,7 +82,7 @@ void pkgutil::db_open(const string& path)
       getline(in, file);
 
       if (file.empty())
-        break; // End of record
+        break; /* End of record. */
 
       info.files.insert(info.files.end(), file);
     }
@@ -95,11 +101,15 @@ void pkgutil::db_commit()
   const string dbfilename_new = dbfilename + ".incomplete_transaction";
   const string dbfilename_bak = dbfilename + ".backup";
 
-  // Remove failed transaction (if it exists)
+  /*
+   * Remove failed transaction (if it exists).
+   */
   if (unlink(dbfilename_new.c_str()) == -1 && errno != ENOENT)
     throw runtime_error_with_errno("could not remove " + dbfilename_new);
 
-  // Write new database
+  /*
+   * Write new database.
+   */
   int fd_new = creat(dbfilename_new.c_str(), 0444);
   if (fd_new == -1)
     throw runtime_error_with_errno("could not create " + dbfilename_new);
@@ -123,16 +133,22 @@ void pkgutil::db_commit()
 
   db_new.flush();
 
-  // Make sure the new database was successfully written
+  /*
+   * Make sure the new database was successfully written.
+   */
   if (!db_new)
     throw runtime_error("could not write " + dbfilename_new);
 
-  // Synchronize file to disk
+  /*
+   * Synchronize file to disk.
+   */
   if (fsync(fd_new) == -1)
     throw runtime_error_with_errno("could not synchronize " +
         dbfilename_new);
 
-  // Relink database backup
+  /*
+   * Relink database backup.
+   */
   if (unlink(dbfilename_bak.c_str()) == -1 && errno != ENOENT)
     throw runtime_error_with_errno("could not remove " +
         dbfilename_bak);
@@ -141,7 +157,9 @@ void pkgutil::db_commit()
     throw runtime_error_with_errno("could not create " +
         dbfilename_bak);
 
-  // Move new database into place
+  /*
+   * Move new database into place.
+   */
   if (rename(dbfilename_new.c_str(), dbfilename.c_str()) == -1)
     throw runtime_error_with_errno("could not rename " +
         dbfilename_new + " to " + dbfilename);
@@ -173,7 +191,9 @@ void pkgutil::db_rm_pkg(const string& name)
   cerr << endl;
 #endif
 
-  // Don't delete files that still have references
+  /*
+   * Don't delete files that still have references.
+   */
   for (packages_t::const_iterator i = packages.begin();
                                   i != packages.end(); ++i)
   {
@@ -190,7 +210,9 @@ void pkgutil::db_rm_pkg(const string& name)
   cerr << endl;
 #endif
 
-  // Delete the files
+  /*
+   * Delete the files.
+   */
   for (set<string>::const_reverse_iterator i = files.rbegin();
                                            i != files.rend(); ++i)
   {
@@ -218,7 +240,9 @@ void pkgutil::db_rm_pkg(const string&       name,
   cerr << endl;
 #endif
 
-  // Don't delete files found in the keep list
+  /*
+   * Don't delete files found in the keep list.
+   */
   for (set<string>::const_iterator i = keep_list.begin();
                                    i != keep_list.end();
                                    ++i)
@@ -232,7 +256,9 @@ void pkgutil::db_rm_pkg(const string&       name,
   cerr << endl;
 #endif
 
-  // Don't delete files that still have references
+  /*
+   * Don't delete files that still have references.
+   */
   for (packages_t::const_iterator i = packages.begin();
                                   i != packages.end();
                                   ++i)
@@ -251,7 +277,9 @@ void pkgutil::db_rm_pkg(const string&       name,
   cerr << endl;
 #endif
 
-  // Delete the files
+  /*
+   * Delete the files.
+   */
   for (set<string>::const_reverse_iterator i = files.rbegin();
                                            i != files.rend();
                                            ++i)
@@ -271,7 +299,9 @@ void pkgutil::db_rm_pkg(const string&       name,
 void pkgutil::db_rm_files(set<string>         files,
                           const set<string>&  keep_list)
 {
-  // Remove all references
+  /*
+   * Remove all references.
+   */
   for (packages_t::iterator i = packages.begin();
                             i != packages.end();
                             ++i)
@@ -290,14 +320,18 @@ void pkgutil::db_rm_files(set<string>         files,
   cerr << endl;
 #endif
 
-  // Don't delete files found in the keep list
+  /*
+   * Don't delete files found in the keep list.
+   */
   for (set<string>::const_iterator i = keep_list.begin();
                                    i != keep_list.end(); ++i)
   {
     files.erase(*i);
   }
 
-  // Delete the files
+  /*
+   * Delete the files.
+   */
   for (set<string>::const_reverse_iterator i = files.rbegin();
                                            i != files.rend();
                                            ++i)
@@ -319,7 +353,9 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
 {
   set<string> files;
 
-  // Find conflicting files in database
+  /*
+   * Find conflicting files in database.
+   */
   for (packages_t::const_iterator i = packages.begin();
                                   i != packages.end(); ++i)
   {
@@ -337,7 +373,9 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
   cerr << endl;
 #endif
 
-  // Find conflicting files in filesystem
+  /*
+   * Find conflicting files in filesystem.
+   */
   for (set<string>::iterator i = info.files.begin();
                              i != info.files.end();
                              ++i)
@@ -354,7 +392,9 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
   cerr << endl;
 #endif
 
-  // Exclude directories
+  /*
+   * Exclude directories.
+   */
   set<string> tmp = files;
   for (set<string>::const_iterator i = tmp.begin();
                                    i != tmp.end();
@@ -370,7 +410,10 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
   cerr << endl;
 #endif
 
-  // If this is an upgrade, remove files already owned by this package
+  /*
+   * If this is an upgrade, remove files already owned by this
+   * package.
+   */
   if (packages.find(name) != packages.end())
   {
     for (set<string>::const_iterator i = packages[name].files.begin();
@@ -398,7 +441,9 @@ pair<string, pkgutil::pkginfo_t>
   struct archive* archive;
   struct archive_entry* entry;
 
-  // Extract name and version from filename
+  /*
+   * Extract name and version from filename.
+   */
   string basename(filename, filename.rfind('/') + 1);
   string name(basename, 0, basename.find(VERSION_DELIM));
   string version(basename, 0, basename.rfind(PKG_EXT));
@@ -493,7 +538,9 @@ void pkgutil::pkg_install(const string&       filename,
     string original_filename = trim_filename(absroot + string("/") + archive_filename);
     string real_filename = original_filename;
 
-    // Check if file is filtered out via INSTALL
+    /*
+     * Check if file is filtered out via INSTALL.
+     */
     if (non_install_list.find(archive_filename)
         != non_install_list.end())
     {
@@ -509,7 +556,9 @@ void pkgutil::pkg_install(const string&       filename,
       continue;
     }
 
-    // Check if file should be rejected
+    /*
+     * Check if file should be rejected.
+     */
     if (file_exists(real_filename)
      && keep_list.find(archive_filename) != keep_list.end())
     {
@@ -520,16 +569,18 @@ void pkgutil::pkg_install(const string&       filename,
     archive_entry_set_pathname(entry, const_cast<char*>
                                (real_filename.c_str()));
 
-    // Extract file
+    /*
+     * Extract file.
+     */
     unsigned int flags =
         ARCHIVE_EXTRACT_OWNER | ARCHIVE_EXTRACT_PERM
       | ARCHIVE_EXTRACT_TIME  | ARCHIVE_EXTRACT_UNLINK;
 
     if (archive_read_extract(archive, entry, flags) != ARCHIVE_OK)
     {
-      // If a file fails to install we just print an error message and
-      // continue trying to install the rest of the package,
-      // unless this is not an upgrade.
+      /* If a file fails to install we just print an error message and
+       * continue trying to install the rest of the package, unless
+       * this is not an upgrade. */
       const char* msg = archive_error_string(archive);
       cerr << utilname << ": could not install " +
         archive_filename << ": " << msg << endl;
@@ -542,18 +593,20 @@ void pkgutil::pkg_install(const string&       filename,
       continue;
     }
 
-    // Check rejected file
+    /*
+     * Check rejected file.
+     */
     if (real_filename != original_filename)
     {
       bool remove_file = false;
       mode_t mode = archive_entry_mode(entry);
 
-      // Directory
+      /* directory */
       if (S_ISDIR(mode))
       {
         remove_file = permissions_equal(real_filename, original_filename);
       }
-      // Other files
+      /* other files */
       else
       {
         remove_file =
@@ -562,7 +615,7 @@ void pkgutil::pkg_install(const string&       filename,
               || file_equal(real_filename, original_filename));
       }
 
-      // Remove rejected file or signal about its existence
+      /* remove rejected file or signal about its existence */
       if (remove_file)
         file_remove(reject_dir, real_filename);
       else
@@ -584,7 +637,9 @@ void pkgutil::pkg_install(const string&       filename,
 
 void pkgutil::ldconfig() const
 {
-  // Only execute ldconfig if /etc/ld.so.conf exists
+  /*
+   * Only execute ldconfig if /etc/ld.so.conf exists.
+   */
   if (file_exists(root + LDCONFIG_CONF))
   {
     pid_t pid = fork();
@@ -616,12 +671,13 @@ void pkgutil::pkg_footprint(string& filename) const
 
   map<string, mode_t> hardlink_target_modes;
 
-  // We first do a run over the archive and remember the modes
-  // of regular files.
-  // In the second run, we print the footprint - using the stored
-  // modes for hardlinks.
-  //
-  // FIXME the code duplication here is butt ugly
+  /*
+   * We first do a run over the archive and remember the modes of
+   * regular files.  In the second run, we print the footprint - using
+   * the stored modes for hardlinks.
+   *
+   * FIXME the code duplication here is butt ugly.
+   */
   archive = archive_read_new();
   INIT_ARCHIVE(archive);
 
@@ -657,8 +713,10 @@ void pkgutil::pkg_footprint(string& filename) const
 
   archive_read_free(archive);
 
-  // Too bad, there doesn't seem to be a way to reuse our archive
-  // instance
+  /*
+   * Too bad, there doesn't seem to be a way to reuse our archive
+   * instance.
+   */
   archive = archive_read_new();
   INIT_ARCHIVE(archive);
 
@@ -677,12 +735,16 @@ void pkgutil::pkg_footprint(string& filename) const
   {
     mode_t mode = archive_entry_mode(entry);
 
-    // Access permissions
+    /*
+     * Access permissions.
+     */
     if (S_ISLNK(mode))
     {
-      // Access permissions on symlinks differ among filesystems,
-      // e.g. XFS and ext2 have different.
-      // To avoid getting different footprints we always use "lrwxrwxrwx".
+      /* Access permissions on symlinks differ among filesystems,
+       * e.g. XFS and ext2 have different.
+       *
+       * To avoid getting different footprints we always use "lrwxrwxrwx".
+       */
       cout << "lrwxrwxrwx";
     }
     else
@@ -697,7 +759,9 @@ void pkgutil::pkg_footprint(string& filename) const
 
     cout << '\t';
 
-    // User
+    /*
+     * User.
+     */
     uid_t uid = archive_entry_uid(entry);
     struct passwd* pw = getpwuid(uid);
     if (pw)
@@ -707,7 +771,9 @@ void pkgutil::pkg_footprint(string& filename) const
 
     cout << '/';
 
-    // Group
+    /*
+     * Group.
+     */
     gid_t gid = archive_entry_gid(entry);
     struct group* gr = getgrgid(gid);
     if (gr)
@@ -715,25 +781,29 @@ void pkgutil::pkg_footprint(string& filename) const
     else
       cout << gid;
 
-    // Filename
+    /*
+     * Filename.
+     */
     cout << '\t' << archive_entry_pathname(entry);
 
-    // Special cases
+    /*
+     * Special cases.
+     */
     if (S_ISLNK(mode))
     {
-      // Symlink
+      /* Symlink. */
       cout << " -> " << archive_entry_symlink(entry);
     }
     else if (S_ISCHR(mode) || S_ISBLK(mode))
     {
-      // Device
+      /* Device. */
       cout << " (" << archive_entry_rdevmajor(entry)
            << ", " << archive_entry_rdevminor(entry)
            << ")";
     }
     else if (S_ISREG(mode) && archive_entry_size(entry) == 0)
     {
-      // Empty regular file
+      /* Empty regular file. */
       cout << " (EMPTY)";
     }
 
@@ -806,20 +876,24 @@ string mtos(mode_t mode)
 {
   string s;
 
-  // File type
+  /*
+   * File type.
+   */
   switch (mode & S_IFMT)
   {
-     case S_IFREG:  s += '-'; break; // Regular
-     case S_IFDIR:  s += 'd'; break; // Directory
-     case S_IFLNK:  s += 'l'; break; // Symbolic link
-     case S_IFCHR:  s += 'c'; break; // Character special
-     case S_IFBLK:  s += 'b'; break; // Block special
-     case S_IFSOCK: s += 's'; break; // Socket
-     case S_IFIFO:  s += 'p'; break; // Fifo
-     default:       s += '?'; break; // Unknown
+     case S_IFREG:  s += '-'; break; /* Regular */
+     case S_IFDIR:  s += 'd'; break; /* Directory */
+     case S_IFLNK:  s += 'l'; break; /* Symbolic link */
+     case S_IFCHR:  s += 'c'; break; /* Character special */
+     case S_IFBLK:  s += 'b'; break; /* Block special */
+     case S_IFSOCK: s += 's'; break; /* Socket */
+     case S_IFIFO:  s += 'p'; break; /* FIFO */
+     default:       s += '?'; break; /* Unknown */
   }
 
-  // User permissions
+  /*
+   * User permissions.
+   */
   s += (mode & S_IRUSR) ? 'r' : '-';
   s += (mode & S_IWUSR) ? 'w' : '-';
   switch (mode & (S_IXUSR | S_ISUID))
@@ -830,7 +904,9 @@ string mtos(mode_t mode)
     default:                s += '-'; break;
   }
 
-  // Group permissions
+  /*
+   * Group permissions.
+   */
   s += (mode & S_IRGRP) ? 'r' : '-';
   s += (mode & S_IWGRP) ? 'w' : '-';
   switch (mode & (S_IXGRP | S_ISGID))
@@ -841,7 +917,9 @@ string mtos(mode_t mode)
     default:                s += '-'; break;
   }
 
-  // Other permissions
+  /*
+   * Other permissions.
+   */
   s += (mode & S_IROTH) ? 'r' : '-';
   s += (mode & S_IWOTH) ? 'w' : '-';
   switch (mode & (S_IXOTH | S_ISVTX))
@@ -897,7 +975,9 @@ bool file_equal(const string&  file1,
   if (lstat(file2.c_str(), &buf2) == -1)
     return false;
 
-  // Regular files
+  /*
+   * Regular files.
+   */
   if (S_ISREG(buf1.st_mode) && S_ISREG(buf2.st_mode))
   {
     ifstream f1(file1.c_str());
@@ -922,7 +1002,9 @@ bool file_equal(const string&  file1,
 
     return true;
   }
-  // Symlinks
+  /*
+   * Symlinks.
+   */
   else if (S_ISLNK(buf1.st_mode) && S_ISLNK(buf2.st_mode))
   {
     char symlink1[MAXPATHLEN];
@@ -939,12 +1021,16 @@ bool file_equal(const string&  file1,
 
     return !strncmp(symlink1, symlink2, MAXPATHLEN);
   }
-  // Character devices
+  /*
+   * Character devices.
+   */
   else if (S_ISCHR(buf1.st_mode) && S_ISCHR(buf2.st_mode))
   {
     return buf1.st_dev == buf2.st_dev;
   }
-  // Block devices
+  /*
+   * Block devices.
+   */
   else if (S_ISBLK(buf1.st_mode) && S_ISBLK(buf2.st_mode))
   {
     return buf1.st_dev == buf2.st_dev;
@@ -981,5 +1067,5 @@ void file_remove(const string&  basedir,
   }
 }
 
-// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
-// End of file.
+/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+ * End of file. */
