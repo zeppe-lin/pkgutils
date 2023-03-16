@@ -18,15 +18,6 @@ all: pkgadd pkgadd.8 pkgadd.conf.5 pkgrm.8 pkginfo.1
 pkgadd: ${OBJS}
 	${LD} $^ ${LDFLAGS} -o $@
 
-check:
-	@echo "=======> Check PODs for errors"
-	@podchecker *.pod
-	@echo "=======> Check URLs for response code"
-	@grep -Eiho "https?://[^\"\\'> ]+" *.*       \
-		| xargs -P10 -I{} curl -o /dev/null  \
-		  -sw "[%{http_code}] %{url}\n" '{}' \
-		| sort -u
-
 install-dirs:
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	mkdir -p ${DESTDIR}${PREFIX}/sbin
@@ -59,4 +50,4 @@ uninstall:
 clean:
 	rm -f ${OBJS} pkgadd pkgadd.8 pkgadd.conf.5 pkgrm.8 pkginfo.1
 
-.PHONY: all check install-dirs install uninstall clean
+.PHONY: all install-dirs install uninstall clean
