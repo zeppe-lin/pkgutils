@@ -14,7 +14,7 @@ MAN8 = pkgadd.8 pkgrm.8
 all: pkgadd ${MAN1} ${MAN5} ${MAN8}
 
 %: %.pod
-	pod2man --nourls -r "${NAME} ${VERSION}" -c "${DESCRIPTION}" \
+	pod2man -r "${NAME} ${VERSION}" -c "${DESCRIPTION}" \
 		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
 
 .cc.o:
