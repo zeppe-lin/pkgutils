@@ -1,5 +1,8 @@
 TODO pkgutils
 
+	[ ] Implement pkg_footprint.patch?
+	https://lists.crux.nu/pipermail/crux-devel/2019-June/004107.html
+
 	[ ] Fix compilation warnings.
 	[ ] Make print_help and print_version as a private methods?
 

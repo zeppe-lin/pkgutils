@@ -1,0 +1,231 @@
+>From 4aaaf38867eccf4750d0f6c00098850d8836ec33 Mon Sep 17 00:00:00 2001
+From: James Buren <ryuo@ryuo.xyz>
+Date: Wed, 5 Jun 2019 17:55:53 -0500
+Subject: [PATCH] pkginfo: revise footprint mode to make only one pass through
+ the archive
+
+This cuts the average amount of time required in half.
+---
+ pkgutil.cc | 127 ++++++++++++++++++++++++++++-------------------------
+ pkgutil.h  |   2 +-
+ 2 files changed, 69 insertions(+), 60 deletions(-)
+
+diff --git a/pkgutil.cc b/pkgutil.cc
+index e72d817..d35e9ab 100644
+--- a/pkgutil.cc
++++ b/pkgutil.cc
+@@ -25,6 +25,7 @@
+ #include <fstream>
+ #include <iterator>
+ #include <algorithm>
++#include <vector>
+ #include <cstdio>
+ #include <cstring>
+ #include <cerrno>
+@@ -37,6 +38,7 @@
+ #include <sys/wait.h>
+ #include <sys/file.h>
+ #include <sys/param.h>
++#include <sys/sysmacros.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+@@ -497,13 +499,28 @@ void pkgutil::ldconfig() const
+ 	}
+ }
+ 
+-void pkgutil::pkg_footprint(string& filename) const
++void pkgutil::pkg_footprint(const string& filename) const
+ {
+-	unsigned int i;
++	size_t i;
+ 	struct archive* archive;
+ 	struct archive_entry* entry;
+-
+-	map<string, mode_t> hardlink_target_modes;
++	struct file {
++		string path;
++		string soft;
++		string hard;
++		off_t size;
++		dev_t rdev;
++		uid_t uid;
++		gid_t gid;
++		mode_t mode;
++		bool operator < (const struct file& other) const {
++			return (path < other.path);
++		};
++		bool operator < (const string& other) const {
++			return (path < other);
++		};
++	};
++	vector <struct file> files;
+ 
+ 	// We first do a run over the archive and remember the modes
+ 	// of regular files.
+@@ -521,102 +538,94 @@ void pkgutil::pkg_footprint(string& filename) const
+ 
+ 	for (i = 0; archive_read_next_header(archive, &entry) ==
+ 	     ARCHIVE_OK; ++i) {
+-
+-		mode_t mode = archive_entry_mode(entry);
+-
+-		if (!archive_entry_hardlink(entry)) {
+-			const char *s = archive_entry_pathname(entry);
+-
+-			hardlink_target_modes[s] = mode;
++		struct file file;
++		const char* s;
++		if((s = archive_entry_pathname(entry))) {
++			file.path = s;
+ 		}
+-
+-		if (S_ISREG(mode) && archive_read_data_skip(archive))
++		if((s = archive_entry_symlink(entry))) {
++			file.soft = s;
++		}
++		if((s = archive_entry_hardlink(entry))) {
++			file.hard = s;
++		}
++		file.size = archive_entry_size(entry);
++		file.rdev = archive_entry_rdev(entry);
++		file.uid = archive_entry_uid(entry);
++		file.gid = archive_entry_gid(entry);
++		file.mode = archive_entry_mode(entry);
++		files.push_back(file);
++		if (S_ISREG(file.mode) && archive_read_data_skip(archive))
+ 			throw runtime_error_with_errno("could not read " + filename, archive_errno(archive));
+ 	}
+ 
+-	archive_read_free(archive);
++	if (i == 0) {
++		if (archive_errno(archive) == 0)
++			throw runtime_error("empty package");
++		else
++			throw runtime_error("could not read " + filename);
++	}
+ 
+-	// Too bad, there doesn't seem to be a way to reuse our archive
+-	// instance
+-	archive = archive_read_new();
+-	INIT_ARCHIVE(archive);
++	archive_read_free(archive);
+ 
+-	if (archive_read_open_filename(archive,
+-	    filename.c_str(),
+-	    DEFAULT_BYTES_PER_BLOCK) != ARCHIVE_OK)
+-                throw runtime_error_with_errno("could not open " + filename, archive_errno(archive));
++	sort(files.begin(), files.end());
+ 
+-	for (i = 0; archive_read_next_header(archive, &entry) ==
+-	     ARCHIVE_OK; ++i) {
+-		mode_t mode = archive_entry_mode(entry);
++	for (i = 0; i < files.size(); ++i) {
++		struct file& file = files[i];
+ 
+ 		// Access permissions
+-		if (S_ISLNK(mode)) {
++		if (S_ISLNK(file.mode)) {
+ 			// Access permissions on symlinks differ among filesystems, e.g. XFS and ext2 have different.
+ 			// To avoid getting different footprints we always use "lrwxrwxrwx".
+ 			cout << "lrwxrwxrwx";
+ 		} else {
+-			const char *h = archive_entry_hardlink(entry);
+-
+-			if (h)
+-				cout << mtos(hardlink_target_modes[h]);
+-			else
+-				cout << mtos(mode);
++			if(file.hard.length()) {
++				auto it = lower_bound(files.begin(), files.end(), file.hard);
++				cout << mtos(it->mode);
++			} else {
++				cout << mtos(file.mode);
++			}
+ 		}
+ 
+ 		cout << '\t';
+ 
+ 		// User
+-		uid_t uid = archive_entry_uid(entry);
+-		struct passwd* pw = getpwuid(uid);
++		struct passwd* pw = getpwuid(file.uid);
+ 		if (pw)
+ 			cout << pw->pw_name;
+ 		else
+-			cout << uid;
++			cout << file.uid;
+ 
+ 		cout << '/';
+ 
+ 		// Group
+-		gid_t gid = archive_entry_gid(entry);
+-		struct group* gr = getgrgid(gid);
++		struct group* gr = getgrgid(file.gid);
+ 		if (gr)
+ 			cout << gr->gr_name;
+ 		else
+-			cout << gid;
++			cout << file.gid;
+ 
+ 		// Filename
+-		cout << '\t' << archive_entry_pathname(entry);
++		cout << '\t' << file.path;
+ 
+ 		// Special cases
+-		if (S_ISLNK(mode)) {
++		if (S_ISLNK(file.mode)) {
+ 			// Symlink
+-			cout << " -> " << archive_entry_symlink(entry);
+-		} else if (S_ISCHR(mode) ||
+-		           S_ISBLK(mode)) {
++			cout << " -> " << file.soft;
++		} else if (S_ISCHR(file.mode) ||
++		           S_ISBLK(file.mode)) {
+ 			// Device
+-			cout << " (" << archive_entry_rdevmajor(entry)
+-			     << ", " << archive_entry_rdevminor(entry)
++			cout << " (" << major(file.rdev)
++			     << ", " << minor(file.rdev)
+ 			     << ")";
+-		} else if (S_ISREG(mode) &&
+-		           archive_entry_size(entry) == 0) {
++		} else if (S_ISREG(file.mode) &&
++		           file.size == 0) {
+ 			// Empty regular file
+ 			cout << " (EMPTY)";
+ 		}
+ 
+ 		cout << '\n';
+-		
+-		if (S_ISREG(mode) && archive_read_data_skip(archive))
+-			throw runtime_error_with_errno("could not read " + filename, archive_errno(archive));
+ 	}
+-   
+-	if (i == 0) {
+-		if (archive_errno(archive) == 0)
+-			throw runtime_error("empty package");
+-		else
+-			throw runtime_error("could not read " + filename);
+-	}
+-
+-	archive_read_free(archive);
+ }
+ 
+ void pkgutil::print_version() const
+diff --git a/pkgutil.h b/pkgutil.h
+index ce58f80..2f9ea82 100644
+--- a/pkgutil.h
++++ b/pkgutil.h
+@@ -72,7 +72,7 @@ protected:
+ 	// Tar.gz
+ 	pair<string, pkginfo_t> pkg_open(const string& filename) const;
+ 	void pkg_install(const string& filename, const set<string>& keep_list, const set<string>& non_install_files, bool upgrade) const;
+-	void pkg_footprint(string& filename) const;
++	void pkg_footprint(const string& filename) const;
+ 	void ldconfig() const;
+ 
+ 	string utilname;
+-- 
+2.17.1
+
