@@ -1,4 +1,5 @@
-# pkgutils version
+# project metadata
+NAME = pkgutils
 VERSION = 5.41
 
 # paths

@@ -5,10 +5,16 @@ include config.mk
 SRCS = $(wildcard *.cc)
 OBJS = $(SRCS:.cc=.o)
 
-all: pkgadd pkgadd.8 pkgadd.conf.5 pkgrm.8 pkginfo.1
+BIN1 = pkginfo
+BIN8 = pkgadd pkgrm
+MAN1 = pkginfo.1
+MAN5 = pkgadd.conf.5
+MAN8 = pkgadd.8 pkgrm.8
+
+all: ${BIN8} ${MAN1} ${MAN5} ${MAN8}
 
 %: %.pod
-	pod2man --nourls -r "pkgutils ${VERSION}" \
+	pod2man --nourls -r "${NAME} ${VERSION}"  \
 		-c "Package Management Utilities" \
 		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
 
@@ -26,28 +32,25 @@ install-dirs:
 	mkdir -p ${DESTDIR}${MANPREFIX}/man8
 
 install: all install-dirs
-	cp -f pkgadd           ${DESTDIR}${PREFIX}/sbin/
-	cp -f pkginfo.1        ${DESTDIR}${MANPREFIX}/man1/
-	cp -f pkgadd.conf.5    ${DESTDIR}${MANPREFIX}/man5/
-	cp -f pkgadd.8 pkgrm.8 ${DESTDIR}${MANPREFIX}/man8/
-	ln -sf pkgadd          ${DESTDIR}${PREFIX}/sbin/pkgrm
-	ln -sf ../sbin/pkgadd  ${DESTDIR}${PREFIX}/bin/pkginfo
-	chmod 0755             ${DESTDIR}${PREFIX}/sbin/pkgadd
-	chmod 0644             ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
-	chmod 0644             ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
-	chmod 0644             ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
-	chmod 0644             ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
+	cp -f pkgadd  ${DESTDIR}${PREFIX}/sbin/
+	cp -f ${MAN1} ${DESTDIR}${MANPREFIX}/man1/
+	cp -f ${MAN5} ${DESTDIR}${MANPREFIX}/man5/
+	cp -f ${MAN8} ${DESTDIR}${MANPREFIX}/man8/
+	cd ${DESTDIR}${PREFIX}/sbin    && chmod 0755 ${BIN8}
+	cd ${DESTDIR}${MANPREFIX}/man1 && chmod 0644 ${MAN1}
+	cd ${DESTDIR}${MANPREFIX}/man5 && chmod 0644 ${MAN5}
+	cd ${DESTDIR}${MANPREFIX}/man8 && chmod 0644 ${MAN8}
+	ln -sf pkgadd         ${DESTDIR}${PREFIX}/sbin/pkgrm
+	ln -sf ../sbin/pkgadd ${DESTDIR}${PREFIX}/bin/pkginfo
 
 uninstall:
-	rm -f ${DESTDIR}${PREFIX}/bin/pkginfo
-	rm -f ${DESTDIR}${PREFIX}/sbin/pkgadd
-	rm -f ${DESTDIR}${PREFIX}/sbin/pkgrm
-	rm -f ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
-	rm -f ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
-	rm -f ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
-	rm -f ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
+	cd ${DESTDIR}${PREFIX}/bin     && rm -f ${BIN1}
+	cd ${DESTDIR}${PREFIX}/sbin    && rm -f ${BIN8}
+	cd ${DESTDIR}${MANPREFIX}/man1 && rm -f ${MAN1}
+	cd ${DESTDIR}${MANPREFIX}/man5 && rm -f ${MAN5}
+	cd ${DESTDIR}${MANPREFIX}/man8 && rm -f ${MAN8}
 
 clean:
-	rm -f ${OBJS} pkgadd pkgadd.8 pkgadd.conf.5 pkgrm.8 pkginfo.1
+	rm -f ${OBJS} ${BIN1} ${BIN8} ${MAN1} ${MAN5} ${MAN8}
 
 .PHONY: all install-dirs install uninstall clean
