@@ -13,8 +13,7 @@ B</etc/pkgadd.conf>
 =head1 DESCRIPTION
 
 This manual page describes the format of the F<pkgadd.conf> file.
-This file can be used to alter the way
-L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html> upgrade and/or
+This file can be used to alter the way L<pkgadd(8)> upgrade and/or
 install the package.
 
 B<pkgadd.conf> file contain rules, that are built out of three
@@ -35,23 +34,19 @@ For example:
   UPGRADE  ^etc/X11/.*$          YES
   UPGRADE  ^etc/X11/XF86Config$  NO
 
-The above example will cause
-L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html> to never
-upgrade anything in F</etc> or F</var/log> (subdirectories included),
-except files in F</etc/X11> (subdirectories included), unless it is
-the files F</etc/X11/XF86Config>.  The default rule is to
-upgrade/install everything, rules in this file are exceptions to that
-rule.
+The above example will cause L<pkgadd(8)> to never upgrade anything in
+F</etc> or F</var/log> (subdirectories included), except files in
+F</etc/X11> (subdirectories included), unless it is the files
+F</etc/X11/XF86Config>.  The default rule is to upgrade/install
+everything, rules in this file are exceptions to that rule.
 
 B<NOTE!> The I<PATTERN> should never contain an initial C</> since you
 are referring to the files in the package, not the files on the disk.
 
-If L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html> finds that a
-specific file should not be upgraded it will install it under
-F</var/lib/pkg/rejected/>.  The user is then free to
-examine/use/remove that file manually or use
-L<rejmerge(8)|https://zeppe-lin.github.io/rejmerge.8.html>
-to manage rejected files.
+If L<pkgadd(8)> finds that a specific file should not be upgraded it
+will install it under F</var/lib/pkg/rejected/>.  The user is then
+free to examine/use/remove that file manually or use L<rejmerge(8)> to
+manage rejected files.
 
 =head1 EXAMPLE
 
@@ -79,8 +74,7 @@ to manage rejected files.
 
 =item F</etc/pkgadd.conf>
 
-Configuration file for
-L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>.
+Configuration file for L<pkgadd(8)>.
 
 =item F</var/lib/pkg/rejected/>
 
@@ -90,7 +84,7 @@ Directory where rejected files are stored.
 
 =head1 SEE ALSO
 
-L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>
+L<pkgadd(8)>
 
 =cut
 

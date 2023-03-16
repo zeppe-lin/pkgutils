@@ -61,8 +61,7 @@ Print help and exit.
 
 =head1 SEE ALSO
 
-L<pkgadd(8)|https://zeppe-lin.github.io/pkgadd.8.html>,
-L<pkgrm(8)|https://zeppe-lin.github.io/pkgrm.8.html>
+L<pkgadd(8)>, L<pkgrm(8)>
 
 =cut
 
