@@ -29,9 +29,11 @@ Upgrade/replace package with the same name as I<FILE>.
 
 =item B<-f>, B<--force>
 
-Force installation, overwrite conflicting files.  If the package that
-is about to be installed contains files that are already installed
-this option will cause all those files to be overwritten.
+Force installation, overwrite conflicting files.
+
+If the package that is about to be installed contains files that are
+already installed this option will cause all those files to be
+overwritten.
 
 I<This option should be used with care, preferably not at all>.
 
@@ -41,13 +43,14 @@ Specify alternate configuration file.
 
 =item B<-r>, B<--root>=I<PATH>
 
-Specify alternate installation root (default is C</>).  This should
-I<not> be used as a way to install software into e.g. F</usr/local>
-instead of F</usr>.  Instead this should be used if you want to
-install a package on a temporary mounted partition, which is "owned"
-by another system.  By using this option you not only specify where
-the software should be installed, but you also specify which package
-database to use.
+Specify alternate installation root (default is C</>).
+
+This should I<not> be used as a way to install software into e.g.
+F</usr/local> instead of F</usr>.  Instead this should be used if you
+want to install a package on a temporary mounted partition, which is
+"owned" by another system.  By using this option you not only specify
+where the software should be installed, but you also specify which
+package database to use.
 
 =item B<-V>, B<--verbose>
 
