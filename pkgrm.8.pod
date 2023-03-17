@@ -26,11 +26,12 @@ too.
 
 =item B<-r>, B<--root>=I<PATH>
 
-Specify alternate installation root (default is C</>).  This should be
-used if you want to remove a package from a temporary mounted
-partition, which is "owned" by another system.  By using this option
-you not only specify where the software is installed, but you also
-specify which package database to use.
+Specify alternate installation root (default is C</>).
+
+This should be used if you want to remove a package from a temporary
+mounted partition, which is "owned" by another system.  By using this
+option you not only specify where the software is installed, but you
+also specify which package database to use.
 
 =item B<-V>, B<--verbose>
 
