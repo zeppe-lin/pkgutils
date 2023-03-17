@@ -38,15 +38,18 @@ List owner(s) of file(s) matching I<PATTERN>.
 
 =item B<-f>, B<--footprint>=I<FILE>
 
-Print footprint for I<FILE>.  This feature is mainly used by
-L<pkgmk(8)> for creating and comparing footprints.
+Print footprint for I<FILE>.
+
+This feature is mainly used by L<pkgmk(8)> for creating and comparing
+footprints.
 
 =item B<-r>, B<--root>=I<PATH>
 
-Specify alternate installation root (default is C</>).  This should be
-used if you want to display information about a package that is
-installed on a temporary mounted partition, which is "owned" by
-another system.  By using this option you specify which package
+Specify alternate installation root (default is C</>).
+
+This should be used if you want to display information about a package
+that is installed on a temporary mounted partition, which is "owned"
+by another system.  By using this option you specify which package
 database to use.
 
 =item B<-v>, B<--version>
