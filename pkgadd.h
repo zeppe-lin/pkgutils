@@ -5,7 +5,9 @@
 
 #include <vector>
 #include <set>
+
 #include <getopt.h>
+
 #include "pkgutil.h"
 
 #define PKGADD_CONF             "/etc/pkgadd.conf"
