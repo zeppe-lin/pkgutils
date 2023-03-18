@@ -4,6 +4,7 @@
 #define PKGRM_H
 
 #include <getopt.h>
+
 #include "pkgutil.h"
 
 class pkgrm : public pkgutil {
