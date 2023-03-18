@@ -1,6 +1,5 @@
 /* See COPYING and COPYRIGHT files for corresponding information. */
 
-#include "pkgutil.h"
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -9,6 +8,7 @@
 #include <cstring>
 #include <cerrno>
 #include <csignal>
+
 #include <ext/stdio_filebuf.h>
 #include <pwd.h>
 #include <grp.h>
@@ -20,8 +20,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <libgen.h>
+/* libarchive */
 #include <archive.h>
 #include <archive_entry.h>
+
+#include "pkgutil.h"
 
 #define INIT_ARCHIVE(ar)                    \
   archive_read_support_filter_gzip((ar));   \
