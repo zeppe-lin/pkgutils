@@ -4,6 +4,7 @@
 #define PKGINFO_H
 
 #include <getopt.h>
+
 #include "pkgutil.h"
 
 class pkginfo : public pkgutil {
