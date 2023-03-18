@@ -1,11 +1,13 @@
 /* See COPYING and COPYRIGHT files for corresponding information. */
 
-#include "pkgadd.h"
 #include <fstream>
 #include <iterator>
 #include <cstdio>
+
 #include <regex.h>
 #include <unistd.h>
+
+#include "pkgadd.h"
 
 void pkgadd::run(int argc, char** argv)
 {
