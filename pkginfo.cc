@@ -1,11 +1,13 @@
 /* See COPYING and COPYRIGHT files for corresponding information. */
 
-#include "pkginfo.h"
 #include <iterator>
 #include <vector>
 #include <iomanip>
+
 #include <sys/types.h>
 #include <regex.h>
+
+#include "pkginfo.h"
 
 void pkginfo::run(int argc, char** argv)
 {
