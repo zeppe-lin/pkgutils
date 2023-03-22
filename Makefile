@@ -52,4 +52,4 @@ uninstall:
 clean:
 	rm -f ${OBJS} ${BIN1} ${BIN8} ${MAN1} ${MAN5} ${MAN8}
 
-.PHONY: all install-dirs install uninstall clean
+.PHONY: all install uninstall clean
