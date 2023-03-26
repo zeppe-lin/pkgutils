@@ -208,6 +208,8 @@ vector<rule_t> pkgadd::read_config(string file) const
         char pattern[PKGADD_CONF_MAXLINE];
         char action[PKGADD_CONF_MAXLINE];
         char dummy[PKGADD_CONF_MAXLINE];
+
+        /* FIXME limit a variables width in sscanf to prevent buffer overflow! */
         if (sscanf(line.c_str(), "%s %s %s %s",
               event, pattern, action, dummy) != 3)
         {
