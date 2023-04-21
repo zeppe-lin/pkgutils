@@ -28,9 +28,10 @@ REQUIREMENTS
 - pod2man(1pm) to build man pages
 - libarchive(3) to unpack an archive files
 
-Also, see rejmerge (<https://github.com/zeppe-lin/rejmerge>), an utility that
-merges files that were rejected by pkgadd(8) during package upgrades.
+Also, see [rejmerge][1], an utility that merges files that were rejected by
+pkgadd(8) during package upgrades.
 
+[1]: https://github.com/zeppe-lin/rejmerge
 
 INSTALL
 -------
