@@ -1,6 +1,6 @@
 # project metadata
 NAME = pkgutils
-VERSION = 5.41
+VERSION = 5.43
 DESCRIPTION = Package Management Utilities
 DIST = ${NAME}-${VERSION}
 
