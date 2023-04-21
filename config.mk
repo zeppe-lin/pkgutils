@@ -2,6 +2,7 @@
 NAME = pkgutils
 VERSION = 5.41
 DESCRIPTION = Package Management Utilities
+DIST = ${NAME}-${VERSION}
 
 # paths
 PREFIX = /usr
