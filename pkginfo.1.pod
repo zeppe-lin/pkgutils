@@ -62,6 +62,16 @@ Print help and exit.
 
 =back
 
+=head1 FILES
+
+=over 8
+
+=item F</var/lib/pkg/db>
+
+Database of currently installed packages.
+
+=back
+
 =head1 SEE ALSO
 
 L<pkgadd(8)>, L<pkgrm(8)>
