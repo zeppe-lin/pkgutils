@@ -74,6 +74,10 @@ Print help and exit.
 
 Default configuration file.
 
+=item F</var/lig/pkg/db>
+
+Database of currently installed packages.
+
 =item F</var/lib/pkg/rejected/>
 
 Directory where rejected files are stored.
