@@ -76,6 +76,10 @@ manage rejected files.
 
 Configuration file for L<pkgadd(8)>.
 
+=item F</var/lib/pkg/db>
+
+Database of currently installed packages.
+
 =item F</var/lib/pkg/rejected/>
 
 Directory where rejected files are stored.
