@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include <vector>
 #include <cstdio>
 #include <cstring>
 #include <cerrno>
@@ -17,6 +18,7 @@
 #include <sys/wait.h>
 #include <sys/file.h>
 #include <sys/param.h>
+#include <sys/sysmacros.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <libgen.h>
@@ -666,13 +668,32 @@ void pkgutil::ldconfig() const
   }
 }
 
-void pkgutil::pkg_footprint(string& filename) const
+void pkgutil::pkg_footprint(const string& filename) const
 {
-  unsigned int i;
+  size_t i;
   struct archive* archive;
   struct archive_entry* entry;
 
-  map<string, mode_t> hardlink_target_modes;
+  struct file {
+    string path;
+    string soft;
+    string hard;
+    off_t  size;
+    dev_t  rdev;
+    uid_t  uid;
+    gid_t  gid;
+    mode_t mode;
+    bool operator < (const struct file& other)
+    {
+      return (path < other.path);
+    }
+    bool operator < (const string& other)
+    {
+      return (path < other);
+    }
+  };
+
+  vector<struct file> files;
 
   /*
    * We first do a run over the archive and remember the modes of
@@ -694,127 +715,35 @@ void pkgutil::pkg_footprint(string& filename) const
   }
 
   for (i = 0;
-      archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-      ++i)
+       archive_read_next_header(archive, &entry) == ARCHIVE_OK;
+       ++i)
   {
 
-    mode_t mode = archive_entry_mode(entry);
+    struct file file;
+    const char* s;
 
-    if (!archive_entry_hardlink(entry))
-    {
-      const char *s = archive_entry_pathname(entry);
+    if ((s = archive_entry_pathname(entry)))
+      file.path = s;
 
-      hardlink_target_modes[s] = mode;
-    }
+    if ((s = archive_entry_symlink(entry)))
+      file.soft = s;
 
-    if (S_ISREG(mode) && archive_read_data_skip(archive))
+    if ((s = archive_entry_hardlink(entry)))
+      file.hard = s;
+
+    file.size = archive_entry_size(entry);
+    file.rdev = archive_entry_rdev(entry);
+    file.uid  = archive_entry_uid(entry);
+    file.gid  = archive_entry_gid(entry);
+    file.mode = archive_entry_mode(entry);
+
+    files.push_back(file);
+
+    if (S_ISREG(file.mode) && archive_read_data_skip(archive))
     {
       throw runtime_error_with_errno("could not read " + filename,
           archive_errno(archive));
     }
-  }
-
-  archive_read_free(archive);
-
-  /*
-   * Too bad, there doesn't seem to be a way to reuse our archive
-   * instance.
-   */
-  archive = archive_read_new();
-  INIT_ARCHIVE(archive);
-
-  if (archive_read_open_filename(archive,
-                                 filename.c_str(),
-                                 DEFAULT_BYTES_PER_BLOCK)
-      != ARCHIVE_OK)
-  {
-    throw runtime_error_with_errno("could not open " + filename,
-        archive_errno(archive));
-  }
-
-  for (i = 0;
-      archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-      ++i)
-  {
-    mode_t mode = archive_entry_mode(entry);
-
-    /*
-     * Access permissions.
-     */
-    if (S_ISLNK(mode))
-    {
-      /* Access permissions on symlinks differ among filesystems,
-       * e.g. XFS and ext2 have different.
-       *
-       * To avoid getting different footprints we always use "lrwxrwxrwx".
-       */
-      cout << "lrwxrwxrwx";
-    }
-    else
-    {
-      const char *h = archive_entry_hardlink(entry);
-
-      if (h)
-        cout << mtos(hardlink_target_modes[h]);
-      else
-        cout << mtos(mode);
-    }
-
-    cout << '\t';
-
-    /*
-     * User.
-     */
-    uid_t uid = archive_entry_uid(entry);
-    struct passwd* pw = getpwuid(uid);
-    if (pw)
-      cout << pw->pw_name;
-    else
-      cout << uid;
-
-    cout << '/';
-
-    /*
-     * Group.
-     */
-    gid_t gid = archive_entry_gid(entry);
-    struct group* gr = getgrgid(gid);
-    if (gr)
-      cout << gr->gr_name;
-    else
-      cout << gid;
-
-    /*
-     * Filename.
-     */
-    cout << '\t' << archive_entry_pathname(entry);
-
-    /*
-     * Special cases.
-     */
-    if (S_ISLNK(mode))
-    {
-      /* Symlink. */
-      cout << " -> " << archive_entry_symlink(entry);
-    }
-    else if (S_ISCHR(mode) || S_ISBLK(mode))
-    {
-      /* Device. */
-      cout << " (" << archive_entry_rdevmajor(entry)
-           << ", " << archive_entry_rdevminor(entry)
-           << ")";
-    }
-    else if (S_ISREG(mode) && archive_entry_size(entry) == 0)
-    {
-      /* Empty regular file. */
-      cout << " (EMPTY)";
-    }
-
-    cout << '\n';
-
-    if (S_ISREG(mode) && archive_read_data_skip(archive))
-      throw runtime_error_with_errno("could not read " + filename,
-          archive_errno(archive));
   }
 
   if (i == 0)
@@ -826,6 +755,84 @@ void pkgutil::pkg_footprint(string& filename) const
   }
 
   archive_read_free(archive);
+
+  sort(files.begin(), files.end());
+
+  for (i = 0; i < files.size(); ++i)
+  {
+    struct file& file = files[i];
+
+    /*
+     * Access permissions.
+     */
+    if (S_ISLNK(file.mode))
+    {
+      /* Access permissions on symlinks differ among filesystems,
+       * e.g. XFS and ext2 have different.
+       *
+       * To avoid getting different footprints we always use "lrwxrwxrwx".
+       */
+      cout << "lrwxrwxrwx";
+    }
+    else
+    {
+      if (file.hard.length())
+      {
+        auto it = lower_bound(files.begin(), files.end(), file.hard);
+        cout << mtos(it->mode);
+      }
+      else
+        cout << mtos(file.mode);
+    }
+
+    cout << '\t';
+
+    /*
+     * User.
+     */
+    struct passwd* pw = getpwuid(file.uid);
+    if (pw)
+      cout << pw->pw_name;
+    else
+      cout << file.uid;
+
+    cout << '/';
+
+    /*
+     * Group.
+     */
+    struct group* gr = getgrgid(file.gid);
+    if (gr)
+      cout << gr->gr_name;
+    else
+      cout << file.gid;
+
+    /*
+     * Filename.
+     */
+    cout << '\t' << file.path;
+
+    /*
+     * Special cases.
+     */
+    if (S_ISLNK(file.mode))
+    {
+      /* Symlink. */
+      cout << " -> " << file.soft;
+    }
+    else if (S_ISCHR(file.mode) || S_ISBLK(file.mode))
+    {
+      /* Device. */
+      cout << " (" << major(file.rdev) << ", " << minor(file.rdev) << ")";
+    }
+    else if (S_ISREG(file.mode) && file.size == 0)
+    {
+      /* Empty regular file. */
+      cout << " (EMPTY)";
+    }
+
+    cout << '\n';
+  }
 }
 
 void pkgutil::print_version() const

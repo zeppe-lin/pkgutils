@@ -78,7 +78,7 @@ protected:
                    const set<string>&  non_install_files,
                    bool                upgrade) const;
 
-  void pkg_footprint(string& filename) const;
+  void pkg_footprint(const string& filename) const;
 
   void ldconfig() const;
 
