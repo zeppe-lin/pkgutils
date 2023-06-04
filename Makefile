@@ -44,9 +44,9 @@ install: all
 
 install-bashcomp:
 	mkdir -p ${DESTDIR}${BASHCOMPDIR}
-	cp bash_completion ${DESTDIR}${BASHCOMPDIR}/pkgadd
-	ln -s pkgadd ${DESTDIR}${BASHCOMPDIR}/pkginfo
-	ln -s pkgadd ${DESTDIR}${BASHCOMPDIR}/pkgrm
+	cp -f bash_completion ${DESTDIR}${BASHCOMPDIR}/pkgadd
+	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkginfo
+	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkgrm
 
 uninstall:
 	cd ${DESTDIR}${PREFIX}/bin     && rm -f ${BIN1}
