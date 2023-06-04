@@ -52,7 +52,7 @@ that is installed on a temporary mounted partition, which is "owned"
 by another system.  By using this option you specify which package
 database to use.
 
-=item B<-v>, B<--version>
+=item B<-V>, B<--version>
 
 Print version and exit.
 

@@ -1,4 +1,6 @@
-/* See COPYING and COPYRIGHT files for corresponding information. */
+//! \file  pkgrm.cc
+//! \brief pkgrm utility implementation.
+//!        See COPYING and COPYRIGHT files for corresponding information.
 
 #include <unistd.h>
 
@@ -20,17 +22,17 @@ void pkgrm::run(int argc, char** argv)
     { 0,          0,                  0,              0   },
   };
 
-  while ((opt = getopt_long(argc, argv, ":hvr:V", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, ":hVr:v", longopts, 0)) != -1)
   {
     char ch = static_cast<char>(optopt);
     switch (opt) {
     case 'r':
       o_root = optarg;
       break;
-    case 'V':
+    case 'v':
       show_verbose = 1;
       break;
-    case 'v':
+    case 'V':
       do_version = 1;
       break;
     case 'h':
@@ -92,11 +94,11 @@ void pkgrm::print_help() const
 
 Mandatory arguments to long options are mandatory for short options too.
   -r, --root=PATH     specify alternative installation root
-  -V, --verbose       explain what is being done
-  -v, --version       print version and exit
+  -v, --verbose       explain what is being done
+  -V, --version       print version and exit
   -h, --help          print help and exit
 )END";
 }
 
-/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
- * End of file. */
+// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+// End of file.

@@ -1,4 +1,6 @@
-/* See COPYING and COPYRIGHT files for corresponding information. */
+//! \file  pkginfo.cc
+//! \brief pkginfo utility implementation.
+//!        See COPYING and COPYRIGHT files for corresponding information.
 
 #include <iterator>
 #include <vector>
@@ -33,7 +35,7 @@ void pkginfo::run(int argc, char** argv)
     { "help",       no_argument,        &do_help,           1   },
   };
 
-  while ((opt = getopt_long(argc, argv, ":hvr:l:o:f:iV", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, ":hVr:l:o:f:i", longopts, 0)) != -1)
   {
     char ch = static_cast<char>(optopt);
     switch (opt) {
@@ -55,7 +57,7 @@ void pkginfo::run(int argc, char** argv)
       o_footprint_mode = 1;
       o_arg = optarg;
       break;
-    case 'v':
+    case 'V':
       do_version = 1;
       break;
     case 'h':
@@ -200,10 +202,10 @@ Mandatory arguments to long options are mandatory for short options too.
   -o, --owner=PATTERN         list owner(s) of file(s) matching PATTERN
   -f, --footprint=FILE        print footprint for FILE
   -r, --root=PATH             specify alternative installation root
-  -v, --version               print version and exit
+  -V, --version               print version and exit
   -h, --help                  print help and exit
 )END";
 }
 
-/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
- * End of file. */
+// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+// End of file.

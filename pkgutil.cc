@@ -1,4 +1,6 @@
-/* See COPYING and COPYRIGHT files for corresponding information. */
+//! \file  pkgutil.cc
+//! \brief pkgutil helpers implementation.
+//!        See COPYING and COPYRIGHT files for corresponding information.
 
 #include <iostream>
 #include <fstream>
@@ -1077,5 +1079,5 @@ void file_remove(const string&  basedir,
   }
 }
 
-/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
- * End of file. */
+// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+// End of file.
