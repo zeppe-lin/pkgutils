@@ -1,4 +1,6 @@
-/* See COPYING and COPYRIGHT files for corresponding information. */
+//! \file  pkgutil.h
+//! \brief pkgutil class and helpers definition.
+//!        See COPYING and COPYRIGHT files for corresponding information.
 
 #pragma once
 
@@ -80,7 +82,7 @@ protected:
   packages_t packages;
 
   string root;
-}; /* class pkgutil */
+}; // class pkgutil
 
 class db_lock
 {
@@ -91,7 +93,7 @@ public:
   ~db_lock();
 private:
   DIR* dir;
-}; /* class db_lock */
+}; // class db_lock
 
 class runtime_error_with_errno : public runtime_error
 {
@@ -101,7 +103,7 @@ public:
 
   explicit runtime_error_with_errno(const string& msg, int e) throw()
     : runtime_error(msg + string(": ") + strerror(e)) {}
-}; /* class runtime_error_with_errno */
+}; // class runtime_error_with_errno
 
 /*
  * Utility functions.
@@ -127,5 +129,5 @@ bool permissions_equal(const string&  file1,
 void file_remove(const string&  basedir,
                  const string&  filename);
 
-/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
- * End of file. */
+// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+// End of file.

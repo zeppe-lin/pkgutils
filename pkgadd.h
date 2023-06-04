@@ -1,4 +1,6 @@
-/* See COPYING and COPYRIGHT files for corresponding information. */
+//! \file  pkgadd.h
+//! \brief pkgadd class definition.
+//!        See COPYING and COPYRIGHT files for corresponding information.
 
 #pragma once
 
@@ -45,7 +47,7 @@ private:
 
   bool rule_applies_to_file(const rule_t&  rule,
                             const string&  file) const;
-}; /* class pkgadd */
+}; // class pkgadd
 
-/* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
- * End of file. */
+// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+// End of file.
