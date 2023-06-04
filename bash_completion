@@ -8,7 +8,7 @@ _pkgrm()
   _init_completion -s || return
 
   case $prev in
-  --help | --version | -!(-*)[hv])
+  --help | --version | -!(-*)[hV])
     return
     ;;
   --root | -r)
@@ -33,7 +33,7 @@ _pkgadd()
   _init_completion -s || return
 
   case $prev in
-  --help | --version | -!(-*)[hv])
+  --help | --version | -!(-*)[hV])
     return
     ;;
   --root | -r)
@@ -62,7 +62,7 @@ _pkginfo()
   _init_completion -s || return
 
   case $prev in
-  --help | --version | -!(-*)[hv])
+  --help | --version | -!(-*)[hV])
     return
     ;;
   --root | -r)
