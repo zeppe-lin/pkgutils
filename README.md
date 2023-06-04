@@ -37,7 +37,9 @@ rejected by pkgadd(8) during package upgrades.
 INSTALL
 -------
 The shell commands `make && make install` should build and install
-this package.  See `config.mk` file for configuration parameters.
+this package.  See `config.mk` file for configuration parameters,
+and `pathnames.h` for absolute filenames and settings that pkgutils
+wants for various defaults.
 
 
 LICENSE
