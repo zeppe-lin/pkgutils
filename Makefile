@@ -42,12 +42,23 @@ install: all
 	ln -sf pkgadd         ${DESTDIR}${PREFIX}/sbin/pkgrm
 	ln -sf ../sbin/pkgadd ${DESTDIR}${PREFIX}/bin/pkginfo
 
+install-bashcomp:
+	mkdir -p ${DESTDIR}${BASHCOMPDIR}
+	cp bash_completion ${DESTDIR}${BASHCOMPDIR}/pkgadd
+	ln -s pkgadd ${DESTDIR}${BASHCOMPDIR}/pkginfo
+	ln -s pkgadd ${DESTDIR}${BASHCOMPDIR}/pkgrm
+
 uninstall:
 	cd ${DESTDIR}${PREFIX}/bin     && rm -f ${BIN1}
 	cd ${DESTDIR}${PREFIX}/sbin    && rm -f ${BIN8}
 	cd ${DESTDIR}${MANPREFIX}/man1 && rm -f ${MAN1}
 	cd ${DESTDIR}${MANPREFIX}/man5 && rm -f ${MAN5}
 	cd ${DESTDIR}${MANPREFIX}/man8 && rm -f ${MAN8}
+
+uninstall-bashcomp:
+	rm -f ${DESTDIR}${BASHCOMPDIR}/pkgadd
+	rm -f ${DESTDIR}${BASHCOMPDIR}/pkginfo
+	rm -f ${DESTDIR}${BASHCOMPDIR}/pkgrm
 
 clean:
 	rm -f ${OBJS} ${BIN1} ${BIN8} ${MAN1} ${MAN5} ${MAN8}
@@ -56,4 +67,4 @@ clean:
 dist: clean
 	git archive --format=tar.gz -o ${DIST}.tar.gz --prefix=${DIST}/ HEAD
 
-.PHONY: all install uninstall clean dist
+.PHONY: all install install-bashcomp uninstall uninstall-bashcomp clean dist
