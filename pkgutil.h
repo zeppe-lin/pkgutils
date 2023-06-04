@@ -13,13 +13,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#define PKG_EXT         ".pkg.tar."
-#define PKG_DIR         "var/lib/pkg"
-#define PKG_DB          "var/lib/pkg/db"
-#define PKG_REJECTED    "var/lib/pkg/rejected"
-#define VERSION_DELIM   '#'
-#define LDCONFIG        "/sbin/ldconfig"
-#define LDCONFIG_CONF   "/etc/ld.so.conf"
+#include "pathnames.h"
 
 using namespace std;
 

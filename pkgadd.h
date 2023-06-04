@@ -8,11 +8,7 @@
 #include <getopt.h>
 
 #include "pkgutil.h"
-
-/* Default location for pkgadd configuration file. */
-#define PKGADD_CONF             "/etc/pkgadd.conf"
-/* Default max length for configuration statement. */
-#define PKGADD_CONF_MAXLINE     1024
+#include "pathnames.h"
 
 enum rule_event_t {
   UPGRADE,
