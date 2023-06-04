@@ -1,7 +1,6 @@
 /* See COPYING and COPYRIGHT files for corresponding information. */
 
-#ifndef PKGADD_H
-#define PKGADD_H
+#pragma once
 
 #include <vector>
 #include <set>
@@ -51,8 +50,6 @@ private:
   bool rule_applies_to_file(const rule_t&  rule,
                             const string&  file) const;
 };
-
-#endif /* PKGADD_H */
 
 /* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
  * End of file. */

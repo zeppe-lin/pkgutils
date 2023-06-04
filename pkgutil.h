@@ -1,7 +1,6 @@
 /* See COPYING and COPYRIGHT files for corresponding information. */
 
-#ifndef PKGUTIL_H
-#define PKGUTIL_H
+#pragma once
 
 #include <string>
 #include <set>
@@ -133,8 +132,6 @@ bool permissions_equal(const string&  file1,
 
 void file_remove(const string&  basedir,
                  const string&  filename);
-
-#endif /* PKGUTIL_H */
 
 /* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
  * End of file. */
