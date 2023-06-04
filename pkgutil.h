@@ -86,7 +86,7 @@ protected:
   packages_t packages;
 
   string root;
-};
+}; /* class pkgutil */
 
 class db_lock
 {
@@ -97,7 +97,7 @@ public:
   ~db_lock();
 private:
   DIR* dir;
-};
+}; /* class db_lock */
 
 class runtime_error_with_errno : public runtime_error
 {
@@ -107,7 +107,7 @@ public:
 
   explicit runtime_error_with_errno(const string& msg, int e) throw()
     : runtime_error(msg + string(": ") + strerror(e)) {}
-};
+}; /* class runtime_error_with_errno */
 
 /*
  * Utility functions.

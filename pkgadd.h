@@ -49,7 +49,7 @@ private:
 
   bool rule_applies_to_file(const rule_t&  rule,
                             const string&  file) const;
-};
+}; /* class pkgadd */
 
 /* vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
  * End of file. */
