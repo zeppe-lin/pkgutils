@@ -78,8 +78,9 @@ void pkgutil::db_open(const string& path)
     /*
      * Read record.
      */
-    string name;
+    string    name;
     pkginfo_t info;
+
     getline(in, name);
     getline(in, info.version);
 
@@ -125,14 +126,14 @@ void pkgutil::db_commit()
   ostream db_new(&filebuf_new);
 
   for (packages_t::const_iterator i = packages.begin();
-                                  i != packages.end(); ++i)
+                                  i != packages.end();
+                                  ++i)
   {
     if (!i->second.files.empty())
     {
       db_new << i->first << "\n";
       db_new << i->second.version << "\n";
-      copy(i->second.files.begin(),
-           i->second.files.end(),
+      copy(i->second.files.begin(), i->second.files.end(),
            ostream_iterator<string>(db_new, "\n"));
       db_new << "\n";
     }
@@ -194,7 +195,8 @@ void pkgutil::db_rm_pkg(const string& name)
 
 #ifndef NDEBUG
   cerr << "Removing package phase 1 (all files in package):" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -202,10 +204,12 @@ void pkgutil::db_rm_pkg(const string& name)
    * Don't delete files that still have references.
    */
   for (packages_t::const_iterator i = packages.begin();
-                                  i != packages.end(); ++i)
+                                  i != packages.end();
+                                  ++i)
   {
     for (set<string>::const_iterator j = i->second.files.begin();
-                                     j != i->second.files.end(); ++j)
+                                     j != i->second.files.end();
+                                     ++j)
     {
       files.erase(*j);
     }
@@ -213,7 +217,8 @@ void pkgutil::db_rm_pkg(const string& name)
 
 #ifndef NDEBUG
   cerr << "Removing package phase 2 (files that still have references excluded):" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -221,7 +226,8 @@ void pkgutil::db_rm_pkg(const string& name)
    * Delete the files.
    */
   for (set<string>::const_reverse_iterator i = files.rbegin();
-                                           i != files.rend(); ++i)
+                                           i != files.rend();
+                                           ++i)
   {
     const string filename = root + *i;
     if (file_exists(filename) && remove(filename.c_str()) == -1)
@@ -241,8 +247,7 @@ void pkgutil::db_rm_pkg(const string&       name,
 
 #ifndef NDEBUG
   cerr << "Removing package phase 1 (all files in package):" << endl;
-  copy(files.begin(),
-       files.end(),
+  copy(files.begin(), files.end(),
        ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
@@ -259,7 +264,8 @@ void pkgutil::db_rm_pkg(const string&       name,
 
 #ifndef NDEBUG
   cerr << "Removing package phase 2 (files that is in the keep list excluded):" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -280,7 +286,8 @@ void pkgutil::db_rm_pkg(const string&       name,
 
 #ifndef NDEBUG
   cerr << "Removing package phase 3 (files that still have references excluded):" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -296,6 +303,7 @@ void pkgutil::db_rm_pkg(const string&       name,
     {
       if (errno == ENOTEMPTY)
         continue;
+
       const char* msg = strerror(errno);
       cerr << utilname << ": could not remove " << filename << ": "
            << msg << endl;
@@ -323,7 +331,8 @@ void pkgutil::db_rm_files(set<string>         files,
 
 #ifndef NDEBUG
   cerr << "Removing files:" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -331,7 +340,8 @@ void pkgutil::db_rm_files(set<string>         files,
    * Don't delete files found in the keep list.
    */
   for (set<string>::const_iterator i = keep_list.begin();
-                                   i != keep_list.end(); ++i)
+                                   i != keep_list.end();
+                                   ++i)
   {
     files.erase(*i);
   }
@@ -348,6 +358,7 @@ void pkgutil::db_rm_files(set<string>         files,
     {
       if (errno == ENOTEMPTY)
         continue;
+
       const char* msg = strerror(errno);
       cerr << utilname << ": could not remove " << filename << ": "
            << msg << endl;
@@ -364,7 +375,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
    * Find conflicting files in database.
    */
   for (packages_t::const_iterator i = packages.begin();
-                                  i != packages.end(); ++i)
+                                  i != packages.end();
+                                  ++i)
   {
     if (i->first != name)
     {
@@ -376,7 +388,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
 
 #ifndef NDEBUG
   cerr << "Conflicts phase 1 (conflicts in database):" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -395,7 +408,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
 
 #ifndef NDEBUG
   cerr << "Conflicts phase 2 (conflicts in filesystem added):" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -413,7 +427,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
 
 #ifndef NDEBUG
   cerr << "Conflicts phase 3 (directories excluded):" << endl;
-  copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+  copy(files.begin(), files.end(),
+       ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
 #endif
 
@@ -432,7 +447,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
 
 #ifndef NDEBUG
     cerr << "Conflicts phase 4 (files already owned by this package excluded):" << endl;
-    copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n"));
+    copy(files.begin(), files.end(),
+         ostream_iterator<string>(cerr, "\n"));
     cerr << endl;
 #endif
   }
@@ -489,8 +505,8 @@ pair<string, pkgutil::pkginfo_t>
 
     mode_t mode = archive_entry_mode(entry);
 
-    if (S_ISREG(mode)
-     && archive_read_data_skip(archive) != ARCHIVE_OK)
+    if (   S_ISREG(mode)
+        && archive_read_data_skip(archive) != ARCHIVE_OK)
     {
       throw runtime_error_with_errno("could not read " + filename,
           archive_errno(archive));
@@ -566,15 +582,15 @@ void pkgutil::pkg_install(const string&       filename,
     /*
      * Check if file should be rejected.
      */
-    if (file_exists(real_filename)
-     && keep_list.find(archive_filename) != keep_list.end())
+    if (   file_exists(real_filename)
+        && keep_list.find(archive_filename) != keep_list.end())
     {
-      real_filename = trim_filename(reject_dir + string("/") +
-          archive_filename);
+      real_filename =
+        trim_filename(reject_dir + string("/") + archive_filename);
     }
 
-    archive_entry_set_pathname(entry, const_cast<char*>
-                               (real_filename.c_str()));
+    archive_entry_set_pathname(entry,
+        const_cast<char*>(real_filename.c_str()));
 
     /*
      * Extract file.
@@ -772,7 +788,8 @@ void pkgutil::pkg_footprint(const string& filename) const
       /* Access permissions on symlinks differ among filesystems,
        * e.g. XFS and ext2 have different.
        *
-       * To avoid getting different footprints we always use "lrwxrwxrwx".
+       * To avoid getting different footprints we always use
+       * "lrwxrwxrwx".
        */
       cout << "lrwxrwxrwx";
     }
@@ -893,14 +910,14 @@ string mtos(mode_t mode)
    */
   switch (mode & S_IFMT)
   {
-     case S_IFREG:  s += '-'; break; /* Regular */
-     case S_IFDIR:  s += 'd'; break; /* Directory */
-     case S_IFLNK:  s += 'l'; break; /* Symbolic link */
+     case S_IFREG:  s += '-'; break; /* Regular           */
+     case S_IFDIR:  s += 'd'; break; /* Directory         */
+     case S_IFLNK:  s += 'l'; break; /* Symbolic link     */
      case S_IFCHR:  s += 'c'; break; /* Character special */
-     case S_IFBLK:  s += 'b'; break; /* Block special */
-     case S_IFSOCK: s += 's'; break; /* Socket */
-     case S_IFIFO:  s += 'p'; break; /* FIFO */
-     default:       s += '?'; break; /* Unknown */
+     case S_IFBLK:  s += 'b'; break; /* Block special     */
+     case S_IFSOCK: s += 's'; break; /* Socket            */
+     case S_IFIFO:  s += 'p'; break; /* FIFO              */
+     default:       s += '?'; break; /* Unknown           */
   }
 
   /*
@@ -1006,9 +1023,9 @@ bool file_equal(const string&  file1,
       f1.read(buffer1, 4096);
       f2.read(buffer2, 4096);
 
-      if (f1.gcount() != f2.gcount()
-       || memcmp(buffer1, buffer2, f1.gcount())
-       || f1.eof() != f2.eof())
+      if (   f1.gcount() != f2.gcount()
+          || memcmp(buffer1, buffer2, f1.gcount())
+          || f1.eof() != f2.eof())
         return false;
     }
 
@@ -1063,9 +1080,9 @@ bool permissions_equal(const string&  file1,
   if (lstat(file2.c_str(), &buf2) == -1)
     return false;
 
-  return (buf1.st_mode == buf2.st_mode)
-       &&(buf1.st_uid  == buf2.st_uid)
-       &&(buf1.st_gid  == buf2.st_gid);
+  return  (buf1.st_mode == buf2.st_mode)
+       && (buf1.st_uid  == buf2.st_uid)
+       && (buf1.st_gid  == buf2.st_gid);
 }
 
 void file_remove(const string&  basedir,
