@@ -14,7 +14,7 @@ B<pkgadd> [I<OPTION>]... I<FILE>
 
 B<pkgadd> is a package management utility, which installs a software
 package.  A package is an archive of files (.pkg.tar.gz, .pkg.tar.bz2,
-.pkg.tar.lz or .pkg.tar.xz).
+.pkg.tar.lz, .pkg.tar.zst, or .pkg.tar.xz).
 
 =head1 OPTIONS
 
