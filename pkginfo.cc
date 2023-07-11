@@ -172,7 +172,8 @@ void pkginfo::run(int argc, char** argv)
 
       if (result.size() > 1)
       {
-        for (vector<pair<string, string> >::const_iterator i = result.begin(); i != result.end(); ++i)
+        for (vector<pair<string, string>>::const_iterator
+              i = result.begin(); i != result.end(); ++i)
         {
           cout << left << setw(width + 2) << i->first << i->second
                << endl;
