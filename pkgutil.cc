@@ -35,6 +35,7 @@
   archive_read_support_filter_bzip2((ar));  \
   archive_read_support_filter_xz((ar));     \
   archive_read_support_filter_lzip((ar));   \
+  archive_read_support_filter_zstd((ar));   \
   archive_read_support_format_tar((ar))
 
 #define DEFAULT_BYTES_PER_BLOCK (20 * 512)
