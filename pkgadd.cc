@@ -271,9 +271,11 @@ set<string> pkgadd::make_keep_list(const set<string>&     files,
 
   find_rules(rules, UPGRADE, found);
 
-  for (set<string>::const_iterator i = files.begin(); i != files.end(); i++)
+  for (set<string>::const_iterator
+        i = files.begin(); i != files.end(); i++)
   {
-    for (vector<rule_t>::reverse_iterator j = found.rbegin(); j != found.rend(); j++)
+    for (vector<rule_t>::reverse_iterator
+          j = found.rbegin(); j != found.rend(); j++)
     {
       if (rule_applies_to_file(*j, *i))
       {
@@ -287,7 +289,8 @@ set<string> pkgadd::make_keep_list(const set<string>&     files,
 
 #ifndef NDEBUG
   cerr << "Keep list:" << endl;
-  for (set<string>::const_iterator j = keep_list.begin(); j != keep_list.end(); j++)
+  for (set<string>::const_iterator
+        j = keep_list.begin(); j != keep_list.end(); j++)
   {
     cerr << "   " << (*j) << endl;
   }
@@ -308,11 +311,13 @@ set<string> pkgadd::apply_install_rules(const string&          name,
 
   find_rules(rules, INSTALL, found);
 
-  for (set<string>::const_iterator i = info.files.begin(); i != info.files.end(); i++)
+  for (set<string>::const_iterator
+        i = info.files.begin(); i != info.files.end(); i++)
   {
     bool install_file = true;
 
-    for (vector<rule_t>::reverse_iterator j = found.rbegin(); j != found.rend(); j++)
+    for (vector<rule_t>::reverse_iterator
+          j = found.rbegin(); j != found.rend(); j++)
     {
       if (rule_applies_to_file(*j, *i))
       {
@@ -332,14 +337,16 @@ set<string> pkgadd::apply_install_rules(const string&          name,
 
 #ifndef NDEBUG
   cerr << "Install set:" << endl;
-  for (set<string>::iterator j = info.files.begin(); j != info.files.end(); j++)
+  for (set<string>::iterator
+        j = info.files.begin(); j != info.files.end(); j++)
   {
     cerr << "   " << (*j) << endl;
   }
   cerr << endl;
 
   cerr << "Non-Install set:" << endl;
-  for (set<string>::iterator j = non_install_set.begin(); j != non_install_set.end(); j++)
+  for (set<string>::iterator
+        j = non_install_set.begin(); j != non_install_set.end(); j++)
   {
     cerr << "   " << (*j) << endl;
   }
@@ -353,7 +360,8 @@ void pkgadd::find_rules(const vector<rule_t>&  rules,
                         rule_event_t           event,
                         vector<rule_t>&        found) const
 {
-  for (vector<rule_t>::const_iterator i = rules.begin(); i != rules.end(); i++)
+  for (vector<rule_t>::const_iterator
+        i = rules.begin(); i != rules.end(); i++)
   {
     if (i->event == event)
       found.push_back(*i);
@@ -368,7 +376,7 @@ bool pkgadd::rule_applies_to_file(const rule_t&  rule,
 
   if (regcomp(&preg, rule.pattern.c_str(), REG_EXTENDED | REG_NOSUB))
     throw runtime_error("error compiling regular expression '" +
-        rule.pattern + "', aborting");
+                          rule.pattern + "', aborting");
 
   ret = !regexec(&preg, file.c_str(), 0, 0, 0);
   regfree(&preg);
