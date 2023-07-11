@@ -13,6 +13,7 @@ This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
   pkgadd.conf(5)
 - added bash completion
 - build files have been rewritten
+- added zstd packages support
 
 See git log for complete/further differences.
 
