@@ -114,14 +114,16 @@ void pkgutil::db_commit()
    * Remove failed transaction (if it exists).
    */
   if (unlink(dbfilename_new.c_str()) == -1 && errno != ENOENT)
-    throw runtime_error_with_errno("could not remove " + dbfilename_new);
+    throw runtime_error_with_errno("could not remove " +
+                                    dbfilename_new);
 
   /*
    * Write new database.
    */
   int fd_new = creat(dbfilename_new.c_str(), 0444);
   if (fd_new == -1)
-    throw runtime_error_with_errno("could not create " + dbfilename_new);
+    throw runtime_error_with_errno("could not create " +
+                                    dbfilename_new);
 
   stdio_filebuf<char> filebuf_new(fd_new, ios::out, getpagesize());
   ostream db_new(&filebuf_new);
@@ -153,25 +155,25 @@ void pkgutil::db_commit()
    */
   if (fsync(fd_new) == -1)
     throw runtime_error_with_errno("could not synchronize " +
-        dbfilename_new);
+                                    dbfilename_new);
 
   /*
    * Relink database backup.
    */
   if (unlink(dbfilename_bak.c_str()) == -1 && errno != ENOENT)
     throw runtime_error_with_errno("could not remove " +
-        dbfilename_bak);
+                                    dbfilename_bak);
 
   if (link(dbfilename.c_str(), dbfilename_bak.c_str()) == -1)
     throw runtime_error_with_errno("could not create " +
-        dbfilename_bak);
+                                    dbfilename_bak);
 
   /*
    * Move new database into place.
    */
   if (rename(dbfilename_new.c_str(), dbfilename.c_str()) == -1)
     throw runtime_error_with_errno("could not rename " +
-        dbfilename_new + " to " + dbfilename);
+                                dbfilename_new + " to " + dbfilename);
 
 #ifndef NDEBUG
   cerr << packages.size() << " packages written to database" << endl;
@@ -217,7 +219,9 @@ void pkgutil::db_rm_pkg(const string& name)
   }
 
 #ifndef NDEBUG
-  cerr << "Removing package phase 2 (files that still have references excluded):" << endl;
+  cerr << "Removing package phase 2 "
+       << "(files that still have references excluded):"
+       << endl;
   copy(files.begin(), files.end(),
        ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
@@ -264,7 +268,9 @@ void pkgutil::db_rm_pkg(const string&       name,
   }
 
 #ifndef NDEBUG
-  cerr << "Removing package phase 2 (files that is in the keep list excluded):" << endl;
+  cerr << "Removing package phase 2 "
+       << "(files that is in the keep list excluded):"
+       << endl;
   copy(files.begin(), files.end(),
        ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
@@ -286,7 +292,9 @@ void pkgutil::db_rm_pkg(const string&       name,
   }
 
 #ifndef NDEBUG
-  cerr << "Removing package phase 3 (files that still have references excluded):" << endl;
+  cerr << "Removing package phase 3 "
+       << "(files that still have references excluded):"
+       << endl;
   copy(files.begin(), files.end(),
        ostream_iterator<string>(cerr, "\n"));
   cerr << endl;
@@ -447,7 +455,9 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
     }
 
 #ifndef NDEBUG
-    cerr << "Conflicts phase 4 (files already owned by this package excluded):" << endl;
+    cerr << "Conflicts phase 4 "
+         << "(files already owned by this package excluded):"
+         << endl;
     copy(files.begin(), files.end(),
          ostream_iterator<string>(cerr, "\n"));
     cerr << endl;
@@ -479,7 +489,7 @@ pair<string, pkgutil::pkginfo_t>
   if (name.empty() || version.empty())
   {
     throw runtime_error("could not determine name and/or version of " +
-        basename + ": Invalid package name");
+                         basename + ": Invalid package name");
   }
 
   result.first = name;
@@ -558,8 +568,10 @@ void pkgutil::pkg_install(const string&       filename,
        ++i)
   {
     string archive_filename = archive_entry_pathname(entry);
-    string reject_dir = trim_filename(absroot + string("/") + string(PKG_REJECTED));
-    string original_filename = trim_filename(absroot + string("/") + archive_filename);
+    string reject_dir = trim_filename(absroot + string("/") +
+                                      string(PKG_REJECTED));
+    string original_filename = trim_filename(absroot + string("/") +
+                                             archive_filename);
     string real_filename = original_filename;
 
     /*
@@ -612,7 +624,7 @@ void pkgutil::pkg_install(const string&       filename,
       if (!upgrade)
       {
         throw runtime_error("extract error: " + archive_filename +
-            ": " + msg);
+                            ": " + msg);
       }
       continue;
     }
@@ -628,7 +640,8 @@ void pkgutil::pkg_install(const string&       filename,
       /* directory */
       if (S_ISDIR(mode))
       {
-        remove_file = permissions_equal(real_filename, original_filename);
+        remove_file = permissions_equal(real_filename,
+                                        original_filename);
       }
       /* other files */
       else
@@ -761,7 +774,7 @@ void pkgutil::pkg_footprint(const string& filename) const
     if (S_ISREG(file.mode) && archive_read_data_skip(archive))
     {
       throw runtime_error_with_errno("could not read " + filename,
-          archive_errno(archive));
+                                      archive_errno(archive));
     }
   }
 
@@ -843,7 +856,8 @@ void pkgutil::pkg_footprint(const string& filename) const
     else if (S_ISCHR(file.mode) || S_ISBLK(file.mode))
     {
       /* Device. */
-      cout << " (" << major(file.rdev) << ", " << minor(file.rdev) << ")";
+      cout
+        << " (" << major(file.rdev) << ", " << minor(file.rdev) << ")";
     }
     else if (S_ISREG(file.mode) && file.size == 0)
     {
@@ -867,15 +881,17 @@ db_lock::db_lock(const string& root, bool exclusive)
 
   if (!(dir = opendir(dirname.c_str())))
     throw runtime_error_with_errno("could not read directory " +
-        dirname);
+                                    dirname);
 
   if (flock(dirfd(dir),
         (exclusive ? LOCK_EX : LOCK_SH) | LOCK_NB) == -1)
   {
     if (errno == EWOULDBLOCK)
-      throw runtime_error("package database is currently locked by another process");
+      throw runtime_error(
+          "package database is currently locked by another process");
     else
-      throw runtime_error_with_errno("could not lock directory " + dirname);
+      throw runtime_error_with_errno("could not lock directory " +
+                                      dirname);
   }
 }
 
@@ -892,7 +908,7 @@ void assert_argument(char** argv, int argc, int index)
 {
   if (argc - 1 < index + 1)
     throw runtime_error("option " + string(argv[index]) +
-        " requires an argument");
+                        " requires an argument");
 }
 
 string itos(unsigned int value)
