@@ -1,31 +1,33 @@
-GREPOPT = --exclude-dir=.git --exclude-dir=.github -R .
-FINDOPT = -not \( -path "./.git*" -or -path ".*~" \)
-MAXLINE = 80
+all: deadlinks podchecker shellcheck cppcheck flawfinder longlines
 
 deadlinks:
-	@echo "=======> Check for dead links"
-	@grep -Eiho "https?://[^\"\\'> ]+" ${GREPOPT}  \
-		| xargs -P10 -I{} curl -o /dev/null    \
-		 -sw "[%{http_code}] %{url}\n" '{}'    \
-		| grep -v '^\[200\]'                   \
+	@echo "=======> deadlinks"
+	@grep -EIihor "https?://[^\"\\'> ]+" --exclude-dir=.git*      \
+		| xargs -P10 -r -I{}                                  \
+		  curl -o/dev/null -sw "[%{http_code}] %{url}\n" '{}' \
+		| grep -v '^\[200\]'                                  \
 		| sort -u
 
 podchecker:
-	@echo "=======> Check PODs for syntax errors"
+	@echo "=======> podchecker"
 	@podchecker *.pod
 
 shellcheck:
-	@echo "=======> Check shell scripts for syntax errors"
-	@grep -m1 -l '^#\s*!/bin/sh' ${GREPOPT} | xargs -L10 shellcheck -s sh
+	@echo "=======> shellcheck"
+	@grep -m1 -Irl '^#\s*!/bin/sh' --exclude-dir=.git* \
+		| xargs -L10 -r shellcheck -s sh
 
 cppcheck:
-	@echo "=======> Static C/C++ code analysis"
-	@cppcheck --enable=all --check-level=exhaustive  \
+	@echo "=======> cppcheck"
+	@cppcheck --quiet --enable=all --check-level=exhaustive \
 		--suppress=missingIncludeSystem .
 
+flawfinder:
+	@echo "=======> flawfinder"
+	@flawfinder -D --quiet .
+
 longlines:
-	@echo "=======> Check for long lines (> ${MAXLINE})"
-	@find . -type f ${FINDOPT} -exec awk -v ML=${MAXLINE} \
-		'length > ML { print FILENAME ":" FNR " " $$0 }'  {} \;
+	@echo "=======> long (>80) lines"
+	@grep -PIrn '^.{81,}$$' --exclude-dir=.git* || :
 
 .PHONY: deadlinks podchecker shellcheck cppcheck longlines
