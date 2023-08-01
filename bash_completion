@@ -8,10 +8,10 @@ _pkgrm()
   _init_completion -s || return
 
   case $prev in
-  --help | --version | -!(-*)[hV])
+  --help|--version|-!(-*)[hV])
     return
     ;;
-  --root | -r)
+  --root|-r)
     _filedir -d
     return
     ;;
@@ -33,14 +33,14 @@ _pkgadd()
   _init_completion -s || return
 
   case $prev in
-  --help | --version | -!(-*)[hV])
+  --help|--version|-!(-*)[hV])
     return
     ;;
-  --root | -r)
+  --root|-r)
     _filedir -d
     return
     ;;
-  --config | -c)
+  --config|-c)
     _filedir
     return
     ;;
@@ -62,18 +62,18 @@ _pkginfo()
   _init_completion -s || return
 
   case $prev in
-  --help | --version | -!(-*)[hV])
+  --help|--version|-!(-*)[hV])
     return
     ;;
-  --root | -r)
+  --root|-r)
     _filedir -d
     return
     ;;
-  --footprint | -f | --owner | -o)
+  --footprint|-f|--owner|-o)
     _filedir
     return
     ;;
-  --list | -l)
+  --list|-l)
     if [[ $cur == ./* || $cur == /* ]]; then
       _filedir
     else
