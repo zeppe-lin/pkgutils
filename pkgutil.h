@@ -52,9 +52,10 @@ protected:
                   const pkginfo_t& info);
 
   bool db_find_pkg(const string& name);
+
   void db_rm_pkg(const string& name);
 
-  void db_rm_pkg(const string&       name,
+  void db_rm_pkg(const string& name,
                  const set<string>&  keep_list);
 
   void db_rm_files(set<string>         files,
