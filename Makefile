@@ -2,12 +2,12 @@
 
 include config.mk
 
-OBJS = $(subst .cc,.o,$(wildcard src/*.cc))
 BIN1 = pkginfo
 BIN8 = pkgadd pkgrm
 MAN1 = $(subst .1.pod,.1,$(wildcard pod/*.1.pod))
 MAN5 = $(subst .5.pod,.5,$(wildcard pod/*.5.pod))
 MAN8 = $(subst .8.pod,.8,$(wildcard pod/*.8.pod))
+OBJS = $(subst   .cpp,.o,$(wildcard src/*.cpp))
 
 all: pkgadd manpages
 
@@ -15,7 +15,7 @@ all: pkgadd manpages
 	pod2man -r "${NAME} ${VERSION}" -c "${DESCRIPTION}" \
 		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
 
-.cc.o:
+.cpp.o:
 	${CXX} -c ${CXXFLAGS} ${CPPFLAGS} $< -o $@
 
 pkgadd: ${OBJS}
