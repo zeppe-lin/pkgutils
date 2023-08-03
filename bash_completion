@@ -1,4 +1,4 @@
-# pkgrm(8), pkgadd(8) and pkginfo(1) completions
+# bash completion for pkgrm(8), pkgadd(8) and pkginfo(1)
 
 _avail_pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
 
