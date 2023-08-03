@@ -4,6 +4,8 @@
 *.5
 *.8
 pkgadd
+pkginfo
+pkgrm
 
 # vim undo and swap files
 .*.un~
