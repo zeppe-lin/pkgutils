@@ -42,18 +42,18 @@ install: all
 	ln -sf pkgadd         ${DESTDIR}${PREFIX}/sbin/pkgrm
 	ln -sf ../sbin/pkgadd ${DESTDIR}${PREFIX}/bin/pkginfo
 
-install-bashcomp:
-	mkdir -p ${DESTDIR}${BASHCOMPDIR}
-	cp -f bash_completion ${DESTDIR}${BASHCOMPDIR}/pkgadd
-	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkginfo
-	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkgrm
-
 uninstall:
 	cd ${DESTDIR}${PREFIX}/bin     && rm -f ${BIN1}
 	cd ${DESTDIR}${PREFIX}/sbin    && rm -f ${BIN8}
 	cd ${DESTDIR}${MANPREFIX}/man1 && rm -f ${MAN1}
 	cd ${DESTDIR}${MANPREFIX}/man5 && rm -f ${MAN5}
 	cd ${DESTDIR}${MANPREFIX}/man8 && rm -f ${MAN8}
+
+install-bashcomp:
+	mkdir -p ${DESTDIR}${BASHCOMPDIR}
+	cp -f bash_completion ${DESTDIR}${BASHCOMPDIR}/pkgadd
+	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkginfo
+	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkgrm
 
 uninstall-bashcomp:
 	rm -f ${DESTDIR}${BASHCOMPDIR}/pkgadd
