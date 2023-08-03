@@ -11,7 +11,8 @@ MAN1 = pkginfo.1
 MAN5 = pkgadd.conf.5
 MAN8 = pkgadd.8 pkgrm.8
 
-all: pkgadd ${MAN1} ${MAN5} ${MAN8}
+manpages: ${MAN1} ${MAN5} ${MAN8}
+all: pkgadd manpages
 
 %: %.pod
 	pod2man -r "${NAME} ${VERSION}" -c "${DESCRIPTION}" \
