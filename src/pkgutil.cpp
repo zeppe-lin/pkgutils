@@ -1,4 +1,4 @@
-//! \file  pkgutil.cc
+//! \file  pkgutil.cpp
 //! \brief pkgutil helpers implementation.
 //!        See COPYING and COPYRIGHT files for corresponding information.
 

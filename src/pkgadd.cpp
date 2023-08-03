@@ -1,4 +1,4 @@
-//! \file  pkgadd.cc
+//! \file  pkgadd.cpp
 //! \brief pkgadd utility implementation.
 //         See COPYING and COPYRIGHT files for corresponding information.
 

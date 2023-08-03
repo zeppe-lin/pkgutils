@@ -1,4 +1,4 @@
-//! \file  main.cc
+//! \file  main.cpp
 //! \brief Command-line utility of \a pkgutils.
 //!        See COPYING and COPYRIGHT files for corresponding information.
 

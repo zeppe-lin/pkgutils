@@ -1,4 +1,4 @@
-//! \file  pkgrm.cc
+//! \file  pkgrm.cpp
 //! \brief pkgrm utility implementation.
 //!        See COPYING and COPYRIGHT files for corresponding information.
 

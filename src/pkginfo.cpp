@@ -1,4 +1,4 @@
-//! \file  pkginfo.cc
+//! \file  pkginfo.cpp
 //! \brief pkginfo utility implementation.
 //!        See COPYING and COPYRIGHT files for corresponding information.
 
