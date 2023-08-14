@@ -41,8 +41,6 @@ void pkginfo::run(int argc, char** argv)
   static int o_installed_mode = 0;
   static int o_list_mode = 0;
   static int o_owner_mode = 0;
-  static int do_version = 0;
-  static int do_help = 0;
   static string o_root;
   static string o_arg;
   int opt;
@@ -51,12 +49,12 @@ void pkginfo::run(int argc, char** argv)
     { "list",       required_argument,  NULL,               'l' },
     { "owner",      required_argument,  NULL,               'o' },
     { "footprint",  required_argument,  NULL,               'f' },
-    { "installed",  no_argument,        &o_installed_mode,  1   },
-    { "version",    no_argument,        &do_version,        1   },
-    { "help",       no_argument,        &do_help,           1   },
+    { "installed",  no_argument,        NULL,               'i' },
+    { "version",    no_argument,        NULL,               'V' },
+    { "help",       no_argument,        NULL,               'h' },
   };
 
-  while ((opt = getopt_long(argc, argv, ":hVr:l:o:f:i", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, "r:l:i:f:iVh", longopts, 0)) != -1)
   {
     char ch = static_cast<char>(optopt);
     switch (opt) {
@@ -79,10 +77,9 @@ void pkginfo::run(int argc, char** argv)
       o_arg = optarg;
       break;
     case 'V':
-      do_version = 1;
-      break;
+      return print_version();
     case 'h':
-      do_help = 1;
+      return print_help();
       break;
     case ':':
       throw runtime_error("-"s + ch + ": missing option argument\n");
@@ -90,11 +87,6 @@ void pkginfo::run(int argc, char** argv)
       throw runtime_error("-"s + ch + ": invalid option\n");
     }
   }
-
-  if (do_version)
-    return print_version();
-  else if (do_help)
-    return print_help();
 
   if (o_footprint_mode + o_installed_mode + o_list_mode + o_owner_mode == 0)
     throw runtime_error("option missing");
