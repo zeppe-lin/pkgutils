@@ -11,6 +11,27 @@
 
 #include "pkginfo.h"
 
+void pkginfo::print_help() const
+{
+  cout << "Usage: " << utilname << " [OPTION]" << endl;
+  cout << R"END(Display software package information.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -i, --installed             list installed packages
+  -l, --list=PACKAGE|FILE     list files in PACKAGE or FILE
+  -o, --owner=PATTERN         list owner(s) of file(s) matching PATTERN
+  -f, --footprint=FILE        print footprint for FILE
+  -r, --root=PATH             specify alternative installation root
+  -V, --version               print version and exit
+  -h, --help                  print help and exit
+)END";
+}
+
+void pkginfo::print_version() const
+{
+  cout << utilname << " (pkgutils) " << VERSION << endl;
+}
+
 void pkginfo::run(int argc, char** argv)
 {
   /*
@@ -185,27 +206,6 @@ void pkginfo::run(int argc, char** argv)
       }
     }
   }
-}
-
-void pkginfo::print_version() const
-{
-  cout << utilname << " (pkgutils) " << VERSION << endl;
-}
-
-void pkginfo::print_help() const
-{
-  cout << "Usage: " << utilname << " [OPTION]" << endl;
-  cout << R"END(Display software package information.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -i, --installed             list installed packages
-  -l, --list=PACKAGE|FILE     list files in PACKAGE or FILE
-  -o, --owner=PATTERN         list owner(s) of file(s) matching PATTERN
-  -f, --footprint=FILE        print footprint for FILE
-  -r, --root=PATH             specify alternative installation root
-  -V, --version               print version and exit
-  -h, --help                  print help and exit
-)END";
 }
 
 // vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
