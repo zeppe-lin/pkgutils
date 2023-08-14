@@ -29,7 +29,7 @@ void pkgrm::run(int argc, char** argv)
   /*
    * Check command line options.
    */
-  static int verbose = 0;
+  static int o_verbose = 0;
   static string o_root, o_package;
   int opt;
   static struct option longopts[] = {
@@ -48,7 +48,7 @@ void pkgrm::run(int argc, char** argv)
       o_root = optarg;
       break;
     case 'v':
-      verbose++;
+      o_verbose++;
       break;
     case 'V':
       return print_version();
@@ -86,7 +86,7 @@ void pkgrm::run(int argc, char** argv)
     if (!db_find_pkg(o_package))
       throw runtime_error("package " + o_package + " not installed");
 
-    if (verbose)
+    if (o_verbose)
       cout << "removing " << o_package << endl;
 
     db_rm_pkg(o_package);
