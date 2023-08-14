@@ -16,22 +16,21 @@ void pkgadd::run(int argc, char** argv)
   /*
    * Check command line options.
    */
-  static int do_version = 0, do_help = 0, show_verbose = 0;
-  static int o_upgrade = 0, o_force = 0;
+  static int o_upgrade = 0, o_force = 0, o_verbose = 0;
   static string o_root, o_config = PKGADD_CONF, o_package;
   int opt;
   static struct option longopts[] = {
     { "root",     required_argument,  NULL,           'r' },
     { "config",   required_argument,  NULL,           'c' },
-    { "upgrade",  no_argument,        &o_upgrade,     'u' },
-    { "force",    no_argument,        &o_force,       'f' },
-    { "verbose",  no_argument,        &show_verbose,  1   },
-    { "version",  no_argument,        &do_version,    1   },
-    { "help",     no_argument,        &do_help,       1   },
+    { "upgrade",  no_argument,        NULL,           'u' },
+    { "force",    no_argument,        NULL,           'f' },
+    { "verbose",  no_argument,        NULL,           'v' },
+    { "version",  no_argument,        NULL,           'V' },
+    { "help",     no_argument,        NULL,           'h' },
     { 0,          0,                  0,              0   },
   };
 
-  while ((opt = getopt_long(argc, argv, ":hVr:c:ufv", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, "r:c:ufvVh", longopts, 0)) != -1)
   {
     char ch = static_cast<char>(optopt);
     switch (opt) {
@@ -48,25 +47,18 @@ void pkgadd::run(int argc, char** argv)
       o_force = 1;
       break;
     case 'v':
-      show_verbose = 1;
+      o_verbose++;
       break;
     case 'V':
-      do_version = 1;
-      break;
+      return print_version();
     case 'h':
-      do_help = 1;
-      break;
+      return print_help();
     case ':':
       throw runtime_error("-"s + ch + ": missing option argument\n");
     case '?':
       throw runtime_error("-"s + ch + ": invalid option\n");
     }
   }
-
-  if (do_version)
-    return print_version();
-  else if (do_help)
-    return print_help();
 
   if (optind == argc)
     throw runtime_error("missing package name");
@@ -142,7 +134,7 @@ void pkgadd::run(int argc, char** argv)
     db_commit();
     try
     {
-      if (show_verbose)
+      if (o_verbose)
         cout << (o_upgrade ? "upgrading " : "installing ")
              << package.first << endl;
 
