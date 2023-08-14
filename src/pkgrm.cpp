@@ -6,6 +6,24 @@
 
 #include "pkgrm.h"
 
+void pkgrm::print_help() const
+{
+  cout << "Usage: " << utilname << " [OPTION] PKGNAME" << endl;
+  cout << R"END(Remove software package.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -r, --root=PATH     specify alternative installation root
+  -v, --verbose       explain what is being done
+  -V, --version       print version and exit
+  -h, --help          print help and exit
+)END";
+}
+
+void pkgrm::print_version() const
+{
+  cout << utilname << " (pkgutils) " << VERSION << endl;
+}
+
 void pkgrm::run(int argc, char** argv)
 {
   /*
@@ -75,24 +93,6 @@ void pkgrm::run(int argc, char** argv)
     ldconfig();
     db_commit();
   }
-}
-
-void pkgrm::print_version() const
-{
-  cout << utilname << " (pkgutils) " << VERSION << endl;
-}
-
-void pkgrm::print_help() const
-{
-  cout << "Usage: " << utilname << " [OPTION] PKGNAME" << endl;
-  cout << R"END(Remove software package.
-
-Mandatory arguments to long options are mandatory for short options too.
-  -r, --root=PATH     specify alternative installation root
-  -v, --verbose       explain what is being done
-  -V, --version       print version and exit
-  -h, --help          print help and exit
-)END";
 }
 
 // vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
