@@ -28,7 +28,6 @@ public:
   pkgadd() : pkgutil("pkgadd") {}
 
   virtual void run(int argc, char** argv);
-  virtual void print_version() const;
   virtual void print_help() const;
 
 private:
