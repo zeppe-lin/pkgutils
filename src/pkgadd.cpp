@@ -215,8 +215,8 @@ vector<rule_t> pkgadd::read_config(string file) const
 
 void pkgadd::print_help() const
 {
-  cout << "Usage: " << utilname << " [OPTION]... FILE" << endl;
-  cout << R"END(Install software package.
+  cout << "Usage: " << utilname << " [OPTION]... FILE" << R"END(
+Install software package.
 
 Mandatory arguments to long options are mandatory for short options too.
   -u, --upgrade        upgrade package with the same name
@@ -226,12 +226,23 @@ Mandatory arguments to long options are mandatory for short options too.
   -v, --verbose        explain what is being done
   -V, --version        print version and exit
   -h, --help           print help and exit
+
+Report bugs to: <https://github.com/zeppe-lin/pkgutils/issues/>
+pkgutils home page: <https://github.com/zeppe-lin/pkgutils/>
 )END";
 }
 
 void pkgadd::print_version() const
 {
-  cout << utilname << " (pkgutils) " << VERSION << endl;
+  cout << utilname << " (pkgutils) " << VERSION << R"END(
+Copyright (C) 2000-2005 Per Lidén   <per@fukt.bth.se>
+Copyright (C) 2006-2017 CRUX team   <http://crux.nu>
+Copyright (C) 2002-2021 Håvard Moen <vanilje@netcom.no>
+Copyright (C) 2021-2023 Zeppe-Lin   <http://zeppel.ink>
+License GPLv2+: GNU GPL version 2 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+)END";
 }
 
 void pkgadd::run(int argc, char** argv)
