@@ -30,19 +30,6 @@ pkgutils home page: <https://github.com/zeppe-lin/pkgutils/>
 )END";
 }
 
-void pkginfo::print_version() const
-{
-  cout << utilname << " (pkgutils) " << VERSION << R"END(
-Copyright (C) 2000-2005 Per Lidén   <per@fukt.bth.se>
-Copyright (C) 2006-2017 CRUX team   <http://crux.nu>
-Copyright (C) 2002-2021 Håvard Moen <vanilje@netcom.no>
-Copyright (C) 2021-2023 Zeppe-Lin   <http://zeppel.ink>
-License GPLv2+: GNU GPL version 2 or later <https://gnu.org/licenses/gpl.html>.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-)END";
-}
-
 void pkginfo::run(int argc, char** argv)
 {
   /*
