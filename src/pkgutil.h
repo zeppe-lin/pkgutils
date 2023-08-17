@@ -38,7 +38,7 @@ public:
 
   virtual void print_help() const = 0;
 
-  void print_version() const;
+  virtual void print_version() const;
 
 protected:
   /*
