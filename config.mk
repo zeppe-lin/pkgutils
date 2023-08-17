@@ -2,6 +2,8 @@
 NAME         = pkgutils
 VERSION      = 6.00
 DESCRIPTION  = Package Management Utilities
+HOMEPAGE     = https://github.com/zeppe-lin/pkgutils/
+BUGTRACKER   = https://github.com/zeppe-lin/pkgutils/issues/
 DIST         = ${NAME}-${VERSION}
 
 # paths
