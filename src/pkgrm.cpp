@@ -16,10 +16,9 @@ Mandatory arguments to long options are mandatory for short options too.
   -v, --verbose       explain what is being done
   -V, --version       print version and exit
   -h, --help          print help and exit
-
-Report bugs to: <https://github.com/zeppe-lin/pkgutils/issues/>
-pkgutils home page: <https://github.com/zeppe-lin/pkgutils/>
 )END";
+  cout << "Report bugs to: <"     << PROJECT_BUGTRACKER << ">" << endl;
+  cout << "pkgutils home page: <" << PROJECT_HOMEPAGE   << ">" << endl;
 }
 
 void pkgrm::run(int argc, char** argv)
