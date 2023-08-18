@@ -13,7 +13,7 @@
 
 void pkginfo::print_help() const
 {
-  cout << "Usage: " << utilname << " [OPTION]" << R"END(
+  cout << "Usage: " << utilname << R"( [OPTION]
 Display software package information.
 
 Mandatory arguments to long options are mandatory for short options too.
@@ -24,9 +24,10 @@ Mandatory arguments to long options are mandatory for short options too.
   -r, --root=PATH             specify alternative installation root
   -V, --version               print version and exit
   -h, --help                  print help and exit
-)END";
-  cout << "Report bugs to: <"     << PROJECT_BUGTRACKER << ">" << endl;
-  cout << "pkgutils home page: <" << PROJECT_HOMEPAGE   << ">" << endl;
+
+Report bugs to: <)"     PROJECT_BUGTRACKER R"(>
+pkgutils home page: <)" PROJECT_HOMEPAGE   R"(>
+)";
 }
 
 void pkginfo::run(int argc, char** argv)

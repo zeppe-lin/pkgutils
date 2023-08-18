@@ -8,7 +8,7 @@
 
 void pkgrm::print_help() const
 {
-  cout << "Usage: " << utilname << " [OPTION] PKGNAME" << R"END(
+  cout << "Usage: " << utilname << R"( [OPTION] PKGNAME
 Remove software package.
 
 Mandatory arguments to long options are mandatory for short options too.
@@ -16,9 +16,10 @@ Mandatory arguments to long options are mandatory for short options too.
   -v, --verbose       explain what is being done
   -V, --version       print version and exit
   -h, --help          print help and exit
-)END";
-  cout << "Report bugs to: <"     << PROJECT_BUGTRACKER << ">" << endl;
-  cout << "pkgutils home page: <" << PROJECT_HOMEPAGE   << ">" << endl;
+
+Report bugs to: <)"     PROJECT_BUGTRACKER R"(>
+pkgutils home page: <)" PROJECT_HOMEPAGE   R"(>
+)";
 }
 
 void pkgrm::run(int argc, char** argv)

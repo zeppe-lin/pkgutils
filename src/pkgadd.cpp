@@ -215,7 +215,7 @@ vector<rule_t> pkgadd::read_config(string file) const
 
 void pkgadd::print_help() const
 {
-  cout << "Usage: " << utilname << " [OPTION]... FILE" << R"END(
+  cout << "Usage: " << utilname << R"( [OPTION]... FILE
 Install software package.
 
 Mandatory arguments to long options are mandatory for short options too.
@@ -226,9 +226,10 @@ Mandatory arguments to long options are mandatory for short options too.
   -v, --verbose        explain what is being done
   -V, --version        print version and exit
   -h, --help           print help and exit
-)END";
-  cout << "Report bugs to: <"     << PROJECT_BUGTRACKER << ">" << endl;
-  cout << "pkgutils home page: <" << PROJECT_HOMEPAGE   << ">" << endl;
+
+Report bugs to: <)"     PROJECT_BUGTRACKER R"(>
+pkgutils home page: <)" PROJECT_HOMEPAGE   R"(>
+)";
 }
 
 void pkgadd::run(int argc, char** argv)
