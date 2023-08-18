@@ -16,6 +16,7 @@
 #include <dirent.h>
 
 #include "pathnames.h"
+#include "../copyright.h"
 
 using namespace std;
 
