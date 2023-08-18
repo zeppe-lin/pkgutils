@@ -24,9 +24,6 @@ copyright.h: ${CURDIR}/COPYRIGHT ${CURDIR}/COPYING.BANNER
 	  sed 's/^.*/"&\\n"/;$$ ! s/$$/ \\/' $^ ; \
 	  echo "#endif"                         ; } > $@
 
-.cpp.o:
-	${CXX} -c ${CXXFLAGS} ${CPPFLAGS} $< -o $@
-
 pkgadd: ${OBJS}
 	${LD} ${OBJS} ${LDFLAGS} -o $@
 	ln -sf pkgadd pkgrm
