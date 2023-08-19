@@ -49,31 +49,25 @@ protected:
 
   void db_commit();
 
-  void db_add_pkg(const string&    name,
-                  const pkginfo_t& info);
+  void db_add_pkg(const string& name, const pkginfo_t& info);
 
   bool db_find_pkg(const string& name);
 
   void db_rm_pkg(const string& name);
 
-  void db_rm_pkg(const string& name,
-                 const set<string>&  keep_list);
+  void db_rm_pkg(const string& name, const set<string>& keep_list);
 
-  void db_rm_files(set<string>         files,
-                   const set<string>&  keep_list);
+  void db_rm_files(set<string> files, const set<string>& keep_list);
 
-  set<string> db_find_conflicts(const string&     name,
-                                const pkginfo_t&  info);
+  set<string> db_find_conflicts(const string& name, const pkginfo_t& info);
 
   /*
    * Tar.gz.
    */
   pair<string, pkginfo_t> pkg_open(const string& filename) const;
 
-  void pkg_install(const string&       filename,
-                   const set<string>&  keep_list,
-                   const set<string>&  non_install_files,
-                   bool                upgrade) const;
+  void pkg_install(const string& filename, const set<string>& keep_list,
+                   const set<string>& non_install_files, bool upgrade) const;
 
   void pkg_footprint(const string& filename) const;
 
@@ -89,8 +83,7 @@ protected:
 class db_lock
 {
 public:
-  db_lock(const string&  root,
-          bool           exclusive);
+  db_lock(const string& root, bool exclusive);
 
   ~db_lock();
 private:
@@ -122,14 +115,11 @@ bool file_exists(const string& filename);
 
 bool file_empty(const string& filename);
 
-bool file_equal(const string&  file1,
-                const string&  file2);
+bool file_equal(const string& file1, const string& file2);
 
-bool permissions_equal(const string&  file1,
-                       const string&  file2);
+bool permissions_equal(const string& file1, const string& file2);
 
-void file_remove(const string&  basedir,
-                 const string&  filename);
+void file_remove(const string& basedir, const string& filename);
 
 // vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
 // End of file.
