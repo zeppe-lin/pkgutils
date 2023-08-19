@@ -18,8 +18,8 @@ This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
 See git log for complete/further differences.
 
 The original sources can be downloaded from:
-1. git://crux.nu/tools/pkgutils.git                        (git)
-2. https://crux.nu/gitweb/?p=tools/pkgutils.git;a=summary  (web)
+1. git://crux.nu/tools/pkgutils.git              (git)
+2. https://crux.nu/gitweb/?p=tools/pkgutils.git  (web)
 
 
 REQUIREMENTS
