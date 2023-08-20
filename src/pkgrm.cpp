@@ -16,9 +16,6 @@ Mandatory arguments to long options are mandatory for short options too.
   -v, --verbose       explain what is being done
   -V, --version       print version and exit
   -h, --help          print help and exit
-
-Report bugs to: <)"     PROJECT_BUGTRACKER R"(>
-pkgutils home page: <)" PROJECT_HOMEPAGE   R"(>
 )";
 }
 

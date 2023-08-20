@@ -24,9 +24,6 @@ Mandatory arguments to long options are mandatory for short options too.
   -r, --root=PATH             specify alternative installation root
   -V, --version               print version and exit
   -h, --help                  print help and exit
-
-Report bugs to: <)"     PROJECT_BUGTRACKER R"(>
-pkgutils home page: <)" PROJECT_HOMEPAGE   R"(>
 )";
 }
 

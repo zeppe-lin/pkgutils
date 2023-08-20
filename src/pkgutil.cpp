@@ -871,8 +871,7 @@ void pkgutil::pkg_footprint(const string& filename) const
 
 void pkgutil::print_version() const
 {
-  cout << utilname << " (pkgutils) " << PROJECT_VERSION << endl
-       << COPYRIGHT_MESSAGE;
+  cout << utilname << " (pkgutils) " << VERSION << endl;
 }
 
 db_lock::db_lock(const string& root, bool exclusive)
