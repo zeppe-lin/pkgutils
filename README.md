@@ -35,6 +35,7 @@ rejected by pkgadd(8) during package upgrades.
 
 [1]: https://github.com/zeppe-lin/rejmerge
 
+
 INSTALL
 -------
 The shell commands `make && make install` should build and install
