@@ -21,6 +21,9 @@ reside in a particular directory.
 
 =head1 OPTIONS
 
+Options B<-i>/B<--installed>, B<-l>/B<--list>, B<-o>/B<--owner> and
+B<-f>/B<--footprint> are mutually exclusive.
+
 Mandatory arguments to long options are mandatory for short options too.
 
 =over 8
