@@ -26,9 +26,11 @@ too.
 
 =over 8
 
-=item B<-u>, B<--upgrade>
+=item B<-c>, B<--config>=I<FILE>
 
-Upgrade/replace package with the same name as I<FILE>.
+Specify an alternate configuration file.
+
+Default: F</etc/pkgadd.conf>.
 
 =item B<-f>, B<--force>
 
@@ -40,12 +42,6 @@ overwritten.
 
 I<This option should be used with care, preferably not at all>.
 
-=item B<-c>, B<--config>=I<FILE>
-
-Specify an alternate configuration file.
-
-Default: F</etc/pkgadd.conf>.
-
 =item B<-r>, B<--root>=I<PATH>
 
 Specify an alternate root directory.  This should I<not> be used as a
@@ -56,6 +52,10 @@ using this option you not only specify where the software should be
 installed, but you also specify which package database to use.
 
 Default: C</>.
+
+=item B<-u>, B<--upgrade>
+
+Upgrade/replace package with the same name as I<FILE>.
 
 =item B<-v>, B<--verbose>
 
