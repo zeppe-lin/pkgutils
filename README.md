@@ -6,14 +6,10 @@ adding, removing and basic information gathering.
 
 This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
-- added GNU-style long options
-- refactored options parsing
-- the man pages have been rewritten in POD format
-- the man page pkgadd(8) have been split into two: pkgadd(8) and
-  pkgadd.conf(5)
-- added bash completion
-- build files have been rewritten
-- added zstd packages support
+- GNU-style command-line options/help/usage
+- Manual page in POD format
+- Split pkgadd(8) into pkgadd(8) and pkgadd.conf(5)
+- Zstd packages support
 
 See git log for complete/further differences.
 
