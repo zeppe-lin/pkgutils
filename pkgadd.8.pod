@@ -42,18 +42,20 @@ I<This option should be used with care, preferably not at all>.
 
 =item B<-c>, B<--config>=I<FILE>
 
-Specify alternate configuration file.
+Specify an alternate configuration file.
+
+Default: F</etc/pkgadd.conf>.
 
 =item B<-r>, B<--root>=I<PATH>
 
-Specify alternate installation root (default is C</>).
+Specify an alternate root directory.  This should I<not> be used as a
+way to install software into e.g.  F</usr/local> instead of F</usr>.
+Instead this should be used if you want to install a package on a
+temporary mounted partition, which is "owned" by another system.  By
+using this option you not only specify where the software should be
+installed, but you also specify which package database to use.
 
-This should I<not> be used as a way to install software into e.g.
-F</usr/local> instead of F</usr>.  Instead this should be used if you
-want to install a package on a temporary mounted partition, which is
-"owned" by another system.  By using this option you not only specify
-where the software should be installed, but you also specify which
-package database to use.
+Default: C</>.
 
 =item B<-v>, B<--verbose>
 
