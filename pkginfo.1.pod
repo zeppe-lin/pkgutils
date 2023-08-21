@@ -38,7 +38,8 @@ List files owned by the specified package or contained in file.
 
 =item B<-o>, B<--owner>=I<PATTERN>
 
-List owner(s) of file(s) matching I<PATTERN>.
+List owner(s) of file(s) matching I<PATTERN>, where the pattern is a
+regex in L<regex(3)> format.
 
 =item B<-f>, B<--footprint>=I<FILE>
 
