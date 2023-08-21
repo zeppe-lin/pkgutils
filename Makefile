@@ -1,25 +1,26 @@
-.POSIX:
-
 include config.mk
 
 BIN1 = pkginfo
 BIN8 = pkgadd pkgrm
-MAN1 = $(subst .1.pod,.1,$(wildcard pod/*.1.pod))
-MAN5 = $(subst .5.pod,.5,$(wildcard pod/*.5.pod))
-MAN8 = $(subst .8.pod,.8,$(wildcard pod/*.8.pod))
-OBJS = $(subst   .cpp,.o,$(wildcard src/*.cpp))
+MAN1 = $(subst .1.pod,.1,$(wildcard *.1.pod))
+MAN5 = $(subst .5.pod,.5,$(wildcard *.5.pod))
+MAN8 = $(subst .8.pod,.8,$(wildcard *.8.pod))
+OBJS = $(subst   .cpp,.o,$(wildcard *.cpp))
 
-all: pkgadd manpages
+all: pkgutils manpages
 
 %: %.pod
 	pod2man -r "${NAME} ${VERSION}" -c "${DESCRIPTION}" \
 		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
 
 pkgadd: ${OBJS}
-	${LD} ${OBJS} ${LDFLAGS} -o $@
+	${LD} $^ ${LDFLAGS} -o $@
+
+symlinks: pkgadd
 	ln -sf pkgadd pkgrm
 	ln -sf pkgadd pkginfo
 
+pkgutils: pkgadd symlinks
 manpages: ${MAN1} ${MAN5} ${MAN8}
 
 install: all
