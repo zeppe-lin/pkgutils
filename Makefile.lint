@@ -13,7 +13,7 @@ deadlinks:
 
 podchecker:
 	@echo "=======> Check PODs for syntax errors"
-	@podchecker pod/*.pod >/dev/null
+	@podchecker *.pod >/dev/null
 
 shellcheck:
 	@echo "=======> Check shell scripts for syntax errors"
@@ -23,11 +23,11 @@ shellcheck:
 cppcheck:
 	@echo "=======> Static C/C++ code analysis"
 	@cppcheck --quiet --enable=all --check-level=exhaustive \
-		--suppress=missingIncludeSystem src
+		--suppress=missingIncludeSystem .
 
 flawfinder:
 	@echo "=======> Check for potential security flaws"
-	@flawfinder --quiet -D src
+	@flawfinder --quiet -D .
 
 longlines:
 	@echo "=======> Check for long lines"
