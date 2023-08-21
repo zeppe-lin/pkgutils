@@ -219,13 +219,13 @@ void pkgadd::print_help() const
 Install software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -u, --upgrade        upgrade package with the same name
-  -f, --force          force install, overwrite conflicting files
-  -r, --root=PATH      specify alternative installation root
-  -c, --config=FILE    use alternative configuration file
-  -v, --verbose        explain what is being done
-  -V, --version        print version and exit
-  -h, --help           print help and exit
+  -c, --config=FILE  specify an alternate configuration file
+  -f, --force        force install, overwrite conflicting files
+  -r, --root=PATH    specify an alternate root directory
+  -u, --upgrade      upgrade package with the same name
+  -v, --verbose      explain what is being done
+  -V, --version      print version and exit
+  -h, --help         print help and exit
 )";
 }
 
