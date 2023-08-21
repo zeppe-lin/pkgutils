@@ -12,10 +12,10 @@ void pkgrm::print_help() const
 Remove software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -r, --root=PATH     specify alternative installation root
-  -v, --verbose       explain what is being done
-  -V, --version       print version and exit
-  -h, --help          print help and exit
+  -r, --root=DIR  specify an alternate root directory
+  -v, --verbose   explain what is being done
+  -V, --version   print version and exit
+  -h, --help      print help and exit
 )";
 }
 
