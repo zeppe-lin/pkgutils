@@ -17,13 +17,13 @@ void pkginfo::print_help() const
 Display software package information.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -i, --installed             list installed packages
-  -l, --list=PACKAGE|FILE     list files in PACKAGE or FILE
-  -o, --owner=PATTERN         list owner(s) of file(s) matching PATTERN
-  -f, --footprint=FILE        print footprint for FILE
-  -r, --root=PATH             specify alternative installation root
-  -V, --version               print version and exit
-  -h, --help                  print help and exit
+  -i, --installed          list installed packages
+  -l, --list=PACKAGE|FILE  list files in PACKAGE or FILE
+  -o, --owner=PATTERN      list owner(s) of file(s) matching PATTERN
+  -f, --footprint=FILE     print footprint for FILE
+  -r, --root=DIR           specify alternative installation root
+  -V, --version            print version and exit
+  -h, --help               print help and exit
 )";
 }
 
