@@ -26,7 +26,7 @@ B<-f>/B<--footprint> are mutually exclusive.
 
 Mandatory arguments to long options are mandatory for short options too.
 
-=over 8
+=over
 
 =item B<-i>, B<--installed>
 
