@@ -221,7 +221,7 @@ Install software package.
 Mandatory arguments to long options are mandatory for short options too.
   -c, --config=FILE  specify an alternate configuration file
   -f, --force        force install, overwrite conflicting files
-  -r, --root=PATH    specify an alternate root directory
+  -r, --root=DIR     specify an alternate root directory
   -u, --upgrade      upgrade package with the same name
   -v, --verbose      explain what is being done
   -V, --version      print version and exit
@@ -371,5 +371,5 @@ void pkgadd::run(int argc, char** argv)
   }
 }
 
-// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
 // End of file.
