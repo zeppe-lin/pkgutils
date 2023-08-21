@@ -44,14 +44,14 @@ Print footprint for I<FILE>.
 This feature is mainly used by L<pkgmk(8)> for creating and comparing
 footprints.
 
-=item B<-r>, B<--root>=I<PATH>
+=item B<-r>, B<--root>=I<DIR>
 
-Specify alternate installation root (default is C</>).
+Specify an alternate root directory.  This should be used if you want
+to display information about a package that is installed on a
+temporary mounted partition, which is "owned" by another system.  By
+using this option you specify which package database to use.
 
-This should be used if you want to display information about a package
-that is installed on a temporary mounted partition, which is "owned"
-by another system.  By using this option you specify which package
-database to use.
+Default: C</>.
 
 =item B<-V>, B<--version>
 
@@ -79,5 +79,5 @@ L<pkgadd(8)>, L<pkgrm(8)>
 
 =cut
 
-# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+# vim: cc=72 tw=70
 # End of file.
