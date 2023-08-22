@@ -41,10 +41,16 @@ int main(int argc, char** argv)
     unique_ptr<pkgutil> util(select_utility(name));
     util->run(argc, argv);
   }
+  catch (invalid_argument& e)
+  {
+    if (strlen(e.what()))
+      cerr << name << ": " << e.what() << endl;
+    cerr << "Try '" << name << " --help' for more information." << endl;
+    return EXIT_FAILURE;
+  }
   catch (runtime_error& e)
   {
-    cerr << name << ": " << e.what() << endl
-         << "Try '" << name << " --help' for more information." << endl;
+    cerr << name << ": " << e.what() << endl;
     return EXIT_FAILURE;
   }
 

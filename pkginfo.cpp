@@ -51,7 +51,6 @@ void pkginfo::run(int argc, char** argv)
 
   while ((opt = getopt_long(argc, argv, "r:l:i:f:iVh", longopts, 0)) != -1)
   {
-    char ch = static_cast<char>(optopt);
     switch (opt) {
     case 'r':
       o_root = optarg;
@@ -76,18 +75,19 @@ void pkginfo::run(int argc, char** argv)
     case 'h':
       return print_help();
       break;
-    case ':':
-      throw runtime_error("-"s + ch + ": missing option argument\n");
-    case '?':
-      throw runtime_error("-"s + ch + ": invalid option\n");
+    case ':': /* missing option argument */
+    case '?': /* invalid option */
+      /* throw an empty message since getopt_long already printed out
+       * the error message to stderr */
+      throw invalid_argument("");
     }
   }
 
   if (o_footprint_mode + o_installed_mode + o_list_mode + o_owner_mode == 0)
-    throw runtime_error("option missing");
+    throw invalid_argument("option missing");
 
   if (o_footprint_mode + o_installed_mode + o_list_mode + o_owner_mode > 1)
-    throw runtime_error("too many options");
+    throw invalid_argument("too many options");
 
   if (o_footprint_mode)
   {

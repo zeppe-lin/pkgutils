@@ -37,7 +37,6 @@ void pkgrm::run(int argc, char** argv)
 
   while ((opt = getopt_long(argc, argv, ":r:vVh", longopts, 0)) != -1)
   {
-    char ch = static_cast<char>(optopt);
     switch (opt) {
     case 'r':
       o_root = optarg;
@@ -47,21 +46,20 @@ void pkgrm::run(int argc, char** argv)
       break;
     case 'V':
       return print_version();
-      break;
     case 'h':
       return print_help();
-      break;
-    case ':':
-      throw runtime_error("-"s + ch + ": missing option argument\n");
-    case '?':
-      throw runtime_error("-"s + ch + ": invalid option\n");
+    case ':': /* missing option argument */
+    case '?': /* invalid option */
+      /* throw an empty message since getopt_long already printed out
+       * the error message to stderr */
+      throw invalid_argument("");
     }
   }
 
   if (optind == argc)
-    throw runtime_error("missing package name");
+    throw invalid_argument("missing package name");
   else if (argc - optind > 1)
-    throw runtime_error("too many arguments");
+    throw invalid_argument("too many arguments");
 
   o_package = argv[optind];
 
