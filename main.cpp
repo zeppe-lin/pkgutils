@@ -43,7 +43,8 @@ int main(int argc, char** argv)
   }
   catch (runtime_error& e)
   {
-    cerr << name << ": " << e.what() << endl;
+    cerr << name << ": " << e.what() << endl
+         << "Try '" << name << " --help' for more information." << endl;
     return EXIT_FAILURE;
   }
 
