@@ -26,7 +26,7 @@ and B<-o>/B<--owner> are mutually exclusive.
 
 Mandatory arguments to long options are mandatory for short options too.
 
-=over
+=over 8
 
 =item B<-f>, B<--footprint>=I<FILE>
 
@@ -69,7 +69,7 @@ Print help and exit.
 
 =head1 FILES
 
-=over
+=over 8
 
 =item F</var/lib/pkg/db>
 
