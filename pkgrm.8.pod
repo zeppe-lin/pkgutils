@@ -1,4 +1,4 @@
-# pkgrm.8.pod - documentation for pkgrm(8) manual page
+# pkgrm(8) manual page
 # See COPYING and COPYRIGHT files for corresponding information.
 
 =pod

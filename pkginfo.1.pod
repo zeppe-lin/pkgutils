@@ -1,4 +1,4 @@
-# pkginfo.1.pod - documentation for pkginfo(1) manual page
+# pkginfo(1) manual page
 # See COPYING and COPYRIGHT files for corresponding information.
 
 =pod
