@@ -32,10 +32,10 @@ lowest priority and the last rule will have the highest priority.
 
 For example:
 
-  UPGRADE  ^etc/.*$              NO
-  UPGRADE  ^var/log/.*$          NO
-  UPGRADE  ^etc/X11/.*$          YES
-  UPGRADE  ^etc/X11/XF86Config$  NO
+        UPGRADE        ^etc/.*$                   NO
+        UPGRADE        ^var/log/.*$               NO
+        UPGRADE        ^etc/X11/.*$               YES
+        UPGRADE        ^etc/X11/XF86Config$       NO
 
 The above example will cause L<pkgadd(8)> to never upgrade anything in
 F</etc> or F</var/log> (subdirectories included), except files in
@@ -51,25 +51,35 @@ will install it under F</var/lib/pkg/rejected/>.  The user is then
 free to examine/use/remove that file manually or use L<rejmerge(8)> to
 manage rejected files.
 
-=head1 EXAMPLE
+=head1 EXAMPLES
 
-  #
-  # /etc/pkgadd.conf: pkgadd(8) configuration
-  #
-  # See pkgadd.conf(5) for more information.
-  #
+What follows is a sample configuration file which may, or may not
+match your environment:
 
-  # Default rule (implicit)
-  #UPGRADE    ^.*$                       YES
+        #
+        # /etc/pkgadd.conf: pkgadd(8) configuration
+        #
+        # See pkgadd.conf(5) for more information.
+        #
 
-  UPGRADE     ^var/log/.*$               NO
-  UPGRADE     ^var/spool/\w*cron/.*$     NO
-  UPGRADE     ^var/run/utmp$             NO
+        # Default rule (implicit)
+        #UPGRADE       ^.*$                       YES
 
-  UPGRADE     ^etc/rc.*$                 YES
-  UPGRADE     ^etc/rc\.conf$             NO
+        UPGRADE        ^var/log/.*$               NO
+        UPGRADE        ^var/spool/cron/.*$        NO
+        UPGRADE        ^var/run/utmp$             NO
 
-  # End of file.
+        UPGRADE        ^etc/rc.*$                 YES
+        UPGRADE        ^etc/rc\.conf$             NO
+
+        # End of file.
+
+All lines which begin with the C<#> character are comments and will
+not be parsed.  The first three rules will cause L<pkgadd(8)> to never
+upgrade anything in F</var/log> (subdirectories included), never
+upgrade anything in F</var/spool/cron> and never upgrade
+F</var/run/utmp> file.  The last two rules will cause L<pkgadd(8)> to
+upgrade any F</etc/rc*> files, except F</etc/rc.conf> system settings.
 
 =head1 FILES
 
@@ -95,5 +105,5 @@ L<pkgadd(8)>
 
 =cut
 
-# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+# vim: cc=72 tw=70
 # End of file.
