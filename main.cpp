@@ -34,23 +34,22 @@ static pkgutil* select_utility(const string& name)
 
 int main(int argc, char** argv)
 {
-  string name = basename(argv[0]);
-
   try
   {
+    string name = basename(argv[0]);
     unique_ptr<pkgutil> util(select_utility(name));
     util->run(argc, argv);
   }
   catch (invalid_argument& e)
   {
     if (strlen(e.what()))
-      cerr << name << ": " << e.what() << endl;
-    cerr << "Try '" << name << " --help' for more information." << endl;
+      cerr << argv[0] << ": " << e.what() << endl;
+    cerr << "Try '" << argv[0] << " --help' for more information." << endl;
     return EXIT_FAILURE;
   }
   catch (runtime_error& e)
   {
-    cerr << name << ": " << e.what() << endl;
+    cerr << argv[0] << ": " << e.what() << endl;
     return EXIT_FAILURE;
   }
 
