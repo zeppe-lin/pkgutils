@@ -10,7 +10,7 @@ OBJS = $(subst   .cpp,.o,$(wildcard *.cpp))
 all: pkgutils manpages
 
 %: %.pod
-	pod2man -r "${NAME} ${VERSION}" -c "${DESCRIPTION}" \
+	pod2man -r "${NAME} ${VERSION}" -c "Package Management" \
 		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
 
 pkgadd: ${OBJS}
