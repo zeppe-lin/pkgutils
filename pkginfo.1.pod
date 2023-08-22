@@ -28,6 +28,13 @@ Mandatory arguments to long options are mandatory for short options too.
 
 =over
 
+=item B<-f>, B<--footprint>=I<FILE>
+
+Print footprint for I<FILE>.
+
+This feature is mainly used by L<pkgmk(8)> for creating and comparing
+footprints.
+
 =item B<-i>, B<--installed>
 
 List installed packages and their version.
@@ -40,13 +47,6 @@ List files owned by the specified package or contained in file.
 
 List owner(s) of file(s) matching I<PATTERN>, where the pattern is a
 regex in L<regex(3)> format.
-
-=item B<-f>, B<--footprint>=I<FILE>
-
-Print footprint for I<FILE>.
-
-This feature is mainly used by L<pkgmk(8)> for creating and comparing
-footprints.
 
 =item B<-r>, B<--root>=I<DIR>
 
@@ -69,7 +69,7 @@ Print help and exit.
 
 =head1 FILES
 
-=over 8
+=over
 
 =item F</var/lib/pkg/db>
 
