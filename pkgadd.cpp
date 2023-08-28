@@ -238,30 +238,30 @@ void pkgadd::run(int argc, char** argv)
   static string o_root, o_config = PKGADD_CONF, o_package;
   int opt;
   static struct option longopts[] = {
-    { "root",     required_argument,  NULL,           'r' },
     { "config",   required_argument,  NULL,           'c' },
-    { "upgrade",  no_argument,        NULL,           'u' },
     { "force",    no_argument,        NULL,           'f' },
+    { "root",     required_argument,  NULL,           'r' },
+    { "upgrade",  no_argument,        NULL,           'u' },
     { "verbose",  no_argument,        NULL,           'v' },
     { "version",  no_argument,        NULL,           'V' },
     { "help",     no_argument,        NULL,           'h' },
     { 0,          0,                  0,              0   },
   };
 
-  while ((opt = getopt_long(argc, argv, "r:c:ufvVh", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, "c:fr:uvVh", longopts, 0)) != -1)
   {
     switch (opt) {
-    case 'r':
-      o_root = optarg;
-      break;
     case 'c':
       o_config = optarg;
       break;
-    case 'u':
-      o_upgrade = 1;
-      break;
     case 'f':
       o_force = 1;
+      break;
+    case 'r':
+      o_root = optarg;
+      break;
+    case 'u':
+      o_upgrade = 1;
       break;
     case 'v':
       o_verbose++;
@@ -270,8 +270,7 @@ void pkgadd::run(int argc, char** argv)
       return print_version();
     case 'h':
       return print_help();
-    case ':': /* missing option argument */
-    case '?': /* invalid option */
+    default:
       /* throw an empty message since getopt_long already printed out
        * the error message to stderr */
       throw invalid_argument("");
