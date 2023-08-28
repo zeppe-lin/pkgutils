@@ -35,7 +35,7 @@ void pkgrm::run(int argc, char** argv)
     { 0,          0,                  0,              0   },
   };
 
-  while ((opt = getopt_long(argc, argv, ":r:vVh", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, "r:vVh", longopts, 0)) != -1)
   {
     switch (opt) {
     case 'r':
@@ -48,8 +48,7 @@ void pkgrm::run(int argc, char** argv)
       return print_version();
     case 'h':
       return print_help();
-    case ':': /* missing option argument */
-    case '?': /* invalid option */
+    default:
       /* throw an empty message since getopt_long already printed out
        * the error message to stderr */
       throw invalid_argument("");
@@ -88,5 +87,5 @@ void pkgrm::run(int argc, char** argv)
   }
 }
 
-// vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
 // End of file.
