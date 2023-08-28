@@ -49,7 +49,7 @@ void pkginfo::run(int argc, char** argv)
     { "help",       no_argument,        NULL,               'h' },
   };
 
-  while ((opt = getopt_long(argc, argv, "r:l:i:f:iVh", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, "r:l:o:i:f:iVh", longopts, 0)) != -1)
   {
     switch (opt) {
     case 'r':
@@ -75,8 +75,7 @@ void pkginfo::run(int argc, char** argv)
     case 'h':
       return print_help();
       break;
-    case ':': /* missing option argument */
-    case '?': /* invalid option */
+    default:
       /* throw an empty message since getopt_long already printed out
        * the error message to stderr */
       throw invalid_argument("");
