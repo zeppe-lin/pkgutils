@@ -34,26 +34,27 @@ void pkginfo::run(int argc, char** argv)
    */
   static int o_footprint_mode = 0;
   static int o_installed_mode = 0;
-  static int o_list_mode = 0;
-  static int o_owner_mode = 0;
+  static int o_list_mode      = 0;
+  static int o_owner_mode     = 0;
   static string o_root;
   static string o_arg;
   int opt;
   static struct option longopts[] = {
-    { "root",       required_argument,  NULL,               'r' },
-    { "list",       required_argument,  NULL,               'l' },
-    { "owner",      required_argument,  NULL,               'o' },
     { "footprint",  required_argument,  NULL,               'f' },
     { "installed",  no_argument,        NULL,               'i' },
+    { "list",       required_argument,  NULL,               'l' },
+    { "owner",      required_argument,  NULL,               'o' },
+    { "root",       required_argument,  NULL,               'r' },
     { "version",    no_argument,        NULL,               'V' },
     { "help",       no_argument,        NULL,               'h' },
   };
 
-  while ((opt = getopt_long(argc, argv, "r:l:o:i:f:iVh", longopts, 0)) != -1)
+  while ((opt = getopt_long(argc, argv, "f:il:o:r:Vh", longopts, 0)) != -1)
   {
     switch (opt) {
-    case 'r':
-      o_root = optarg;
+    case 'f':
+      o_footprint_mode = 1;
+      o_arg = optarg;
       break;
     case 'i':
       o_installed_mode = 1;
@@ -66,15 +67,13 @@ void pkginfo::run(int argc, char** argv)
       o_owner_mode = 1;
       o_arg = optarg;
       break;
-    case 'f':
-      o_footprint_mode = 1;
-      o_arg = optarg;
+    case 'r':
+      o_root = optarg;
       break;
     case 'V':
       return print_version();
     case 'h':
       return print_help();
-      break;
     default:
       /* throw an empty message since getopt_long already printed out
        * the error message to stderr */
