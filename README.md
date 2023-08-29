@@ -21,7 +21,7 @@ The original sources can be downloaded from:
 REQUIREMENTS
 ------------
 **Build time**:
-- C99 compiler
+- C++ compiler
 - POSIX sh(1p) and "mandatory utilities"
 - GNU make(1)
 - pod2man(1pm) to build man pages
