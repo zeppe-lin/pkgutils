@@ -8,7 +8,7 @@ This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
 - command-line options/usage in GNU style
 - manual pages in POD format
-- split pkgadd(8) into pkgadd(8) and pkgadd.conf(5)
+- split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
 - support zstd packages
 
 See git log for complete/further differences.
