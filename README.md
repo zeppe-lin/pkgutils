@@ -7,7 +7,7 @@ adding, removing and basic information gathering.
 This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
 - command-line options/usage in GNU style
-- manual page in POD format
+- manual pages in POD format
 - split pkgadd(8) into pkgadd(8) and pkgadd.conf(5)
 - support zstd packages
 
@@ -21,7 +21,7 @@ The original sources can be downloaded from:
 REQUIREMENTS
 ------------
 **Build time**:
-- c99 compiler
+- C99 compiler
 - POSIX sh(1p) and "mandatory utilities"
 - GNU make(1)
 - pod2man(1pm) to build man pages
@@ -36,9 +36,9 @@ rejected by pkgadd(8) during package upgrades.
 INSTALL
 -------
 The shell commands `make && make install` should build and install
-this package.  See `config.mk` file for configuration parameters,
-and `pathnames.h` for absolute filenames and settings that pkgutils
-wants for various defaults.
+this package.  See `config.mk` file for configuration parameters, and
+`pathnames.h` for absolute filenames and settings that pkgutils wants
+for various defaults.
 
 
 LICENSE
