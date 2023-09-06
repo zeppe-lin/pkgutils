@@ -7,7 +7,7 @@ adding, removing and basic information gathering.
 This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
 - command-line options/usage in GNU style
-- manual pages in POD format
+- manual pages in mdoc(7) format
 - split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
 - support zstd packages
 
@@ -24,7 +24,6 @@ REQUIREMENTS
 - C++ compiler
 - POSIX sh(1p) and "mandatory utilities"
 - GNU make(1)
-- pod2man(1pm) to build man pages
 - libarchive(3) to unpack an archive files
 
 Also, see [rejmerge][1], an utility that merges files that were
