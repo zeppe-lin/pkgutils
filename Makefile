@@ -1,17 +1,8 @@
 include config.mk
 
-BIN1 = pkginfo
-BIN8 = pkgadd pkgrm
-MAN1 = $(subst .1.pod,.1,$(wildcard *.1.pod))
-MAN5 = $(subst .5.pod,.5,$(wildcard *.5.pod))
-MAN8 = $(subst .8.pod,.8,$(wildcard *.8.pod))
-OBJS = $(subst   .cpp,.o,$(wildcard *.cpp))
+all: pkgadd symlinks
 
-all: pkgutils manpages
-
-%: %.pod
-	pod2man -r "${NAME} ${VERSION}" -c "Package Management" \
-		-n $(basename $@) -s $(subst .,,$(suffix $@)) $< > $@
+OBJS = $(subst .cpp,.o,$(wildcard *.cpp))
 
 pkgadd: ${OBJS}
 	${LD} $^ ${LDFLAGS} -o $@
@@ -20,49 +11,54 @@ symlinks: pkgadd
 	ln -sf pkgadd pkgrm
 	ln -sf pkgadd pkginfo
 
-pkgutils: pkgadd symlinks
-manpages: ${MAN1} ${MAN5} ${MAN8}
-
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	mkdir -p ${DESTDIR}${PREFIX}/sbin
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	mkdir -p ${DESTDIR}${MANPREFIX}/man5
 	mkdir -p ${DESTDIR}${MANPREFIX}/man8
-	cp -f pkgadd  ${DESTDIR}${PREFIX}/sbin/
-	cp -f ${MAN1} ${DESTDIR}${MANPREFIX}/man1/
-	cp -f ${MAN5} ${DESTDIR}${MANPREFIX}/man5/
-	cp -f ${MAN8} ${DESTDIR}${MANPREFIX}/man8/
-	cd ${DESTDIR}${PREFIX}/sbin    && chmod 0755 pkgadd
-	cd ${DESTDIR}${MANPREFIX}/man1 && chmod 0644 ${MAN1:pod/%=%}
-	cd ${DESTDIR}${MANPREFIX}/man5 && chmod 0644 ${MAN5:pod/%=%}
-	cd ${DESTDIR}${MANPREFIX}/man8 && chmod 0644 ${MAN8:pod/%=%}
+	cp -f pkgadd          ${DESTDIR}${PREFIX}/sbin/
+	sed "s/@VERSION@/${VERSION}/" pkginfo.1 > \
+		${DESTDIR}${MANPREFIX}/man1/pkginfo.1
+	sed "s/@VERSION@/${VERSION}/" pkgadd.conf.5 > \
+		${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
+	sed "s/@VERSION@/${VERSION}/" pkgadd.8 > \
+		${DESTDIR}${MANPREFIX}/man8/pkgadd.8
+	sed "s/@VERSION@/${VERSION}/" pkgrm.8 > \
+		${DESTDIR}${MANPREFIX}/man8/pkgrm.8
+	chmod 0755 ${DESTDIR}${PREFIX}/sbin/pkgadd
+	chmod 0644 ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
+	chmod 0644 ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
+	chmod 0644 ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
+	chmod 0644 ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
 	ln -sf pkgadd         ${DESTDIR}${PREFIX}/sbin/pkgrm
 	ln -sf ../sbin/pkgadd ${DESTDIR}${PREFIX}/bin/pkginfo
 
 uninstall:
-	cd ${DESTDIR}${PREFIX}/bin     && rm -f ${BIN1}
-	cd ${DESTDIR}${PREFIX}/sbin    && rm -f ${BIN8}
-	cd ${DESTDIR}${MANPREFIX}/man1 && rm -f ${MAN1:pod/%=%}
-	cd ${DESTDIR}${MANPREFIX}/man5 && rm -f ${MAN5:pod/%=%}
-	cd ${DESTDIR}${MANPREFIX}/man8 && rm -f ${MAN8:pod/%=%}
+	rm -f ${DESTDIR}${PREFIX}/bin/pkginfo
+	rm -f ${DESTDIR}${PREFIX}/sbin/pkgadd
+	rm -f ${DESTDIR}${PREFIX}/sbin/pkgrm
+	rm -f ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
+	rm -f ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
+	rm -f ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
+	rm -f ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
 
-install-bashcomp:
+install_bashcomp:
 	mkdir -p ${DESTDIR}${BASHCOMPDIR}
 	cp -f bash_completion ${DESTDIR}${BASHCOMPDIR}/pkgadd
 	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkginfo
 	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkgrm
 
-uninstall-bashcomp:
+uninstall_bashcomp:
 	rm -f ${DESTDIR}${BASHCOMPDIR}/pkgadd
 	rm -f ${DESTDIR}${BASHCOMPDIR}/pkginfo
 	rm -f ${DESTDIR}${BASHCOMPDIR}/pkgrm
 
 clean:
-	rm -f ${OBJS} ${BIN1} ${BIN8} ${MAN1} ${MAN5} ${MAN8}
+	rm -f ${OBJS} pkginfo pkgadd pkgrm
 	rm -f ${DIST}.tar.gz
 
 dist: clean
 	git archive --format=tar.gz -o ${DIST}.tar.gz --prefix=${DIST}/ HEAD
 
-.PHONY: all install uninstall install-bashcomp uninstall-bashcomp clean dist
+.PHONY: all install uninstall install_bashcomp uninstall_bashcomp clean dist
