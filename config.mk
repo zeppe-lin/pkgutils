@@ -14,7 +14,3 @@ CPPFLAGS     = -D_POSIX_SOURCE -D_GNU_SOURCE -D_LARGEFILE_SOURCE \
 CXXFLAGS     = -Wall -Wextra -pedantic -Wformat -Wformat-security \
 	       -Wconversion -Wsign-conversion
 LDFLAGS      = -static $(shell pkg-config --libs --static libarchive)
-
-# compiler
-CXX          = c++
-LD           = ${CXX}

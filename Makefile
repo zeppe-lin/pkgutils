@@ -5,7 +5,7 @@ all: pkgadd symlinks
 OBJS = $(subst .cpp,.o,$(wildcard *.cpp))
 
 pkgadd: ${OBJS}
-	${LD} $^ ${LDFLAGS} -o $@
+	${CXX} $^ ${LDFLAGS} -o $@
 
 symlinks: pkgadd
 	ln -sf pkgadd pkgrm
