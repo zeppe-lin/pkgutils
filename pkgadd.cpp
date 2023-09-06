@@ -215,17 +215,19 @@ vector<rule_t> pkgadd::read_config(string file) const
 
 void pkgadd::print_help() const
 {
-  cout << "Usage: " << utilname << R"( [OPTION]... FILE
-Install software package.
+  cout << "Usage: " << utilname << " [-fuv] [-c conffile] [-r rootdir] file\n"
+       << "       " << utilname << " [-V]\n"
+       << "       " << utilname << " [-h]\n"
+       << R"(Install software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -c, --config=FILE  specify an alternate configuration file
-  -f, --force        force install, overwrite conflicting files
-  -r, --root=DIR     specify an alternate root directory
-  -u, --upgrade      upgrade package with the same name
-  -v, --verbose      explain what is being done
-  -V, --version      print version and exit
-  -h, --help         print help and exit
+  -c, --config=conffile  specify an alternate configuration file
+  -f, --force            force install, overwrite conflicting files
+  -r, --root=rootdir     specify an alternate root directory
+  -u, --upgrade          upgrade package with the same name
+  -v, --verbose          explain what is being done
+  -V, --version          print version and exit
+  -h, --help             print help and exit
 )";
 }
 

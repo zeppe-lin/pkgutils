@@ -13,15 +13,20 @@
 
 void pkginfo::print_help() const
 {
-  cout << "Usage: " << utilname << R"( [OPTION]
-Display software package information.
+  cout << "Usage: " << utilname << " [-r rootdir] [-f file]\n"
+       << "       " << utilname << " [-r rootdir] [-i]\n"
+       << "       " << utilname << " [-r rootdir] [-l pkgname | file]\n"
+       << "       " << utilname << " [-r rootdir] [-o pattern]\n"
+       << "       " << utilname << " [-V]\n"
+       << "       " << utilname << " [-h]\n"
+       << R"(Display software package information.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -f, --footprint=FILE     print footprint for FILE
+  -f, --footprint=file     print footprint for FILE
   -i, --installed          list installed packages and their version
-  -l, --list=PACKAGE|FILE  list files in PACKAGE or FILE
-  -o, --owner=PATTERN      list owner(s) of file(s) matching PATTERN
-  -r, --root=DIR           specify an alternate installation root
+  -l, --list=pkgname|file  list files in PACKAGE or FILE
+  -o, --owner=pattern      list owner(s) of file(s) matching PATTERN
+  -r, --root=rootdir       specify an alternate installation root
   -V, --version            print version and exit
   -h, --help               print help and exit
 )";
