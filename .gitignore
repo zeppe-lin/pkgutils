@@ -1,5 +1,9 @@
 # build files and artefacts
-*.o
+pkgadd.o
+pkginfo.o
+pkgrm.o
+pkgutil.o
+main.o
 pkgadd
 pkginfo
 pkgrm
