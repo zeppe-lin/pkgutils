@@ -1,0 +1,51 @@
+.\" pkgrm(8) manual page
+.\" See COPYING and COPYRIGHT files for corresponding information.
+.Dd September 6, 2023
+.Dt PKGRM 8
+.Os pkgutils @VERSION@
+.Sh NAME
+.Nm pkgrm
+.Nd remove software packages
+.Sh SYNOPSIS
+.Nm pkgrm
+.Op Fl r Ar rootdir
+.Op Fl v
+.Ar pkgname
+.Nm
+.Op Fl V
+.Nm
+.Op Fl h
+.Sh DESCRIPTION
+.Nm
+is a package management utility, which removes/uninstalls a previously
+installed software packages.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl r Ar rootdir , Fl \-root Ns = Ns Ar rootdir
+Specify an alternate root directory instead of the default
+.Ql / .
+.Pp
+This should be used if you want to remove a package from a temporary
+mounted partition, which is
+.Dq owned
+by another system.
+By using this option you not only specify where the software is
+installed, but you also specify which package database to use.
+.It Fl v , Fl \-verbose
+Explain what is being done.
+.It Fl V , Fl \-version
+Print version and exit.
+.It Fl h , Fl \-help
+Print help and exit.
+.El
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa /var/lib/pkg/db
+Database of currently installed packages.
+.El
+.Sh SEE ALSO
+.Xr pkginfo 1 ,
+.Xr pkgadd 8
+.\" vim: cc=72 tw=70
+.\" End of file.

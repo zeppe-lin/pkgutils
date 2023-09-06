@@ -1,0 +1,83 @@
+.\" pkginfo(1) manual page
+.\" See COPYING and COPYRIGHT files for corresponding information.
+.Dd September 6, 2023
+.Dt PKGINFO 1
+.Os pkgutils @VERSION@
+.Sh NAME
+.Nm pkginfo
+.Nd display software package information
+.Sh SYNOPSIS
+.Nm pkginfo
+.Op Fl r Ar rootdir
+.Op Fl f Ar file
+.Nm
+.Op Fl r Ar rootdir
+.Op Fl i
+.Nm
+.Op Fl r Ar rootdir
+.Op Fl l Ar pkgname | file
+.Nm
+.Op Fl r Ar rootdir
+.Op Fl o Ar pattern
+.Nm
+.Op Fl V
+.Nm
+.Op Fl h
+.Sh DESCRIPTION
+.Nm
+is a package management utility, which displays information about
+software packages that are installed on the system or that reside in a
+particular directory.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl f Ar file , Fl \-footprint Ns = Ns Ar file
+Print footprint for
+.Ar file .
+.Pp
+This feature is mainly used by
+.Xr pkgmk 8
+to create and compare package footprints.
+.It Fl i , Fl \-installed
+List installed packages and their version.
+.It Fl l Ar pkgname | file , Fl \-list Ns = Ns Ar pkgname | file
+List files owned by the specified package or contained in
+.Ar file .
+.It Fl o Ar pattern , Fl \-owner Ns = Ns Ar pattern
+List owner(s) of file(s) matching
+.Ar pattern ,
+where the pattern is a regex in
+.Xr regex 3
+format.
+.It Fl r Ar rootdir , Fl \-root Ns = Ns Ar rootdir
+Specify an alternate root directory instead of the default
+.Ql / .
+.Pp
+This should be used if you want to display information about a package
+that is installed on a temporary mounted partition, which is
+.Dq owned
+by another system.
+By using this option you specify which package database to use.
+.It Fl V , Fl \-version
+Print version and exit.
+.It Fl h , Fl \-help
+Print help and exit.
+.El
+.Pp
+Note that options
+.Fl f Ns / Ns Fl \-footprint ,
+.Fl i Ns / Ns Fl \-installed ,
+.Fl l Ns / Ns Fl \-list ,
+and
+.Fl o Ns / Ns Fl \-owner
+are mutually exclusive.
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa /var/lib/pkg/db
+Database of currently installed packages.
+.El
+.Sh SEE ALSO
+.Xr pkgadd 8 ,
+.Xr pkgrm 8
+.\" vim: cc=72 tw=70
+.\" End of file.
