@@ -3,11 +3,14 @@
 .Dd September 6, 2023
 .Dt PKGADD.CONF 5
 .Os pkgutils @VERSION@
+.\" ==================================================================
 .Sh NAME
 .Nm pkgadd.conf
 .Nd configuration file for pkgadd
+.\" ==================================================================
 .Sh SYNOPSIS
 .Nm /etc/pkgadd.conf
+.\" ==================================================================
 .Sh DESCRIPTION
 This manual page describes the format of the
 .Pa pkgadd.conf
@@ -88,6 +91,7 @@ under
 The user is then free to examine/use/remove that file manually or use
 .Xr rejmerge 8
 to manage rejected files.
+.\" ==================================================================
 .Sh FILES
 .Bl -tag -width Ds
 .It Pa /etc/pkgadd.conf
@@ -98,6 +102,7 @@ Database of currently installed packages.
 .It Pa /var/lib/pkg/rejected/
 Directory where rejected files are stored.
 .El
+.\" ==================================================================
 .Sh EXAMPLES
 What follows is a sample configuration file which may, or may not
 match your environment:
@@ -140,6 +145,7 @@ to upgrade any
 files, except
 .Pa /etc/rc.conf
 system settings.
+.\" ==================================================================
 .Sh SEE ALSO
 .Xr pkgadd 8
 .\" vim: cc=72 tw=70
