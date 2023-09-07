@@ -3,9 +3,11 @@
 .Dd September 6, 2023
 .Dt PKGINFO 1
 .Os pkgutils @VERSION@
+.\" ==================================================================
 .Sh NAME
 .Nm pkginfo
 .Nd display software package information
+.\" ==================================================================
 .Sh SYNOPSIS
 .Nm pkginfo
 .Op Fl r Ar rootdir
@@ -23,6 +25,7 @@
 .Op Fl V
 .Nm
 .Op Fl h
+.\" ==================================================================
 .Sh DESCRIPTION
 .Nm
 is a package management utility, which displays information about
@@ -71,11 +74,13 @@ Note that options
 and
 .Fl o Ns / Ns Fl \-owner
 are mutually exclusive.
+.\" ==================================================================
 .Sh FILES
 .Bl -tag -width Ds
 .It Pa /var/lib/pkg/db
 Database of currently installed packages.
 .El
+.\" ==================================================================
 .Sh SEE ALSO
 .Xr pkgadd 8 ,
 .Xr pkgrm 8
