@@ -2,10 +2,12 @@
 .\" See COPYING and COPYRIGHT files for corresponding information.
 .Dd September 6, 2023
 .Dt PKGADD 8
-.Os
+.Os pkgutils @VERSION@
+.\" ==================================================================
 .Sh NAME
 .Nm pkgadd
 .Nd install software package
+.\" ==================================================================
 .Sh SYNOPSIS
 .Nm pkgadd
 .Op Fl fuv
@@ -16,6 +18,7 @@
 .Op Fl V
 .Nm
 .Op Fl h
+.\" ==================================================================
 .Sh DESCRIPTION
 .Nm
 is a package management utility, which installs a software package.
@@ -68,6 +71,7 @@ Print version and exit.
 .It Fl h , Fl \-help
 Print help and exit.
 .El
+.\" ==================================================================
 .Sh FILES
 .Bl -tag -width compact
 .It Pa /etc/pkgadd.conf
@@ -77,6 +81,7 @@ Database of currently installed packages.
 .It Pa /var/lib/pkg/rejected/
 Directory where rejected files are stored.
 .El
+.\" ==================================================================
 .Sh SEE ALSO
 .Xr pkginfo 1 ,
 .Xr pkgadd.conf 5 ,
