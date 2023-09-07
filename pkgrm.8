@@ -3,9 +3,11 @@
 .Dd September 6, 2023
 .Dt PKGRM 8
 .Os pkgutils @VERSION@
+.\" ==================================================================
 .Sh NAME
 .Nm pkgrm
 .Nd remove software packages
+.\" ==================================================================
 .Sh SYNOPSIS
 .Nm pkgrm
 .Op Fl v
@@ -15,6 +17,7 @@
 .Op Fl V
 .Nm
 .Op Fl h
+.\" ==================================================================
 .Sh DESCRIPTION
 .Nm
 is a package management utility, which removes/uninstalls a previously
@@ -39,11 +42,13 @@ Print version and exit.
 .It Fl h , Fl \-help
 Print help and exit.
 .El
+.\" ==================================================================
 .Sh FILES
 .Bl -tag -width Ds
 .It Pa /var/lib/pkg/db
 Database of currently installed packages.
 .El
+.\" ==================================================================
 .Sh SEE ALSO
 .Xr pkginfo 1 ,
 .Xr pkgadd 8
