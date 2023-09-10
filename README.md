@@ -23,7 +23,7 @@ REQUIREMENTS
 **Build time**:
 - C++ compiler
 - POSIX sh(1p) and "mandatory utilities"
-- GNU make(1)
+- BSD/GNU make(1)
 - libarchive(3) to unpack an archive files
 
 Also, see [rejmerge][1], an utility that merges files that were
