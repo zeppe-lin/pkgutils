@@ -2,7 +2,7 @@ include config.mk
 
 all: pkgadd symlinks
 
-OBJS = $(subst .cpp,.o,$(wildcard *.cpp))
+OBJS = main.o pkgadd.o pkginfo.o pkgrm.o pkgutil.o
 
 pkgadd: ${OBJS}
 	${CXX} $^ ${LDFLAGS} -o $@
