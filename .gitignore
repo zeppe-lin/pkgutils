@@ -1,12 +1,8 @@
 # build files and artefacts
-pkgadd.o
-pkginfo.o
-pkgrm.o
-pkgutil.o
-main.o
 pkgadd
 pkginfo
 pkgrm
+*.o
 
 # vim undo and swap files
 .*.un~
