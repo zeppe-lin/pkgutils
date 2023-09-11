@@ -17,15 +17,15 @@ install: all
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	mkdir -p ${DESTDIR}${MANPREFIX}/man5
 	mkdir -p ${DESTDIR}${MANPREFIX}/man8
-	cp -f pkgadd          ${DESTDIR}${PREFIX}/sbin/
-	sed "s/@VERSION@/${VERSION}/" pkginfo.1 > \
-		${DESTDIR}${MANPREFIX}/man1/pkginfo.1
-	sed "s/@VERSION@/${VERSION}/" pkgadd.conf.5 > \
-		${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
-	sed "s/@VERSION@/${VERSION}/" pkgadd.8 > \
-		${DESTDIR}${MANPREFIX}/man8/pkgadd.8
-	sed "s/@VERSION@/${VERSION}/" pkgrm.8 > \
-		${DESTDIR}${MANPREFIX}/man8/pkgrm.8
+	cp -f pkgadd ${DESTDIR}${PREFIX}/sbin/
+	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkginfo.1 \
+		> ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
+	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkgadd.conf.5 \
+		> ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
+	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkgadd.8 \
+		> ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
+	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkgrm.8 \
+		> ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
 	chmod 0755 ${DESTDIR}${PREFIX}/sbin/pkgadd
 	chmod 0644 ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
 	chmod 0644 ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
