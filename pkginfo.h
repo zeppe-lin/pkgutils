@@ -8,7 +8,8 @@
 
 #include "pkgutil.h"
 
-class pkginfo : public pkgutil {
+class pkginfo : public pkgutil
+{
 public:
   pkginfo() : pkgutil("pkginfo") {}
 

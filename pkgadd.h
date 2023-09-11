@@ -23,7 +23,8 @@ struct rule_t {
   bool          action;
 };
 
-class pkgadd : public pkgutil {
+class pkgadd : public pkgutil
+{
 public:
   pkgadd() : pkgutil("pkgadd") {}
 

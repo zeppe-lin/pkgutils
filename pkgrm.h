@@ -8,7 +8,8 @@
 
 #include "pkgutil.h"
 
-class pkgrm : public pkgutil {
+class pkgrm : public pkgutil
+{
 public:
   pkgrm() : pkgutil("pkgrm") {}
 
