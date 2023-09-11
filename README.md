@@ -39,9 +39,9 @@ The shell commands `make && make install` should build and install
 this package.  The shell command `make install_bashcomp` should
 install bash completion script.
 
-See `config.mk` file for configuration parameters, and `pathnames.h`
-for absolute filenames and settings that pkgutils wants for various
-defaults.
+See `config.mk` file for configuration parameters, and
+`src/pathnames.h` for absolute filenames and settings that pkgutils
+wants for various defaults.
 
 
 LICENSE
