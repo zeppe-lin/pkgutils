@@ -12,25 +12,21 @@ symlinks: pkgadd
 	ln -sf pkgadd pkginfo
 
 install: all
-	mkdir -p ${DESTDIR}${PREFIX}/bin
-	mkdir -p ${DESTDIR}${PREFIX}/sbin
-	mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	mkdir -p ${DESTDIR}${MANPREFIX}/man5
-	mkdir -p ${DESTDIR}${MANPREFIX}/man8
-	cp -f pkgadd ${DESTDIR}${PREFIX}/sbin/
-	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkginfo.1 \
-		> ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
-	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkgadd.conf.5 \
-		> ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
-	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkgadd.8 \
-		> ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
-	sed "s/^\.Os/.Os ${NAME} ${VERSION}/" pkgrm.8 \
-		> ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
-	chmod 0755 ${DESTDIR}${PREFIX}/sbin/pkgadd
-	chmod 0644 ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
-	chmod 0644 ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
-	chmod 0644 ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
-	chmod 0644 ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
+	mkdir -p              ${DESTDIR}${PREFIX}/bin
+	mkdir -p              ${DESTDIR}${PREFIX}/sbin
+	mkdir -p              ${DESTDIR}${MANPREFIX}/man1
+	mkdir -p              ${DESTDIR}${MANPREFIX}/man5
+	mkdir -p              ${DESTDIR}${MANPREFIX}/man8
+	cp -f pkgadd          ${DESTDIR}${PREFIX}/sbin/
+	cp -f pkginfo.1       ${DESTDIR}${MANPREFIX}/man1/
+	cp -f pkgadd.conf.5   ${DESTDIR}${MANPREFIX}/man5/
+	cp -f pkgadd.8        ${DESTDIR}${MANPREFIX}/man8/
+	cp -f pkgrm.8         ${DESTDIR}${MANPREFIX}/man8/
+	chmod 0755            ${DESTDIR}${PREFIX}/sbin/pkgadd
+	chmod 0644            ${DESTDIR}${MANPREFIX}/man1/pkginfo.1
+	chmod 0644            ${DESTDIR}${MANPREFIX}/man5/pkgadd.conf.5
+	chmod 0644            ${DESTDIR}${MANPREFIX}/man8/pkgadd.8
+	chmod 0644            ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
 	ln -sf pkgadd         ${DESTDIR}${PREFIX}/sbin/pkgrm
 	ln -sf ../sbin/pkgadd ${DESTDIR}${PREFIX}/bin/pkginfo
 
@@ -44,10 +40,10 @@ uninstall:
 	rm -f ${DESTDIR}${MANPREFIX}/man8/pkgrm.8
 
 install_bashcomp:
-	mkdir -p ${DESTDIR}${BASHCOMPDIR}
+	mkdir -p              ${DESTDIR}${BASHCOMPDIR}
 	cp -f bash_completion ${DESTDIR}${BASHCOMPDIR}/pkgadd
-	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkginfo
-	ln -sf pkgadd ${DESTDIR}${BASHCOMPDIR}/pkgrm
+	ln -sf pkgadd         ${DESTDIR}${BASHCOMPDIR}/pkginfo
+	ln -sf pkgadd         ${DESTDIR}${BASHCOMPDIR}/pkgrm
 
 uninstall_bashcomp:
 	rm -f ${DESTDIR}${BASHCOMPDIR}/pkgadd
