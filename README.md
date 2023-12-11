@@ -38,6 +38,7 @@ INSTALL
 -------
 The shell commands `make && make install` should build and
 install this package.
+
 The shell command `make install_bashcomp` should install bash
 completion script.
 
