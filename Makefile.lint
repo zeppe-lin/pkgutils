@@ -25,6 +25,12 @@ deadlinks:
 	@echo "=======> Check for dead links"
 	@$(CURMAKE) curllinks | grep -v '^\[200\]' | sort -u
 
+spellcheck:
+	@echo "=======> Check man pages for spelling errors"
+	@mandoc -T html man/*.[1-9] | hunspell -H -l - | sort -u
+	@echo "=======> Check README.md for spelling errors"
+	@hunspell -l README.md | sort -u
+
 mancheck:
 	@echo "=======> Check man pages for syntax errors"
 	@mandoc -T lint man/*.[1-9]
