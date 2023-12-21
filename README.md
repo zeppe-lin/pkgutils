@@ -28,17 +28,15 @@ REQUIREMENTS
 - pkg-config(1)
 - libarchive(3) to unpack an archive files
 
-Also, see [rejmerge][1], an utility that merges files that were
-rejected by pkgadd(8) during package upgrades.
-
-[1]: https://github.com/zeppe-lin/rejmerge
+Also, see [rejmerge]( https://github.com/zeppe-lin/rejmerge ),
+an utility that merges files that were rejected by pkgadd(8)
+during package upgrades.
 
 
 INSTALL
 -------
 The shell commands `make && make install` should build and
 install this package.
-
 The shell command `make install_bashcomp` should install bash
 completion script.
 
