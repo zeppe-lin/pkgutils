@@ -8,8 +8,9 @@ gathering.
 This distribution is a fork of CRUX' pkgutils as of commit
 9ca0da6 (Sat Nov 17 2018) with the following differences:
 - GNU-style options/help/usage
-- man pages in mdoc(7) format
-- split pkgadd(8) man page into pkgadd(8) and pkgadd.conf(5)
+- better GNU Coding Standards support
+- manual pages in mdoc(7) format
+- split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
 - zstd packages support
 
 See git log for complete/further differences.
