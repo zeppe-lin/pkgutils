@@ -1,5 +1,6 @@
 TODO pkgutils
 
+	- [ ] https://crux.nu/bugs/index.php?do=details&task_id=15
 	- [ ] Fix compilation warnings.
 	- [ ] Make print_help and print_version as a private methods?
 
