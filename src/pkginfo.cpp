@@ -11,7 +11,9 @@
 
 #include "pkginfo.h"
 
-void pkginfo::print_help() const
+void
+pkginfo::print_help()
+  const
 {
   cout << "Usage: " << utilname << " [-r rootdir] [-f file]\n"
        << "       " << utilname << " [-r rootdir] [-i]\n"
@@ -32,7 +34,8 @@ Mandatory arguments to long options are mandatory for short options too.
 )";
 }
 
-void pkginfo::run(int argc, char** argv)
+void
+pkginfo::run(int argc, char** argv)
 {
   /*
    * Check command line options.
@@ -45,13 +48,13 @@ void pkginfo::run(int argc, char** argv)
   static string o_arg;
   int opt;
   static struct option longopts[] = {
-    { "footprint",  required_argument,  NULL,               'f' },
-    { "installed",  no_argument,        NULL,               'i' },
-    { "list",       required_argument,  NULL,               'l' },
-    { "owner",      required_argument,  NULL,               'o' },
-    { "root",       required_argument,  NULL,               'r' },
-    { "version",    no_argument,        NULL,               'V' },
-    { "help",       no_argument,        NULL,               'h' },
+    { "footprint",  required_argument,  NULL,  'f' },
+    { "installed",  no_argument,        NULL,  'i' },
+    { "list",       required_argument,  NULL,  'l' },
+    { "owner",      required_argument,  NULL,  'o' },
+    { "root",       required_argument,  NULL,  'r' },
+    { "version",    no_argument,        NULL,  'V' },
+    { "help",       no_argument,        NULL,  'h' },
   };
 
   while ((opt = getopt_long(argc, argv, "f:il:o:r:Vh", longopts, 0)) != -1)
@@ -114,8 +117,8 @@ void pkginfo::run(int argc, char** argv)
       /*
        * List installed packages.
        */
-      for (packages_t::const_iterator i = packages.begin();
-          i != packages.end(); ++i)
+      for (packages_t::const_iterator
+            i = packages.begin(); i != packages.end(); ++i)
       {
         cout << i->first << ' ' << i->second.version << endl;
       }
@@ -162,12 +165,11 @@ void pkginfo::run(int argc, char** argv)
       unsigned int width =
         result.begin()->first.length(); /* width of "Package" */
 
-      for (packages_t::const_iterator i = packages.begin();
-                                      i != packages.end(); ++i)
+      for (packages_t::const_iterator
+            i = packages.begin(); i != packages.end(); ++i)
       {
-        for (set<string>::const_iterator j = i->second.files.begin();
-                                         j != i->second.files.end();
-                                         ++j)
+        for (set<string>::const_iterator
+              j = i->second.files.begin(); j != i->second.files.end(); ++j)
         {
           const string file('/' + *j);
           if (!regexec(&preg, file.c_str(), 0, 0, 0))
@@ -186,8 +188,7 @@ void pkginfo::run(int argc, char** argv)
         for (vector<pair<string, string>>::const_iterator
               i = result.begin(); i != result.end(); ++i)
         {
-          cout << left << setw(width + 2) << i->first << i->second
-               << endl;
+          cout << left << setw(width + 2) << i->first << i->second << endl;
         }
       }
       else

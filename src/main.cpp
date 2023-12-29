@@ -20,7 +20,8 @@
 
 using namespace std;
 
-static pkgutil* select_utility(const string& name)
+static pkgutil*
+select_utility(const string& name)
 {
   if (name == "pkgadd")
     return new pkgadd;
@@ -32,7 +33,8 @@ static pkgutil* select_utility(const string& name)
     throw runtime_error("command not supported by pkgutils");
 }
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
   try
   {

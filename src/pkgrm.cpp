@@ -6,7 +6,9 @@
 
 #include "pkgrm.h"
 
-void pkgrm::print_help() const
+void
+pkgrm::print_help()
+  const
 {
   cout << "Usage: " << utilname << " [-v] [-r rootdir] pkgname\n"
        << "       " << utilname << " [-V]\n"
@@ -21,7 +23,8 @@ Mandatory arguments to long options are mandatory for short options too.
 )";
 }
 
-void pkgrm::run(int argc, char** argv)
+void
+pkgrm::run(int argc, char** argv)
 {
   /*
    * Check command line options.
@@ -30,11 +33,11 @@ void pkgrm::run(int argc, char** argv)
   static string o_root, o_package;
   int opt;
   static struct option longopts[] = {
-    { "root",     required_argument,  NULL,           'r' },
-    { "verbose",  no_argument,        NULL,           'v' },
-    { "version",  no_argument,        NULL,           'V' },
-    { "help",     no_argument,        NULL,           'h' },
-    { 0,          0,                  0,              0   },
+    { "root",     required_argument,  NULL,  'r' },
+    { "verbose",  no_argument,        NULL,  'v' },
+    { "version",  no_argument,        NULL,  'V' },
+    { "help",     no_argument,        NULL,  'h' },
+    { 0,          0,                  0,     0   },
   };
 
   while ((opt = getopt_long(argc, argv, "r:vVh", longopts, 0)) != -1)

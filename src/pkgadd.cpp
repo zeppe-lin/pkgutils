@@ -11,8 +11,10 @@
 
 #include "pkgadd.h"
 
-set<string> pkgadd::make_keep_list(const set<string>&     files,
-                                   const vector<rule_t>&  rules) const
+set<string>
+pkgadd::make_keep_list(const set<string>&     files,
+                       const vector<rule_t>&  rules)
+  const
 {
   set<string> keep_list;
   vector<rule_t> found;
@@ -48,9 +50,11 @@ set<string> pkgadd::make_keep_list(const set<string>&     files,
   return keep_list;
 }
 
-void pkgadd::find_rules(const vector<rule_t>&  rules,
-                        rule_event_t           event,
-                        vector<rule_t>&        found) const
+void
+pkgadd::find_rules(const vector<rule_t>&  rules,
+                   rule_event_t           event,
+                   vector<rule_t>&        found)
+  const
 {
   for (vector<rule_t>::const_iterator
         i = rules.begin(); i != rules.end(); ++i)
@@ -60,8 +64,10 @@ void pkgadd::find_rules(const vector<rule_t>&  rules,
   }
 }
 
-bool pkgadd::rule_applies_to_file(const rule_t&  rule,
-                                  const string&  file) const
+bool
+pkgadd::rule_applies_to_file(const rule_t&  rule,
+                             const string&  file)
+  const
 {
   regex_t preg;
   bool ret;
@@ -76,9 +82,10 @@ bool pkgadd::rule_applies_to_file(const rule_t&  rule,
   return ret;
 }
 
-set<string> pkgadd::apply_install_rules(const string&          name,
-                                        pkginfo_t&             info,
-                                        const vector<rule_t>&  rules)
+set<string>
+pkgadd::apply_install_rules(const string&          name,
+                            pkginfo_t&             info,
+                            const vector<rule_t>&  rules)
 {
   /* TODO: better algo(?) */
   set<string> install_set;
@@ -132,7 +139,9 @@ set<string> pkgadd::apply_install_rules(const string&          name,
   return non_install_set;
 }
 
-vector<rule_t> pkgadd::read_config(string file) const
+vector<rule_t>
+pkgadd::read_config(string file)
+  const
 {
   vector<rule_t> rules;
   unsigned int linecount = 0;
@@ -203,8 +212,8 @@ vector<rule_t> pkgadd::read_config(string file) const
 
 #ifndef NDEBUG
   cerr << "Configuration:" << endl;
-  for (vector<rule_t>::const_iterator j = rules.begin();
-      j != rules.end(); ++j)
+  for (vector<rule_t>::const_iterator
+        j = rules.begin(); j != rules.end(); ++j)
   {
     cerr << "\t" << (*j).pattern << "\t" << (*j).action << endl;
   }
@@ -214,7 +223,9 @@ vector<rule_t> pkgadd::read_config(string file) const
   return rules;
 }
 
-void pkgadd::print_help() const
+void
+pkgadd::print_help()
+  const
 {
   cout << "Usage: " << utilname << " [-fuv] [-c conffile] [-r rootdir] file\n"
        << "       " << utilname << " [-V]\n"
@@ -232,7 +243,8 @@ Mandatory arguments to long options are mandatory for short options too.
 )";
 }
 
-void pkgadd::run(int argc, char** argv)
+void
+pkgadd::run(int argc, char** argv)
 {
   /*
    * Check command line options.

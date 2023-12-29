@@ -57,7 +57,8 @@ pkgutil::pkgutil(const string& name)
   sigaction(SIGTERM, &sa, 0);
 }
 
-void pkgutil::db_open(const string& path)
+void
+pkgutil::db_open(const string& path)
 {
   /*
    * Read database.
@@ -104,7 +105,8 @@ void pkgutil::db_open(const string& path)
 #endif
 }
 
-void pkgutil::db_commit()
+void
+pkgutil::db_commit()
 {
   const string dbfilename     = root + PKG_DB;
   const string dbfilename_new = dbfilename + ".incomplete_transaction";
@@ -128,13 +130,12 @@ void pkgutil::db_commit()
   stdio_filebuf<char> filebuf_new(fd_new, ios::out, getpagesize());
   ostream db_new(&filebuf_new);
 
-  for (packages_t::const_iterator i = packages.begin();
-                                  i != packages.end();
-                                  ++i)
+  for (packages_t::const_iterator
+        i = packages.begin(); i != packages.end(); ++i)
   {
     if (!i->second.files.empty())
     {
-      db_new << i->first << "\n";
+      db_new << i->first << "\n";@
       db_new << i->second.version << "\n";
       copy(i->second.files.begin(), i->second.files.end(),
            ostream_iterator<string>(db_new, "\n"));
@@ -180,18 +181,20 @@ void pkgutil::db_commit()
 #endif
 }
 
-void pkgutil::db_add_pkg(const string&     name,
-                         const pkginfo_t&  info)
+void
+pkgutil::db_add_pkg(const string& name, const pkginfo_t& info)
 {
   packages[name] = info;
 }
 
-bool pkgutil::db_find_pkg(const string& name)
+bool
+pkgutil::db_find_pkg(const string& name)
 {
   return (packages.find(name) != packages.end());
 }
 
-void pkgutil::db_rm_pkg(const string& name)
+void
+pkgutil::db_rm_pkg(const string& name)
 {
   set<string> files = packages[name].files;
   packages.erase(name);
@@ -206,13 +209,11 @@ void pkgutil::db_rm_pkg(const string& name)
   /*
    * Don't delete files that still have references.
    */
-  for (packages_t::const_iterator i = packages.begin();
-                                  i != packages.end();
-                                  ++i)
+  for (packages_t::const_iterator
+        i = packages.begin(); i != packages.end(); ++i)
   {
-    for (set<string>::const_iterator j = i->second.files.begin();
-                                     j != i->second.files.end();
-                                     ++j)
+    for (set<string>::const_iterator
+          j = i->second.files.begin(); j != i->second.files.end(); ++j)
     {
       files.erase(*j);
     }
@@ -230,9 +231,8 @@ void pkgutil::db_rm_pkg(const string& name)
   /*
    * Delete the files.
    */
-  for (set<string>::const_reverse_iterator i = files.rbegin();
-                                           i != files.rend();
-                                           ++i)
+  for (set<string>::const_reverse_iterator
+        i = files.rbegin(); i != files.rend(); ++i)
   {
     const string filename = root + *i;
     if (file_exists(filename) && remove(filename.c_str()) == -1)
@@ -244,8 +244,8 @@ void pkgutil::db_rm_pkg(const string& name)
   }
 }
 
-void pkgutil::db_rm_pkg(const string&       name,
-                        const set<string>&  keep_list)
+void
+pkgutil::db_rm_pkg(const string& name, const set<string>& keep_list)
 {
   set<string> files = packages[name].files;
   packages.erase(name);
@@ -260,9 +260,8 @@ void pkgutil::db_rm_pkg(const string&       name,
   /*
    * Don't delete files found in the keep list.
    */
-  for (set<string>::const_iterator i = keep_list.begin();
-                                   i != keep_list.end();
-                                   ++i)
+  for (set<string>::const_iterator
+        i = keep_list.begin(); i != keep_list.end(); ++i)
   {
     files.erase(*i);
   }
@@ -279,13 +278,11 @@ void pkgutil::db_rm_pkg(const string&       name,
   /*
    * Don't delete files that still have references.
    */
-  for (packages_t::const_iterator i = packages.begin();
-                                  i != packages.end();
-                                  ++i)
+  for (packages_t::const_iterator
+        i = packages.begin(); i != packages.end(); ++i)
   {
-    for (set<string>::const_iterator j = i->second.files.begin();
-                                     j != i->second.files.end();
-                                     ++j)
+    for (set<string>::const_iterator
+          j = i->second.files.begin(); j != i->second.files.end(); ++j)
     {
       files.erase(*j);
     }
@@ -303,9 +300,8 @@ void pkgutil::db_rm_pkg(const string&       name,
   /*
    * Delete the files.
    */
-  for (set<string>::const_reverse_iterator i = files.rbegin();
-                                           i != files.rend();
-                                           ++i)
+  for (set<string>::const_reverse_iterator
+        i = files.rbegin(); i != files.rend(); ++i)
   {
     const string filename = root + *i;
     if (file_exists(filename) && remove(filename.c_str()) == -1)
@@ -320,19 +316,17 @@ void pkgutil::db_rm_pkg(const string&       name,
   }
 }
 
-void pkgutil::db_rm_files(set<string>         files,
-                          const set<string>&  keep_list)
+void
+pkgutil::db_rm_files(set<string> files, const set<string>& keep_list)
 {
   /*
    * Remove all references.
    */
-  for (packages_t::iterator i = packages.begin();
-                            i != packages.end();
-                            ++i)
+  for (packages_t::iterator
+        i = packages.begin(); i != packages.end(); ++i)
   {
-    for (set<string>::const_iterator j = files.begin();
-                                     j != files.end();
-                                     ++j)
+    for (set<string>::const_iterator
+          j = files.begin(); j != files.end(); ++j)
     {
       i->second.files.erase(*j);
     }
@@ -348,9 +342,8 @@ void pkgutil::db_rm_files(set<string>         files,
   /*
    * Don't delete files found in the keep list.
    */
-  for (set<string>::const_iterator i = keep_list.begin();
-                                   i != keep_list.end();
-                                   ++i)
+  for (set<string>::const_iterator
+        i = keep_list.begin(); i != keep_list.end(); ++i)
   {
     files.erase(*i);
   }
@@ -358,9 +351,8 @@ void pkgutil::db_rm_files(set<string>         files,
   /*
    * Delete the files.
    */
-  for (set<string>::const_reverse_iterator i = files.rbegin();
-                                           i != files.rend();
-                                           ++i)
+  for (set<string>::const_reverse_iterator
+        i = files.rbegin(); i != files.rend(); ++i)
   {
     const string filename = root + *i;
     if (file_exists(filename) && remove(filename.c_str()) == -1)
@@ -375,17 +367,16 @@ void pkgutil::db_rm_files(set<string>         files,
   }
 }
 
-set<string> pkgutil::db_find_conflicts(const string&     name,
-                                       const pkginfo_t&  info)
+set<string>
+pkgutil::db_find_conflicts(const string& name, const pkginfo_t&  info)
 {
   set<string> files;
 
   /*
    * Find conflicting files in database.
    */
-  for (packages_t::const_iterator i = packages.begin();
-                                  i != packages.end();
-                                  ++i)
+  for (packages_t::const_iterator
+        i = packages.begin(); i != packages.end(); ++i)
   {
     if (i->first != name)
     {
@@ -405,9 +396,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
   /*
    * Find conflicting files in filesystem.
    */
-  for (set<string>::iterator i = info.files.begin();
-                             i != info.files.end();
-                             ++i)
+  for (set<string>::iterator
+        i = info.files.begin(); i != info.files.end(); ++i)
   {
     const string filename = root + *i;
 
@@ -426,9 +416,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
    * Exclude directories.
    */
   set<string> tmp = files;
-  for (set<string>::const_iterator i = tmp.begin();
-                                   i != tmp.end();
-                                   ++i)
+  for (set<string>::const_iterator
+        i = tmp.begin(); i != tmp.end(); ++i)
   {
     if ((*i)[i->length() - 1] == '/')
       files.erase(*i);
@@ -447,9 +436,10 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
    */
   if (packages.find(name) != packages.end())
   {
-    for (set<string>::const_iterator i = packages[name].files.begin();
-                                     i != packages[name].files.end();
-                                     ++i)
+    for (set<string>::const_iterator
+          i  = packages[name].files.begin();
+          i != packages[name].files.end();
+          ++i)
     {
       files.erase(*i);
     }
@@ -468,7 +458,8 @@ set<string> pkgutil::db_find_conflicts(const string&     name,
 }
 
 pair<string, pkgutil::pkginfo_t>
-  pkgutil::pkg_open(const string& filename) const
+pkgutil::pkg_open(const string& filename)
+  const
 {
   pair<string, pkginfo_t> result;
   unsigned int i;
@@ -508,8 +499,8 @@ pair<string, pkgutil::pkginfo_t>
   }
 
   for (i = 0;
-       archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-       ++i)
+        archive_read_next_header(archive, &entry) == ARCHIVE_OK;
+        ++i)
   {
     result.second.files.insert(result.second.files.end(),
                                archive_entry_pathname(entry));
@@ -537,10 +528,12 @@ pair<string, pkgutil::pkginfo_t>
   return result;
 }
 
-void pkgutil::pkg_install(const string&       filename,
-                          const set<string>&  keep_list,
-                          const set<string>&  non_install_list,
-                          bool                upgrade) const
+void
+pkgutil::pkg_install(const string& filename,
+                     const set<string>& keep_list,
+                     const set<string>& non_install_list,
+                     bool upgrade)
+  const
 {
   struct archive*        archive;
   struct archive_entry*  entry;
@@ -564,14 +557,17 @@ void pkgutil::pkg_install(const string&       filename,
   absroot = getcwd(buf, sizeof(buf));
 
   for (i = 0;
-       archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-       ++i)
+        archive_read_next_header(archive, &entry) == ARCHIVE_OK;
+        ++i)
   {
     string archive_filename = archive_entry_pathname(entry);
-    string reject_dir = trim_filename(absroot + string("/") +
-                                      string(PKG_REJECTED));
-    string original_filename = trim_filename(absroot + string("/") +
-                                             archive_filename);
+
+    string reject_dir =
+      trim_filename(absroot + string("/") + string(PKG_REJECTED));
+
+    string original_filename =
+      trim_filename(absroot + string("/") + archive_filename);
+
     string real_filename = original_filename;
 
     /*
@@ -672,7 +668,9 @@ void pkgutil::pkg_install(const string&       filename,
   archive_read_free(archive);
 }
 
-void pkgutil::ldconfig() const
+void
+pkgutil::ldconfig()
+  const
 {
   /*
    * Only execute ldconfig if /etc/ld.so.conf exists.
@@ -700,7 +698,9 @@ void pkgutil::ldconfig() const
   }
 }
 
-void pkgutil::pkg_footprint(const string& filename) const
+void
+pkgutil::pkg_footprint(const string& filename)
+  const
 {
   size_t i;
   struct archive* archive;
@@ -747,8 +747,8 @@ void pkgutil::pkg_footprint(const string& filename) const
   }
 
   for (i = 0;
-       archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-       ++i)
+        archive_read_next_header(archive, &entry) == ARCHIVE_OK;
+        ++i)
   {
 
     struct file file;
@@ -856,8 +856,7 @@ void pkgutil::pkg_footprint(const string& filename) const
     else if (S_ISCHR(file.mode) || S_ISBLK(file.mode))
     {
       /* Device. */
-      cout
-        << " (" << major(file.rdev) << ", " << minor(file.rdev) << ")";
+      cout << " (" << major(file.rdev) << ", " << minor(file.rdev) << ")";
     }
     else if (S_ISREG(file.mode) && file.size == 0)
     {
@@ -869,7 +868,9 @@ void pkgutil::pkg_footprint(const string& filename) const
   }
 }
 
-void pkgutil::print_version() const
+void
+pkgutil::print_version()
+  const
 {
   cout << utilname << " (pkgutils) " << VERSION << endl;
 }
@@ -904,21 +905,24 @@ db_lock::~db_lock()
   }
 }
 
-void assert_argument(char** argv, int argc, int index)
+void
+assert_argument(char** argv, int argc, int index)
 {
   if (argc - 1 < index + 1)
     throw runtime_error("option " + string(argv[index]) +
                         " requires an argument");
 }
 
-string itos(unsigned int value)
+string
+itos(unsigned int value)
 {
   static char buf[20];
   sprintf(buf, "%u", value);
   return buf;
 }
 
-string mtos(mode_t mode)
+string
+mtos(mode_t mode)
 {
   string s;
 
@@ -979,14 +983,16 @@ string mtos(mode_t mode)
   return s;
 }
 
-string trim_filename(const string& filename)
+string
+trim_filename(const string& filename)
 {
   string search("//");
   string result = filename;
 
-  for (string::size_type pos = result.find(search);
-                         pos != string::npos;
-                         pos = result.find(search))
+  for (string::size_type
+         pos  = result.find(search);
+         pos != string::npos;
+         pos  = result.find(search))
   {
     result.replace(pos, search.size(), "/");
   }
@@ -994,13 +1000,15 @@ string trim_filename(const string& filename)
   return result;
 }
 
-bool file_exists(const string& filename)
+bool
+file_exists(const string& filename)
 {
   struct stat buf;
   return !lstat(filename.c_str(), &buf);
 }
 
-bool file_empty(const string& filename)
+bool
+file_empty(const string& filename)
 {
   struct stat buf;
 
@@ -1010,8 +1018,8 @@ bool file_empty(const string& filename)
   return (S_ISREG(buf.st_mode) && buf.st_size == 0);
 }
 
-bool file_equal(const string&  file1,
-                const string&  file2)
+bool
+file_equal(const string& file1, const string& file2)
 {
   struct stat buf1, buf2;
 
@@ -1085,8 +1093,8 @@ bool file_equal(const string&  file1,
   return false;
 }
 
-bool permissions_equal(const string&  file1,
-                       const string&  file2)
+bool
+permissions_equal(const string& file1, const string& file2)
 {
   struct stat buf1;
   struct stat buf2;
@@ -1102,8 +1110,8 @@ bool permissions_equal(const string&  file1,
        && (buf1.st_gid  == buf2.st_gid);
 }
 
-void file_remove(const string&  basedir,
-                 const string&  filename)
+void
+file_remove(const string& basedir, const string& filename)
 {
   if (filename != basedir && !remove(filename.c_str()))
   {
