@@ -604,7 +604,7 @@ pkgutil::pkg_install(const string& filename,
     /*
      * Extract file.
      */
-    unsigned int flags =
+    auto flags =
         ARCHIVE_EXTRACT_OWNER | ARCHIVE_EXTRACT_PERM
       | ARCHIVE_EXTRACT_TIME  | ARCHIVE_EXTRACT_UNLINK;
 
