@@ -135,7 +135,7 @@ pkgutil::db_commit()
   {
     if (!i->second.files.empty())
     {
-      db_new << i->first << "\n";@
+      db_new << i->first << "\n";
       db_new << i->second.version << "\n";
       copy(i->second.files.begin(), i->second.files.end(),
            ostream_iterator<string>(db_new, "\n"));
