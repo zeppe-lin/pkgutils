@@ -32,7 +32,7 @@ public:
   virtual void print_help() const;
 
 private:
-  vector<rule_t> read_config(string file) const;
+  vector<rule_t> read_config(const string& file) const;
 
   set<string> make_keep_list(const set<string>&     files,
                              const vector<rule_t>&  rules) const;

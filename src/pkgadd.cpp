@@ -140,7 +140,7 @@ pkgadd::apply_install_rules(const string&          name,
 }
 
 vector<rule_t>
-pkgadd::read_config(string file)
+pkgadd::read_config(const string& file)
   const
 {
   vector<rule_t> rules;
