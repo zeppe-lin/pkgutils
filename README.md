@@ -23,7 +23,7 @@ The original sources can be downloaded from:
 REQUIREMENTS
 ------------
 **Build time**:
-- C++ compiler
+- C++11 compiler (GCC 4.8.1 and later, Clang 3.3 and later)
 - POSIX sh(1p) and "mandatory utilities"
 - GNU make(1)
 - pkg-config(1)
