@@ -906,14 +906,6 @@ db_lock::~db_lock()
 }
 
 string
-itos(unsigned int value)
-{
-  static char buf[20];
-  sprintf(buf, "%u", value);
-  return buf;
-}
-
-string
 mtos(mode_t mode)
 {
   string s;

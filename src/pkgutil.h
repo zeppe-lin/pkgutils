@@ -102,8 +102,6 @@ public:
 /*
  * Utility functions.
  */
-string itos(unsigned int value);
-
 string mtos(mode_t mode);
 
 string trim_filename(const string& filename);
