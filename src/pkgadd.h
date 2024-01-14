@@ -28,8 +28,8 @@ class pkgadd : public pkgutil
 public:
   pkgadd() : pkgutil("pkgadd") {}
 
-  virtual void run(int argc, char** argv);
-  virtual void print_help() const;
+  virtual void run(int argc, char** argv) override;
+  virtual void print_help() const override;
 
 private:
   vector<rule_t> read_config(const string& file) const;

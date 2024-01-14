@@ -13,8 +13,8 @@ class pkginfo : public pkgutil
 public:
   pkginfo() : pkgutil("pkginfo") {}
 
-  virtual void run(int argc, char** argv);
-  virtual void print_help() const;
+  virtual void run(int argc, char** argv) override;
+  virtual void print_help() const override;
 }; // class pkginfo
 
 // vim: sw=2 ts=2 sts=2 et cc=72 tw=70
