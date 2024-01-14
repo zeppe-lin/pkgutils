@@ -162,7 +162,7 @@ pkgadd::read_config(const string& file)
       if (!line.empty() && line[0] != '#')
       {
         if (line.length() >= PKGADD_CONF_MAXLINE)
-          throw runtime_error(filename + ":" + itos(linecount) +
+          throw runtime_error(filename + ":" + std::to_string(linecount) +
               ": line too long, aborting");
 
         char event[PKGADD_CONF_MAXLINE];
@@ -173,7 +173,7 @@ pkgadd::read_config(const string& file)
         if (sscanf(line.c_str(), "%s %s %s %s",
               event, pattern, action, dummy) != 3)
         {
-          throw runtime_error(filename + ":" + itos(linecount) +
+          throw runtime_error(filename + ":" + std::to_string(linecount) +
               ": wrong number of arguments, aborting");
         }
 
@@ -193,7 +193,7 @@ pkgadd::read_config(const string& file)
           }
           else
           {
-            throw runtime_error(filename + ":" + itos(linecount) +
+            throw runtime_error(filename + ":" + std::to_string(linecount) +
                 ": '" + string(action) +
                 "' unknown action, should be YES or NO, aborting");
           }
@@ -202,7 +202,7 @@ pkgadd::read_config(const string& file)
         }
         else
         {
-          throw runtime_error(filename + ":" + itos(linecount) + ": '" +
+          throw runtime_error(filename + ":" + std::to_string(linecount) + ": '" +
                   string(event) + "' unknown event, aborting");
         }
       }
