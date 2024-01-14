@@ -905,14 +905,6 @@ db_lock::~db_lock()
   }
 }
 
-void
-assert_argument(char** argv, int argc, int index)
-{
-  if (argc - 1 < index + 1)
-    throw runtime_error("option " + string(argv[index]) +
-                        " requires an argument");
-}
-
 string
 itos(unsigned int value)
 {

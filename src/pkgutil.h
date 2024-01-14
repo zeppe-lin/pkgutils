@@ -102,8 +102,6 @@ public:
 /*
  * Utility functions.
  */
-void assert_argument(char** argv, int argc, int index);
-
 string itos(unsigned int value);
 
 string mtos(mode_t mode);
