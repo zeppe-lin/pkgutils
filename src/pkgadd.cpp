@@ -227,10 +227,10 @@ void
 pkgadd::print_help()
   const
 {
-  cout << "Usage: " << utilname << " [-fuv] [-c conffile] [-r rootdir] file\n"
-       << "       " << utilname << " [-V]\n"
-       << "       " << utilname << " [-h]\n"
-       << R"(Install software package.
+  cout << R"(Usage: pkgadd [-fuv] [-c conffile] [-r rootdir] file
+       pkgadd [-V]
+       pkgadd [-h]
+Install software package.
 
 Mandatory arguments to long options are mandatory for short options too.
   -c, --config=conffile  specify an alternate configuration file

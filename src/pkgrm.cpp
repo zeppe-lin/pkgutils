@@ -10,10 +10,10 @@ void
 pkgrm::print_help()
   const
 {
-  cout << "Usage: " << utilname << " [-v] [-r rootdir] pkgname\n"
-       << "       " << utilname << " [-V]\n"
-       << "       " << utilname << " [-h]\n"
-       << R"(Remove software package.
+  cout << R"(Usage: pkgrm [-v] [-r rootdir] pkgname
+       pkgrm [-V]
+       pkgrm [-h]
+Remove software package.
 
 Mandatory arguments to long options are mandatory for short options too.
   -r, --root=rootdir  specify an alternate root directory
