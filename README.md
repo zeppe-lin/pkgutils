@@ -12,6 +12,7 @@ This distribution is a fork of CRUX' pkgutils as of commit
 - manual pages in mdoc(7) format
 - split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
 - zstd packages support
+- vim syntax highlight for `pkgadd.conf` file
 
 See git log for complete/further differences.
 
