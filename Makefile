@@ -50,6 +50,16 @@ uninstall_bashcomp:
 	rm -f ${DESTDIR}${BASHCOMPDIR}/pkginfo
 	rm -f ${DESTDIR}${BASHCOMPDIR}/pkgrm
 
+install_vimfiles:
+	mkdir -p ${DESTDIR}${VIMFILESDIR}/ftdetect
+	mkdir -p ${DESTDIR}${VIMFILESDIR}/syntax
+	cp -f vim/ftdetect/pkgaddconf.vim ${DESTDIR}${VIMFILESDIR}/ftdetect/
+	cp -f vim/syntax/pkgaddconf.vim   ${DESTDIR}${VIMFILESDIR}/syntax/
+
+uninstall_vimfiles:
+	rm -f ${DESTDIR}${VIMFILESDIR}/ftdetect/pkgaddconf.vim
+	rm -f ${DESTDIR}${VIMFILESDIR}/syntax/pkgadd.conf
+
 clean:
 	rm -f ${OBJS} pkginfo pkgadd pkgrm
 	rm -f ${DIST}.tar.gz
@@ -57,4 +67,5 @@ clean:
 dist: clean
 	git archive --format=tar.gz -o ${DIST}.tar.gz --prefix=${DIST}/ HEAD
 
-.PHONY: all install uninstall install_bashcomp uninstall_bashcomp clean dist
+.PHONY: all install uninstall install_bashcomp uninstall_bashcomp \
+	install_vimfiles uninstall_vimfiles clean dist
