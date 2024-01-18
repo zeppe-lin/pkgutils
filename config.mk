@@ -7,6 +7,7 @@ DIST        = ${NAME}-${VERSION}
 PREFIX      = /usr
 MANPREFIX   = ${PREFIX}/share/man
 BASHCOMPDIR = ${PREFIX}/share/bash-completion/completions
+VIMFILESDIR = ${PREFIX}/share/vim/vimfiles
 
 # flags
 CPPFLAGS    = -D_POSIX_SOURCE -D_GNU_SOURCE -D_LARGEFILE_SOURCE \
