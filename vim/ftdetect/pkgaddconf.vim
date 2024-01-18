@@ -1,1 +1,1 @@
-au BufNewFile,BufRead *pkgadd.conf set ft=pkgaddconf
+au BufNewFile,BufRead pkgadd.conf set ft=pkgaddconf
