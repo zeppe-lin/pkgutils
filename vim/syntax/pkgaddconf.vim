@@ -19,7 +19,7 @@ syn match   pkgaddEvent    '^\<\%(UPGRADE\|INSTALL\)\>'
                            \ nextgroup=pkgaddPattern skipwhite
 syn match   pkgaddPattern  '\s\^\([^ ]\)\+\$'
                            \ nextgroup=pkgaddAction skipwhite
-syn match   pkgaddAction   '\s\<\%(YES\|NO\)\>' skipwhite
+syn match   pkgaddAction   '\s\<\%(YES\|NO\)\>$' skipwhite
 
 hi def link pkgaddTodo     Todo
 hi def link pkgaddComment  Comment
