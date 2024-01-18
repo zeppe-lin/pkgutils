@@ -56,12 +56,13 @@ type is allowed, in which case the first rule will have the lowest
 priority and the last rule will have the highest priority.
 .Pp
 For example:
-.Bd -literal -offset indent
-UPGRADE        ^etc/.*$                   NO
-UPGRADE        ^var/log/.*$               NO
-UPGRADE        ^etc/X11/.*$               YES
-UPGRADE        ^etc/X11/XF86Config$       NO
-.Ed
+.Bl -column EventXX PatternXXXXXXXXXXX ActionX
+.It Sy Event Ta Sy Pattern Ta Sy Action
+.It UPGRADE  Ta ^etc/.*$             Ta  NO
+.It UPGRADE  Ta ^var/log/.*$         Ta  NO
+.It UPGRADE  Ta ^etc/X11/.*$         Ta  YES
+.It UPGRADE  Ta ^etc/X11/XF86Config$ Ta  NO
+.El
 .Pp
 The above example will cause
 .Xr pkgadd 8
