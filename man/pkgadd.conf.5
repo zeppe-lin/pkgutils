@@ -21,37 +21,37 @@ upgrade and/or install the package.
 .Pp
 .Sy pkgadd.conf
 file contain rules, that are built out of three fragments:
-.Em EVENT ,
-.Em PATTERN
+.Sy Event ,
+.Sy Pattern
 and
-.Em ACTION .
+.Sy Action .
 The
-.Em EVENT
+.Sy Event
 describes in what kind of situation this rule applies.
 Currently there are two types of events:
-.Sy UPGRADE
+.Em UPGRADE
 and
-.Sy INSTALL .
-.Sy UPGRADE
+.Em INSTALL .
+.Em UPGRADE
 rules are applied when a package is installed over an existing version,
 and
-.Sy INSTALL
+.Em INSTALL
 rules are applied in any case.
 The
-.Em PATTERN
+.Sy Pattern
 is a regular expression.
 The
-.Em ACTION
+.Sy Action
 applicable to both the
-.Sy UPGRADE
+.Em UPGRADE
 and
-.Sy INSTALL
+.Em INSTALL
 event is
-.Sy YES
+.Em YES
 and
-.Sy NO .
+.Em NO .
 More than one rule of the same
-.Em EVENT
+.Sy Event
 type is allowed, in which case the first rule will have the lowest
 priority and the last rule will have the highest priority.
 .Pp
@@ -78,7 +78,7 @@ The default rule is to upgrade/install everything, rules in this file
 are exceptions to that rule.
 .Pp
 Note that the
-.Em PATTERN
+.Sy Pattern
 should never contain an initial slash
 .Pq Ql /
 since you are referring to the files in the package, not the files on
