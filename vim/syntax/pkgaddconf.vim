@@ -14,10 +14,11 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 " Comment.
-syn keyword pkgaddTodo     contained TODO FIXME XXX NOTE
-syn region  pkgaddComment  display oneline start="^\s*#" end="$"
-                           \ contains=pkgaddTodo,@Spell
-
+syn keyword pkgaddTodo     TODO FIXME XXX NOTE
+                           \ contained
+syn region  pkgaddComment  start="^\s*#" end="$"
+                           \ display
+                           \ oneline
 " Event.
 syn match   pkgaddEvent    '^\<\%(UPGRADE\|INSTALL\)\>'
                            \ nextgroup=pkgaddPattern
