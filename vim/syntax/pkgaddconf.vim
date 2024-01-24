@@ -3,7 +3,7 @@
 " Maintainer:   Alexandr Savca <alexandr.savca89@gmail.com>
 " Last Change:  January 18, 2024
 
-" quit when a syntax file was already loaded.
+" Quit when a syntax file was already loaded.
 if exists("b:current_syntax")
   finish
 endif
