@@ -41,7 +41,7 @@ hi def link pkgaddAction   Constant
 
 let b:current_syntax = "pkgaddconf"
 
-# Put cpoptions back the way we found it.
+" Put cpoptions back the way we found it.
 let &cpo = s:cpo_save
 unlet s:cpo_save
 
