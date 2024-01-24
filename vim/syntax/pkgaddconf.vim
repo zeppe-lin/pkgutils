@@ -19,6 +19,7 @@ syn keyword pkgaddTodo     TODO FIXME XXX NOTE
 syn region  pkgaddComment  start="^\s*#" end="$"
                            \ display
                            \ oneline
+                           \ contains=pkgaddTodo,@Spell
 " Event.
 syn match   pkgaddEvent    '^\<\%(UPGRADE\|INSTALL\)\>'
                            \ nextgroup=pkgaddPattern
