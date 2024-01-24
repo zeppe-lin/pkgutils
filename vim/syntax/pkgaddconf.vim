@@ -8,8 +8,8 @@ if exists("b:current_syntax")
   finish
 endif
 
-# We need nocompatible mode in order to continue lines with backslashes.
-# Original setting will be restored.
+" We need nocompatible mode in order to continue lines with backslashes.
+" Original setting will be restored.
 let s:cpo_save = &cpo
 set cpo&vim
 
@@ -18,14 +18,19 @@ syn keyword pkgaddTodo     contained TODO FIXME XXX NOTE
 syn region  pkgaddComment  display oneline start="^\s*#" end="$"
                            \ contains=pkgaddTodo,@Spell
 
-" Pattern.
+" Event.
 syn match   pkgaddEvent    '^\<\%(UPGRADE\|INSTALL\)\>'
-                           \ nextgroup=pkgaddPattern skipwhite
+                           \ nextgroup=pkgaddPattern
+                           \ skipwhite
+" Pattern.
 syn match   pkgaddPattern  '\s\^\([^ ]\)\+\$'
-                           \ nextgroup=pkgaddAction skipwhite
-syn match   pkgaddAction   '\s\<\%(YES\|NO\)\>$' skipwhite
+                           \ nextgroup=pkgaddAction
+                           \ skipwhite
+" Action.
+syn match   pkgaddAction   '\s\<\%(YES\|NO\)\>$'
+                           \ skipwhite
 
-# Define the default highlighting.
+" Define the default highlighting.
 hi def link pkgaddTodo     Todo
 hi def link pkgaddComment  Comment
 hi def link pkgaddEvent    Identifier
