@@ -9,22 +9,11 @@
 .Nd display software package information
 .\" ==================================================================
 .Sh SYNOPSIS
-.Nm pkginfo
+.Nm
+.Op Fl Vh
 .Op Fl r Ar rootdir
-.Op Fl f Ar file
-.Nm
-.Op Fl r Ar rootdir
-.Op Fl i
-.Nm
-.Op Fl r Ar rootdir
-.Op Fl l Ar pkgname | file
-.Nm
-.Op Fl r Ar rootdir
-.Op Fl o Ar pattern
-.Nm
-.Op Fl V
-.Nm
-.Op Fl h
+.Pf { Fl f Ar file | Fl i | Fl l
+.Pf { Ar pkgname Ns | Ns Ar file Ns } | Fl o Ar pattern Ns } Ns
 .\" ==================================================================
 .Sh DESCRIPTION
 .Nm
@@ -43,7 +32,7 @@ This feature is mainly used by
 to create and compare package footprints.
 .It Fl i , Fl \-installed
 List installed packages and their version.
-.It Fl l Ar pkgname | file , Fl \-list Ns = Ns Ar pkgname | file
+.It Fl l Pf { Ar pkgname Ns | Ns Ar file Ns } , Fl \-list Ns = Ns Pf { Ar pkgname Ns | Ns Ar file Ns }
 List files owned by the specified package or contained in
 .Ar file .
 .It Fl o Ar pattern , Fl \-owner Ns = Ns Ar pattern
