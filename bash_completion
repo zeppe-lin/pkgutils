@@ -60,8 +60,6 @@ _pkgadd()
 _pkginfo()
 {
 	local cur prev words cword split
-	local pkgs
-
 	_init_completion -s || return
 
 	case $prev in
