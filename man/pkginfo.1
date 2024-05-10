@@ -13,7 +13,7 @@
 .Op Fl Vh
 .Op Fl r Ar rootdir
 .Pf { Fl f Ar file | Fl i | Fl l
-.Pf { Ar pkgname Ns | Ns Ar file Ns } | Fl o Ar pattern Ns } Ns
+.Pf { Ar pkgname | Ar file Ns } | Fl o Ar pattern Ns } Ns
 .\" ==================================================================
 .Sh DESCRIPTION
 .Nm
@@ -32,7 +32,7 @@ This feature is mainly used by
 to create and compare package footprints.
 .It Fl i , Fl \-installed
 List installed packages and their version.
-.It Fl l Pf { Ar pkgname Ns | Ns Ar file Ns } , Fl \-list Ns = Ns Pf { Ar pkgname Ns | Ns Ar file Ns }
+.It Fl l Pf { Ar pkgname | Ar file Ns } , Fl \-list Ns = Ns Pf { Ar pkgname | Ar file Ns }
 List files owned by the specified package or contained in
 .Ar file .
 .It Fl o Ar pattern , Fl \-owner Ns = Ns Ar pattern
