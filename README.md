@@ -7,18 +7,18 @@ and basic information gathering.
 
 This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6 (Sat Nov 17
 2018) with the following differences:
-* GNU-style options/help/usage
-* better GNU Coding Standards support
-* manual pages in mdoc(7) format
-* split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
-* zstd packages support
-* vim syntax highlight for `pkgadd.conf` file
+  * GNU-style options/help/usage
+  * better GNU Coding Standards support
+  * manual pages in mdoc(7) format
+  * split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
+  * zstd packages support
+  * vim syntax highlight for `pkgadd.conf` file
 
 See git log for complete/further differences.
 
 The original sources can be downloaded from:
-1. git://crux.nu/tools/pkgutils.git              (git)
-2. https://crux.nu/gitweb/?p=tools/pkgutils.git  (web)
+  1. git://crux.nu/tools/pkgutils.git              (git)
+  2. https://crux.nu/gitweb/?p=tools/pkgutils.git  (web)
 
 
 REQUIREMENTS
@@ -26,11 +26,11 @@ REQUIREMENTS
 
 Build time
 ----------
-* C++11 compiler (GCC 4.8.1 and later, Clang 3.3 and later)
-* POSIX sh(1p) and "mandatory utilities"
-* GNU make(1)
-* pkg-config(1)
-* libarchive(3) to unpack an archive files
+  * C++11 compiler (GCC 4.8.1 and later, Clang 3.3 and later)
+  * POSIX sh(1p) and "mandatory utilities"
+  * GNU make(1)
+  * pkg-config(1)
+  * libarchive(3) to unpack an archive files
 
 Also, see [rejmerge](https://github.com/zeppe-lin/rejmerge), an utility that
 merges files that were rejected by pkgadd(8) during package upgrades.
