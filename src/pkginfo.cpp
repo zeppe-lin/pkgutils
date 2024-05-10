@@ -15,22 +15,17 @@ void
 pkginfo::print_help()
   const
 {
-  cout << R"(Usage: pkginfo [-r rootdir] [-f file]
-       pkginfo [-r rootdir] [-i]
-       pkginfo [-r rootdir] [-l pkgname | file]
-       pkginfo [-r rootdir] [-o pattern]
-       pkginfo [-V]
-       pkginfo [-h]
+  cout << R"(Usage: pkginfo [-Vh] [-r rootdir] {-f file | -i | -l {pkgname|file} | -o pattern}
 Display software package information.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -f, --footprint=file     print footprint for FILE
-  -i, --installed          list installed packages and their version
-  -l, --list=pkgname|file  list files in PACKAGE or FILE
-  -o, --owner=pattern      list owner(s) of file(s) matching PATTERN
-  -r, --root=rootdir       specify an alternate installation root
-  -V, --version            print version and exit
-  -h, --help               print help and exit
+  -f, --footprint=file       print footprint for FILE
+  -i, --installed            list installed packages and their version
+  -l, --list={pkgname|file}  list files in PACKAGE or FILE
+  -o, --owner=pattern        list owner(s) of file(s) matching PATTERN
+  -r, --root=rootdir         specify an alternate installation root
+  -V, --version              print version and exit
+  -h, --help                 print help and exit
 )";
 }
 

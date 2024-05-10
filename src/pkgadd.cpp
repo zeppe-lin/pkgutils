@@ -227,9 +227,7 @@ void
 pkgadd::print_help()
   const
 {
-  cout << R"(Usage: pkgadd [-fuv] [-c conffile] [-r rootdir] file
-       pkgadd [-V]
-       pkgadd [-h]
+  cout << R"(Usage: pkgadd [-Vfhuv] [-c conffile] [-r rootdir] file
 Install software package.
 
 Mandatory arguments to long options are mandatory for short options too.

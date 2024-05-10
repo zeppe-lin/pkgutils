@@ -10,9 +10,7 @@ void
 pkgrm::print_help()
   const
 {
-  cout << R"(Usage: pkgrm [-v] [-r rootdir] pkgname
-       pkgrm [-V]
-       pkgrm [-h]
+  cout << R"(Usage: pkgrm [-Vhv] [-r rootdir] pkgname
 Remove software package.
 
 Mandatory arguments to long options are mandatory for short options too.
