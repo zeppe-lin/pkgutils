@@ -1,11 +1,11 @@
 # bash completion for pkgrm(8), pkgadd(8) and pkginfo(1)
 # See COPYING and COPYRIGHT files for corresponding information.
 
-_avail_pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
-
 _pkgrm()
 {
 	local cur prev words cword split
+	local pkgs
+
 	_init_completion -s || return
 
 	case $prev in
@@ -24,7 +24,8 @@ _pkgrm()
 		COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
 		[[ ${COMPREPLY-} == *= ]] && compopt -o nospace
 	else
-		COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
+		pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
+		COMPREPLY=($(compgen -W '"${pkgs[@]}"' -- $cur))
 	fi
 } && complete -F _pkgrm pkgrm
 
@@ -60,6 +61,8 @@ _pkgadd()
 _pkginfo()
 {
 	local cur prev words cword split
+	local pkgs
+
 	_init_completion -s || return
 
 	case $prev in
@@ -78,7 +81,8 @@ _pkginfo()
 		if [[ $cur == ./* || $cur == /* ]]; then
 			_filedir
 		else
-			COMPREPLY=($(compgen -W '"${_avail_pkgs[@]}"' -- $cur))
+			pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
+			COMPREPLY=($(compgen -W '"${pkgs[@]}"' -- $cur))
 		fi
 		return
 		;;
