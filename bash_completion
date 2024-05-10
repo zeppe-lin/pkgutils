@@ -4,8 +4,6 @@
 _pkgrm()
 {
 	local cur prev words cword split
-	local pkgs
-
 	_init_completion -s || return
 
 	case $prev in
@@ -25,9 +23,8 @@ _pkgrm()
 		[[ ${COMPREPLY-} == *= ]] && compopt -o nospace
 	else
 		# all installed packages
-		pkgs=($(pkginfo -i | cut -d ' ' -f 1))
-
-		COMPREPLY=($(compgen -W '"${pkgs[@]}"' -- $cur))
+		COMPREPLY=($(compgen \
+			-W '$(pkginfo -i | cut -d\  -f1)' -- $cur))
 	fi
 } && complete -F _pkgrm pkgrm
 
@@ -84,9 +81,8 @@ _pkginfo()
 			_filedir
 		else
 			# all installed packages
-			pkgs=($(pkginfo -i | cut -d ' ' -f 1))
-
-			COMPREPLY=($(compgen -W '"${pkgs[@]}"' -- $cur))
+			COMPREPLY=($(compgen \
+				-W '$(pkginfo -i | cut -d\  -f1)' -- $cur))
 		fi
 		return
 		;;
