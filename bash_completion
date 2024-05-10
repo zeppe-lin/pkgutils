@@ -24,7 +24,9 @@ _pkgrm()
 		COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
 		[[ ${COMPREPLY-} == *= ]] && compopt -o nospace
 	else
-		pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
+		# all installed packages
+		pkgs=($(pkginfo -i | cut -d ' ' -f 1))
+
 		COMPREPLY=($(compgen -W '"${pkgs[@]}"' -- $cur))
 	fi
 } && complete -F _pkgrm pkgrm
@@ -81,7 +83,9 @@ _pkginfo()
 		if [[ $cur == ./* || $cur == /* ]]; then
 			_filedir
 		else
-			pkgs=($(pkginfo -i | awk '{printf "%s ", $1}'))
+			# all installed packages
+			pkgs=($(pkginfo -i | cut -d ' ' -f 1))
+
 			COMPREPLY=($(compgen -W '"${pkgs[@]}"' -- $cur))
 		fi
 		return
