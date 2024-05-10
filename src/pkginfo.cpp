@@ -15,7 +15,8 @@ void
 pkginfo::print_help()
   const
 {
-  cout << R"(Usage: pkginfo [-Vh] [-r rootdir] {-f file | -i | -l {pkgname|file} | -o pattern}
+  cout << R"(Usage: pkginfo [-Vh] [-r rootdir]
+               {-f file | -i | -l {pkgname|file} | -o pattern}
 Display software package information.
 
 Mandatory arguments to long options are mandatory for short options too.
