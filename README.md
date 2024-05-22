@@ -17,8 +17,7 @@ This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6 (Sat Nov 17
 See git log for complete/further differences.
 
 The original sources can be downloaded from:
-  1. git://crux.nu/tools/pkgutils.git              (git)
-  2. https://crux.nu/gitweb/?p=tools/pkgutils.git  (web)
+  * https://git.crux.nu/tools/pkgutils.git
 
 
 REQUIREMENTS
@@ -32,8 +31,10 @@ Build time
   * pkg-config(1)
   * libarchive(3) to unpack an archive files
 
-Also, see [rejmerge](https://github.com/zeppe-lin/rejmerge), an utility that
-merges files that were rejected by pkgadd(8) during package upgrades.
+Also, see [rejmerge][1], an utility that merges files that were rejected by
+pkgadd(8) during package upgrades.
+
+[1]: https://github.com/zeppe-lin/rejmerge
 
 
 INSTALL
