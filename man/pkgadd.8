@@ -18,15 +18,17 @@
 .Sh DESCRIPTION
 .Nm
 is a package management utility, which installs a software package.
-A package is an archive of files
-.Po
-.Dq .pkg.tar.gz ,
-.Dq .pkg.tar.bz2 ,
-.Dq .pkg.tar.lz ,
-.Dq .pkg.tar.zst ,
-or
-.Dq .pkg.tar.xz
-.Pc .
+The package itself is an archive of files, and its contents have a
+directory structure format.
+.Pp
+The following archive formats are supported:
+.Bl -tag -width XX -compact -offset XX
+.It \(bu .pkg.tar.gz
+.It \(bu .pkg.tar.bz2
+.It \(bu .pkg.tar.lz
+.It \(bu .pkg.tar.zst
+.It \(bu .pkg.tar.xz
+.El
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
