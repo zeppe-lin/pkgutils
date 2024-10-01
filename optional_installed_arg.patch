@@ -1,0 +1,76 @@
+diff --git a/src/pkginfo.cpp b/src/pkginfo.cpp
+index d4c175e..311b486 100644
+--- a/src/pkginfo.cpp
++++ b/src/pkginfo.cpp
+@@ -16,12 +16,12 @@ pkginfo::print_help()
+   const
+ {
+   cout << R"(Usage: pkginfo [-Vh] [-r rootdir]
+-               {-f file | -i | -l <pkgname | file> | -o pattern}
++               {-f file | -i [pkgname] | -l <pkgname | file> | -o pattern}
+ Display software package information.
+ 
+ Mandatory arguments to long options are mandatory for short options too.
+   -f, --footprint=file         print footprint for file
+-  -i, --installed              list installed packages and their version
++  -i, --installed [pkgname]    list installed packages and their version
+   -l, --list=<pkgname | file>  list files in package or file
+   -o, --owner=pattern          list owner(s) of file(s) matching pattern
+   -r, --root=rootdir           specify an alternate installation root
+@@ -45,7 +45,7 @@ pkginfo::run(int argc, char** argv)
+   int opt;
+   static struct option longopts[] = {
+     { "footprint",  required_argument,  NULL,  'f' },
+-    { "installed",  no_argument,        NULL,  'i' },
++    { "installed",  optional_argument,  NULL,  'i' },
+     { "list",       required_argument,  NULL,  'l' },
+     { "owner",      required_argument,  NULL,  'o' },
+     { "root",       required_argument,  NULL,  'r' },
+@@ -53,7 +53,7 @@ pkginfo::run(int argc, char** argv)
+     { "help",       no_argument,        NULL,  'h' },
+   };
+ 
+-  while ((opt = getopt_long(argc, argv, "f:il:o:r:Vh", longopts, 0)) != -1)
++  while ((opt = getopt_long(argc, argv, "f:i::l:o:r:Vh", longopts, 0)) != -1)
+   {
+     switch (opt) {
+     case 'f':
+@@ -62,6 +62,8 @@ pkginfo::run(int argc, char** argv)
+       break;
+     case 'i':
+       o_installed_mode = 1;
++      if (!optarg && argv[optind] != NULL && argv[optind][0] != '-')
++        o_arg = argv[optind++];
+       break;
+     case 'l':
+       o_list_mode = 1;
+@@ -113,10 +115,26 @@ pkginfo::run(int argc, char** argv)
+       /*
+        * List installed packages.
+        */
+-      for (packages_t::const_iterator
+-            i = packages.begin(); i != packages.end(); ++i)
++      packages_t::const_iterator i;
++
++      if (o_arg.size())
++      {
++        /* list the specified one */
++        for (i = packages.begin(); i != packages.end(); ++i)
++        {
++          if (i->first.compare(o_arg) == 0)
++            break;
++        }
++        if (i != packages.end())
++           cout << i->first << ' ' << i->second.version << endl;
++        else
++           throw runtime_error(o_arg + " is not an installed package");
++      }
++      else
+       {
+-        cout << i->first << ' ' << i->second.version << endl;
++        /* list all packages */
++        for (i = packages.begin(); i != packages.end(); ++i)
++          cout << i->first << ' ' << i->second.version << endl;
+       }
+     }
+     else if (o_list_mode)
