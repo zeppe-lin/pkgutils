@@ -1,12 +1,12 @@
 OVERVIEW
 ========
 
-This directory contains pkgutils, a set of utilities like pkgadd(1), pkgrm(8),
-and pkginfo(1) that are used for managing software packages: adding, removing
-and basic information gathering.
+This directory contains pkgutils, a set of utilities like pkgadd(1),
+pkgrm(8), and pkginfo(1) that are used for managing software packages:
+adding, removing and basic information gathering.
 
-This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6 (Sat Nov 17
-2018) with the following differences:
+This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6 (Sat
+Nov 17 2018) with the following differences:
   * GNU-style options/help/usage
   * better GNU Coding Standards support
   * manual pages in mdoc(7) format
@@ -31,8 +31,8 @@ Build time
   * pkg-config(1)
   * libarchive(3) to unpack an archive files
 
-Also, see [rejmerge][1], an utility that merges files that were rejected by
-pkgadd(8) during package upgrades.
+Also, see [rejmerge][1], an utility that merges files that were rejected
+by pkgadd(8) during package upgrades.
 
 [1]: https://github.com/zeppe-lin/rejmerge
 
@@ -46,11 +46,12 @@ package.
 The shell command `make install_bashcomp` should install bash completion
 script.
 
-The shell command  `make install_vimfiles` should install vim syntax highlight
-for `pkgadd.conf` file.
+The shell command  `make install_vimfiles` should install vim syntax
+highlight for `pkgadd.conf` file.
 
-See `config.mk` file for configuration parameters, and `src/pathnames.h` for
-absolute filenames and settings that pkgutils wants for various defaults.
+See `config.mk` file for configuration parameters, and `src/pathnames.h`
+for absolute filenames and settings that pkgutils wants for various
+defaults.
 
 
 LICENSE
