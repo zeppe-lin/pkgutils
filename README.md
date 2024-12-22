@@ -43,12 +43,6 @@ INSTALL
 The shell commands `make && make install` should build and install this
 package.
 
-The shell command `make install_bashcomp` should install bash completion
-script.
-
-The shell command  `make install_vimfiles` should install vim syntax
-highlight for `pkgadd.conf` file.
-
 See `config.mk` file for configuration parameters, and `src/pathnames.h`
 for absolute filenames and settings that pkgutils wants for various
 defaults.
