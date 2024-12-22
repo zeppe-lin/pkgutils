@@ -5,7 +5,7 @@ include config.mk
 all install uninstall clean:
 	cd src && $(MAKE) $@
 	cd man && $(MAKE) $@
+	cd vim && $(MAKE) $@
 	cd completion && $(MAKE) $@
-	cd vimfiles && $(MAKE) $@
 
 .PHONY: all install uninstall clean
