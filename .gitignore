@@ -1,9 +1,3 @@
-# build files and artefacts
-pkgadd
-pkginfo
-pkgrm
-*.o
-
 # vim undo and swap files
 .*.un~
 *.swp
