@@ -1,4 +1,6 @@
 include $(CURDIR)/../config.mk
+#include $(CURDIR)/../extra/asan_ubsan.mk
+#include $(CURDIR)/../extra/extra_warns.mk
 
 OBJS = main.o pkgadd.o pkginfo.o pkgrm.o pkgutil.o
 BIN1 = pkginfo
