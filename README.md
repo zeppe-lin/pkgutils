@@ -26,9 +26,8 @@ REQUIREMENTS
 Build time
 ----------
   * C++11 compiler (GCC 4.8.1 and later, Clang 3.3 and later)
-  * POSIX sh(1p) and "mandatory utilities"
-  * GNU make(1)
-  * pkg-config(1)
+  * POSIX sh(1p), make(1p) and "mandatory utilities"
+  * pkg-config(1) is optional, for static linking
   * libarchive(3) to unpack an archive files
 
 Also, see [rejmerge][1], an utility that merges files that were rejected
@@ -42,6 +41,11 @@ INSTALL
 
 The shell commands `make && make install` should build and install this
 package.
+
+For static linking you need `pkg-config(1)` and run `make` as the following:
+```
+make LDFLAGS="-static `pkg-config --static --libs libarchive`"
+```
 
 See `config.mk` file for configuration parameters, and `src/pathnames.h`
 for absolute filenames and settings that pkgutils wants for various
