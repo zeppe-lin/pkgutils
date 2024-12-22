@@ -684,7 +684,7 @@ pkgutil::ldconfig()
 
     if (pid == 0)
     {
-      execl(LDCONFIG, LDCONFIG, "-r", root.c_str(), (char *) 0);
+      execl(LDCONFIG, LDCONFIG, "-r", root.c_str(), static_cast<char *>(0));
       const char* msg = strerror(errno);
       cerr << utilname << ": could not execute " << LDCONFIG << ": "
            << msg << endl;
