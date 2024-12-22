@@ -4,7 +4,7 @@
 
 # includes and libs
 INCS     =
-LIBS     = $(shell pkg-config --static --libs libarchive)
+LIBS     = -larchive
 
 # flags
 CPPFLAGS = -D_POSIX_SOURCE -D_GNU_SOURCE -D_LARGEFILE_SOURCE \
@@ -44,4 +44,4 @@ CXXFLAGS = -std=c++0x \
            -Wuseless-cast \
            -Wcast-align \
            -Wswitch-default
-LDFLAGS  = -static $(LIBS)
+LDFLAGS  = $(LIBS)

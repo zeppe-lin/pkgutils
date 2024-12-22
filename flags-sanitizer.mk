@@ -4,7 +4,7 @@
 
 # includes and libs
 INCS     =
-LIBS     = $(shell pkg-config --libs libarchive) -lasan -lubsan
+LIBS     = -larchive -lasan -lubsan
 
 # flags
 CPPFLAGS = -D_POSIX_SOURCE -D_GNU_SOURCE -D_LARGEFILE_SOURCE \

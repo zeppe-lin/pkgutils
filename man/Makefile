@@ -1,4 +1,6 @@
-include $(CURDIR)/../config.mk
+.POSIX:
+
+include ../config.mk
 
 MAN1 = pkginfo.1
 MAN5 = pkgadd.conf.5

@@ -1,11 +1,11 @@
+.POSIX:
+
 include config.mk
 
-SUBDIRS = src man extra/vimfiles extra/bashcomp
-
 all install uninstall clean:
-	$(MAKE) $(SUBDIRS) TARGET=$@
+	cd src && $(MAKE) $@
+	cd man && $(MAKE) $@
+	cd completions && $(MAKE) $@
+	cd vimfiles && $(MAKE) $@
 
-$(SUBDIRS):
-	cd $@ && $(MAKE) $(TARGET)
-
-.PHONY: all install uninstall clean $(SUBDIRS)
+.PHONY: all install uninstall clean

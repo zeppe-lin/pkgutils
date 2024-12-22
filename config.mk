@@ -12,4 +12,8 @@ VIMFILESDIR = $(PREFIX)/share/vim/vimfiles
 CPPFLAGS    = -D_POSIX_SOURCE -D_GNU_SOURCE -D_LARGEFILE_SOURCE \
               -D_FILE_OFFSET_BITS=64 -DNDEBUG -DVERSION=\"$(VERSION)\"
 CXXFLAGS    = -std=c++0x -pedantic -Wall -Wextra
-LDFLAGS     = -static $(shell pkg-config --static --libs libarchive)
+LDFLAGS     = -larchive
+
+# compiler and linker
+CXX         = c++
+LD          = $(CXX)

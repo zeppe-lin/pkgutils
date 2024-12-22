@@ -1,6 +1,9 @@
-include $(CURDIR)/../config.mk
-#include $(CURDIR)/../extra/asan_ubsan.mk
-#include $(CURDIR)/../extra/extra_warns.mk
+.POSIX:
+.SUFFIXES: .cpp .o
+
+include ../config.mk
+#include ../flags-extra.mk
+#include ../flags-sanitizer.mk
 
 OBJS = main.o pkgadd.o pkginfo.o pkgrm.o pkgutil.o
 BIN1 = pkginfo
@@ -8,8 +11,11 @@ BIN8 = pkgadd pkgrm
 
 all: $(BIN1) $(BIN8)
 
+.cpp.o:
+	$(CXX) -c $< $(CPPFLAGS) $(CXXFLAGS)
+
 pkgadd: $(OBJS)
-	$(CXX) $^ $(LDFLAGS) -o $@
+	$(CXX) $(OBJS) $(LDFLAGS) -o $@
 
 pkginfo pkgrm: pkgadd
 	ln -sf pkgadd $@
