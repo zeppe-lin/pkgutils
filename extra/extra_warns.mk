@@ -6,10 +6,9 @@
 INCS     =
 LIBS     = $(shell pkg-config --static --libs libarchive)
 
-# compiler flags
+# flags
 CPPFLAGS = -D_POSIX_SOURCE -D_GNU_SOURCE -D_LARGEFILE_SOURCE \
-              -D_FILE_OFFSET_BITS=64 -DNDEBUG -DVERSION=\"$(VERSION)\"
-
+           -D_FILE_OFFSET_BITS=64 -DNDEBUG -DVERSION=\"$(VERSION)\"
 CXXFLAGS = -std=c++0x \
            -pedantic \
            -Wall \
@@ -45,7 +44,4 @@ CXXFLAGS = -std=c++0x \
            -Wuseless-cast \
            -Wcast-align \
            -Wswitch-default
-
 LDFLAGS  = -static $(LIBS)
-
-# End of file.
