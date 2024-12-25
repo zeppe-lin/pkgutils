@@ -4,6 +4,8 @@ include ../config.mk
 
 all:
 
+lint:
+
 install:
 	mkdir -p $(DESTDIR)$(VIMFILESDIR)/ftdetect
 	mkdir -p $(DESTDIR)$(VIMFILESDIR)/syntax
@@ -16,4 +18,4 @@ uninstall:
 
 clean:
 
-.PHONY: all install uninstall clean
+.PHONY: all lint install uninstall clean

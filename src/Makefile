@@ -14,6 +14,8 @@ all: $(BIN1) $(BIN8)
 .cpp.o:
 	$(CXX) -c $< $(CPPFLAGS) $(CXXFLAGS)
 
+lint:
+
 pkgadd: $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@
 
@@ -35,4 +37,4 @@ uninstall:
 clean:
 	rm -f $(OBJS) $(BIN1) $(BIN8)
 
-.PHONY: all install uninstall clean
+.PHONY: all lint install uninstall clean

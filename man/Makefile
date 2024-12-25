@@ -8,6 +8,9 @@ MAN8 = pkgadd.8 pkgrm.8
 
 all:
 
+lint:
+	mandoc -Tlint $(MAN1) $(MAN5) $(MAN8)
+
 install:
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man5
@@ -26,4 +29,4 @@ uninstall:
 
 clean:
 
-.PHONY: all install uninstall clean
+.PHONY: all lint install uninstall clean
