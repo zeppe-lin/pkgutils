@@ -4,7 +4,8 @@ TODO pkgutils
 
 No milestone
 ------------
-  - [ ] completion/bash_completion: fix shellcheck warnings
+  - [ ] completion/bash_completion:
+        fix shellcheck warnings, and add checking to CI.
 
   - [ ] symlink handling:
         https://github.com/zeppe-lin/pkgutils/issues/1
