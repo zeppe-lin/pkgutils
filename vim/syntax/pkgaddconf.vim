@@ -14,30 +14,32 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 " Comment.
-syn keyword pkgaddTodo     TODO FIXME XXX NOTE
+syn keyword pkgadd_todo    TODO FIXME XXX NOTE
                            \ contained
-syn region  pkgaddComment  start="^\s*#" end="$"
+
+syn region  pkgadd_comment start="^\s*#" end="$"
                            \ display
                            \ oneline
-                           \ contains=pkgaddTodo,@Spell
+                           \ contains=pkgadd_todo,@Spell
+
 " Event.
-syn match   pkgaddEvent    '^\<\%(UPGRADE\|INSTALL\)\>'
-                           \ nextgroup=pkgaddPattern
+syn match   pkgadd_event   '^\<\%(UPGRADE\|INSTALL\)\>'
+                           \ nextgroup=pkgadd_pattern
                            \ skipwhite
 " Pattern.
-syn match   pkgaddPattern  '\s\^\([^ ]\)\+\$'
-                           \ nextgroup=pkgaddAction
+syn match   pkgadd_pattern '\s\^\([^ ]\)\+\$'
+                           \ nextgroup=pkgadd_action
                            \ skipwhite
 " Action.
-syn match   pkgaddAction   '\s\<\%(YES\|NO\)\>$'
+syn match   pkgadd_action  '\s\<\%(YES\|NO\)\>$'
                            \ skipwhite
 
 " Define the default highlighting.
-hi def link pkgaddTodo     Todo
-hi def link pkgaddComment  Comment
-hi def link pkgaddEvent    Identifier
-hi def link pkgaddPattern  Special
-hi def link pkgaddAction   Constant
+hi def link pkgadd_todo    Todo
+hi def link pkgadd_comment Comment
+hi def link pkgadd_event   Identifier
+hi def link pkgadd_pattern Special
+hi def link pkgadd_action  Constant
 
 let b:current_syntax = "pkgaddconf"
 
@@ -45,4 +47,5 @@ let b:current_syntax = "pkgaddconf"
 let &cpo = s:cpo_save
 unlet s:cpo_save
 
+" vim: cc=72
 " End of file.
