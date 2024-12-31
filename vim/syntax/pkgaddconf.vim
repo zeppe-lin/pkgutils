@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:     pkgadd.conf(5) configuration file
 " Maintainer:   Alexandr Savca <alexandr.savca89@gmail.com>
-" Last Change:  January 24, 2024
+" Last Change:  December 31, 2024
 
 " Quit when a syntax file was already loaded.
 if exists("b:current_syntax")
