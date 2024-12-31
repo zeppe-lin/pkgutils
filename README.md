@@ -44,6 +44,7 @@ this package.
 
 For static linking you need `pkg-config(1)` and run `make` as the
 following:
+
 ```sh
 make LDFLAGS="-static `pkg-config --static --libs libarchive`"
 ```
