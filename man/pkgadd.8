@@ -31,6 +31,20 @@ The following archive formats are supported:
 .It \(bu .pkg.tar.xz
 .El
 .Pp
+By default,
+.Nm
+does not preserve packages' Access Control Lists
+.Po
+.Xr acl 5
+.Pc
+and Extended attributes
+.Po
+.Xr xattr 7
+.Pc
+unless it has been compiled with that support.
+To see if these options are enabled, check the command output of
+.Sy pkgadd \-v .
+.Pp
 The options are as follows:
 .Bl -tag -width Ds
 .It Fl c Ar conffile , Fl \-config Ns = Ns Ar conffile
