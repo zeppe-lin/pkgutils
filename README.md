@@ -13,7 +13,7 @@ This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
   * split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
   * zstd packages support
   * vim syntax highlight for `pkgadd.conf` file
-  * optional support for extracting ACLs & xattrs by pkgadd(8)
+  * optional support for preserving ACLs & xattrs by pkgadd(8)
 
 See git log for complete/further differences.
 
