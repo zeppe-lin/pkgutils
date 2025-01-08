@@ -606,7 +606,14 @@ pkgutil::pkg_install(const string& filename,
      */
     auto flags =
         ARCHIVE_EXTRACT_OWNER | ARCHIVE_EXTRACT_PERM
-      | ARCHIVE_EXTRACT_TIME  | ARCHIVE_EXTRACT_UNLINK;
+      | ARCHIVE_EXTRACT_TIME  | ARCHIVE_EXTRACT_UNLINK
+#ifdef ENABLE_EXTRACT_ACL
+      | ARCHIVE_EXTRACT_ACL
+#endif
+#ifdef ENABLE_EXTRACT_XATTR
+      | ARCHIVE_EXTRACT_XATTR
+#endif
+      ;
 
     if (archive_read_extract(archive, entry, flags) != ARCHIVE_OK)
     {
@@ -873,6 +880,16 @@ pkgutil::print_version()
   const
 {
   cout << utilname << " (pkgutils) " << VERSION << endl;
+#if defined(ENABLE_EXTRACT_ACL) || defined(ENABLE_EXTRACT_XATTR)
+  cout << "Compiled with options: "
+#ifdef ENABLE_EXTRACT_ACL
+       << "+acl "
+#endif
+#ifdef ENABLE_EXTRACT_XATTR
+       << "+xattr "
+#endif
+       << endl;
+#endif
 }
 
 db_lock::db_lock(const string& root, bool exclusive)
