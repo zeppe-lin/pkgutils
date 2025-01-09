@@ -24,7 +24,7 @@ Mandatory arguments to long options are mandatory for short options too.
   -i, --installed              list installed packages and their version
   -l, --list=<pkgname | file>  list files in package or file
   -o, --owner=pattern          list owner(s) of file(s) matching pattern
-  -r, --root=rootdir           specify an alternate installation root
+  -r, --root=rootdir           specify an alternate root directory
   -V, --version                print version and exit
   -h, --help                   print help and exit
 )";
