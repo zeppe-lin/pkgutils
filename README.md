@@ -1,7 +1,7 @@
 OVERVIEW
 ========
 
-This directory contains pkgutils, a set of utilities like pkgadd(1),
+This repository contains pkgutils, a set of utilities like pkgadd(1),
 pkgrm(8), and pkginfo(1) that are used for managing software packages:
 adding, removing and basic information gathering.
 
