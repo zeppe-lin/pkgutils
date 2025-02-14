@@ -55,6 +55,19 @@ See `config.mk` file for configuration parameters, and
 wants for various defaults.
 
 
+DOCUMENTATION
+=============
+
+Online documentation
+--------------------
+
+Manual pages:
+- [pkgadd.8](https://zeppe-lin.github.io/pkgadd.8.html)
+- [pkgadd.conf.5](https://zeppe-lin.github.io/pkgadd.conf.5.html)
+- [pkginfo.1](https://zeppe-lin.github.io/pkginfo.1.html)
+- [pkgrm.8](https://zeppe-lin.github.io/pkgrm.8.html)
+
+
 LICENSE
 =======
 
