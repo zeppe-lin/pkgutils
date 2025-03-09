@@ -10,7 +10,6 @@ BIN8 = pkgadd pkgrm
 LIB_DIR      = ./libpkgutils
 LIB_TARGET   = $(LIB_DIR)/libpkgutils.a
 LIB_CPPFLAGS = -I$(LIB_DIR)
-LIB_LDFLAGS  = -L$(LIB_DIR)
 
 all: $(BIN1) $(BIN8)
 
@@ -30,9 +29,6 @@ pkgrm: pkgrm.o $(LIB_TARGET)
 
 pkginfo: pkginfo.o $(LIB_TARGET)
 	$(CXX) $^ $(LDFLAGS) -o $@
-
-#$(BIN1) $(BIN8): $(OBJS) $(LIB_TARGET)
-#	$(CXX) $(OBJS) $(LDFLAGS) -o $@
 
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
