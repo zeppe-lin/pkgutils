@@ -1,6 +1,12 @@
 //! \file  pkgrm.cpp
 //! \brief pkgrm utility implementation.
-//!        See COPYING and COPYRIGHT files for corresponding information.
+//!
+//! The `pkgrm` utility is used to remove software packages
+//! from the system. It handles package removal and related cleanup
+//! tasks.
+//!
+//! \copyright See COPYING and COPYRIGHT files for corresponding
+//!            information.
 
 #include <iostream>
 #include <string>
@@ -12,6 +18,13 @@
 
 using namespace std;
 
+/*!
+ * \brief Prints the help message for pkgrm utility.
+ *
+ * Displays usage instructions, available options, and a brief
+ * description of the `pkgrm` utility's functionality to standard
+ * output.
+ */
 void
 print_help()
 {
@@ -19,84 +32,90 @@ print_help()
 Remove software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -r, --root=rootdir  specify an alternate root directory
+  -r, --root=rootdir    specify an alternate root directory
   -v, --verbose       explain what is being done
   -V, --version       print version and exit
   -h, --help          print help and exit
 )";
 }
 
+/*!
+ * \brief Prints the version information for pkgrm utility.
+ *
+ * Retrieves the version string from the pkgutil library and
+ * displays it to the user via standard output.
+ */
 void
 print_version()
 {
-  // create a pkgutil object to access version info
   pkgutil util("pkgrm");
   util.print_version();
 }
 
-int main(int argc, char** argv)
+/*!
+ * \brief Main function for the pkgrm utility.
+ * \param argc Argument count from command line.
+ * \param argv Argument vector from command line.
+ * \return EXIT_SUCCESS on successful execution, EXIT_FAILURE on error.
+ *
+ * This function parses command line arguments, performs package
+ * removal, and handles error conditions.
+*/
+int
+main(int argc, char** argv)
 {
-  /*
-   * Check command line options.
-   */
+  // --- Option Parsing ---
   string o_root, o_package;
   int o_verbose = 0;
   int opt;
 
   static struct option longopts[] = {
-    { "root",     required_argument,  NULL,  'r' },
-    { "verbose",  no_argument,        NULL,  'v' },
-    { "version",  no_argument,        NULL,  'V' },
-    { "help",     no_argument,        NULL,  'h' },
-    { 0,          0,                  0,     0   },
+    { "root",    required_argument, NULL, 'r' },
+    { "verbose", no_argument,       NULL, 'v' },
+    { "version", no_argument,       NULL, 'V' },
+    { "help",    no_argument,       NULL, 'h' },
+    { 0,         0,                 0,    0   },
   };
 
   while ((opt = getopt_long(argc, argv, "r:vVh", longopts, 0)) != -1)
   {
-    switch (opt) {
-    case 'r':
-      o_root = optarg;
-      break;
-    case 'v':
-      o_verbose++;
-      break;
-    case 'V':
-      print_version();
-      return 0;
-    case 'h':
-      print_help();
-      return 0;
-    default:
-      cerr << "Invalid option." << endl;
-      print_help();
-      return 1;
+    switch (opt)
+    {
+      case 'r': o_root = optarg;  break;
+      case 'v': o_verbose++;      break;
+      case 'V': print_version();  return EXIT_SUCCESS;
+      case 'h': print_help();     return EXIT_SUCCESS;
+      default:
+        cerr << "Invalid option." << endl;
+        print_help();
+        return EXIT_FAILURE;
     }
   }
 
+  // --- Argument Validation ---
   if (optind == argc)
   {
     cerr << "error: missing package name" << endl;
     print_help();
-    return 1;
+    return EXIT_FAILURE;
   }
   else if (argc - optind > 1)
   {
     cerr << "error: too many arguments" << endl;
     print_help();
-    return 1;
+    return EXIT_FAILURE;
   }
 
   o_package = argv[optind];
 
-  /*
-   * Check UID.
-   */
+  // --- Privilege Check ---
   if (getuid() != 0)
   {
     cerr << "error: only root can remove packages" << endl;
-    return 1;
+    return EXIT_FAILURE;
   }
 
+  // --- Package Removal Logic ---
   try
   {
     pkgutil util("pkgrm");
@@ -116,7 +135,7 @@ int main(int argc, char** argv)
   catch (const runtime_error& error)
   {
     cerr << "error: " << error.what() << endl;
-    return 1;
+    return EXIT_FAILURE;
   }
 
   return EXIT_SUCCESS;
