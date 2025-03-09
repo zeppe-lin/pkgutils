@@ -2,9 +2,7 @@
 .SUFFIXES: .cpp .o
 
 include ../../config.mk
-
-LIB_NAME = libpkgutils
-LIB_VERSION = 0.1
+include config.mk
 
 LIB_SRC = db_lock.cpp fs_utils.cpp pkgutil.cpp
 LIB_HDR = db_lock.h   fs_utils.h   pkgutil.h   libpkgutils.h

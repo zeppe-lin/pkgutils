@@ -224,7 +224,7 @@ public:
   void pkg_footprint(const std::string& filename) const;
 
   /*!
-   * \brief Prints the version of the pkgutil library and utility name.
+   * \brief Prints the versions of the pkgutil library and utility name.
    */
   void print_version() const;
 
@@ -248,27 +248,30 @@ public:
   //! \var PKG_DB
   //! \brief Path to the package database file (relative to root).
   static const char* PKG_DB;
+
   //! \var PKG_DIR
   //! \brief Path to the package directory (relative to root, for locking).
   static const char* PKG_DIR;
+
   //! \var PKG_REJECTED
   //! \brief Path to the rejected files directory (relative to root).
   static const char* PKG_REJECTED;
+
   //! \var VERSION_DELIM
   //! \brief Delimiter used in package filenames to separate name and version.
   static const char* VERSION_DELIM;
+
   //! \var PKG_EXT
   //! \brief Extension for package files.
   static const char* PKG_EXT;
+
   //! \var LDCONFIG_CONF
   //! \brief Path to the ldconfig configuration file (relative to root).
   static const char* LDCONFIG_CONF;
+
   //! \var LDCONFIG
   //! \brief Path to the ldconfig utility executable.
   static const char* LDCONFIG;
-  //! \var LIB_VERSION
-  //! \brief Version string for the pkgutil library.
-  static const char* LIB_VERSION;
 
   //! @}
 

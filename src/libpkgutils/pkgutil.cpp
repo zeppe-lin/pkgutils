@@ -13,6 +13,7 @@
 #include "db_lock.h"
 #include "fs_utils.h"
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <iterator>
 #include <algorithm>
@@ -58,28 +59,31 @@ using __gnu_cxx::stdio_filebuf;
 //! \var pkgutil::PKG_DB
 //! \brief Path to the package database file (relative to root).
 const char* pkgutil::PKG_DB         = "var/lib/pkg/db";
+
 //! \var pkgutil::PKG_DIR
 //! \brief Path to the package directory (relative to root, for locking).
 const char* pkgutil::PKG_DIR        = "var/lib/pkg";
+
 //! \var pkgutil::PKG_REJECTED
 //! \brief Path to the rejected files directory (relative to root).
 const char* pkgutil::PKG_REJECTED   = "var/lib/pkg/rejected";
+
 //! \var pkgutil::VERSION_DELIM
 //! \brief Delimiter used in package filenames to separate name and version.
 const char* pkgutil::VERSION_DELIM  = "#";
+
 //! \var pkgutil::PKG_EXT
 //! \brief Extension for package files.
 const char* pkgutil::PKG_EXT        = ".pkg.tar";
+
 //! \var pkgutil::LDCONFIG_CONF
 //! \brief Path to the ldconfig configuration file (relative to root).
 const char* pkgutil::LDCONFIG_CONF  = "/etc/ld.so.conf";
+
 //! \var pkgutil::LDCONFIG
 //! \brief Path to the ldconfig utility executable.
 const char* pkgutil::LDCONFIG       = "/sbin/ldconfig";
 //                                  or /usr/sbin/ldconfig, check system
-//! \var pkgutil::LIB_VERSION
-//! \brief Version string for the pkgutil library.
-const char* pkgutil::LIB_VERSION    = "1.0";
 
 //! @}
 
@@ -1401,23 +1405,46 @@ pkgutil::pkg_footprint(const std::string& filename)
 }
 
 /*!
- * \brief Prints the version of the pkgutil library and utility name.
+ * \brief Prints the versions of the pkgutil library and utility name.
  */
 void
 pkgutil::print_version()
     const
 {
-  std::cout << utilname << " (pkgutils) " << LIB_VERSION << std::endl;
-#if defined(ENABLE_EXTRACT_ACL) || defined(ENABLE_EXTRACT_XATTR)
-  std::cout << "Compiled with options: " // Indicate compile-time options
+  std::ostringstream version_stream;
+
+  version_stream << utilname << " from pkgutils " << VERSION
+                 << " (libpkgutils " << LIB_VERSION;
+
+  std::ostringstream options_stream;
+  bool options_added = false;
+
 #ifdef ENABLE_EXTRACT_ACL
-            << "+acl " // ACL support enabled
+  options_stream << "acl";
+  options_added = true;
 #endif
+
 #ifdef ENABLE_EXTRACT_XATTR
-            << "+xattr " // XATTR support enabled
+  if (options_added)
+    options_stream << ", "; // add comma if ACL was already added
+  options_stream << "xattr";
+  options_added = true;
 #endif
-            << std::endl;
+
+#ifndef NDEBUG
+  if (options_added)
+    options_stream << ", ";
+  options_stream << "debug";
+  options_added = true;
 #endif
+
+  std::string options_string = options_stream.str();
+  if (!options_string.empty())
+    version_stream << ": " << options_string;
+
+  version_stream << ")";
+
+  std::cout << version_stream.str() << std::endl;
 }
 
 // vim: sw=2 ts=2 sts=2 et cc=72 tw=70
