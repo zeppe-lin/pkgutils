@@ -1,15 +1,16 @@
-//! \file  pkg_utils.cpp
-//! \brief Implementation of utility functions for package management.
+//! \file  fs_utils.cpp
+//! \brief Implementation of file system utility functions.
 //!
 //! This file implements a collection of utility functions used throughout
 //! the package management utilities. These functions provide functionalities
 //! such as file mode conversion, filename manipulation, file existence
-//! checks, file comparison, and file removal.
+//! checks, file comparison, and file removal, specifically focusing on
+//! file system operations.
 //!
 //! \copyright See COPYING and COPYRIGHT files for corresponding
 //!            information.
 
-#include "pkg_utils.h"
+#include "fs_utils.h"
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -123,9 +124,9 @@ trim_filename(const std::string& filename)
   std::string result = filename;
 
   for (std::string::size_type
-           pos  = result.find(search);
-           pos != std::string::npos;
-           pos  = result.find(search))
+         pos  = result.find(search);
+         pos != std::string::npos;
+         pos  = result.find(search))
   {
     result.replace(pos, search.size(), "/");
   }

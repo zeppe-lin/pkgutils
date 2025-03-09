@@ -11,7 +11,7 @@
 
 #include "pkgutil.h"
 #include "db_lock.h"
-#include "pkg_utils.h"
+#include "fs_utils.h"
 #include <iostream>
 #include <fstream>
 #include <iterator>

@@ -6,9 +6,9 @@ include ../../config.mk
 LIB_NAME = libpkgutils
 LIB_VERSION = 0.1
 
-LIB_SRC = pkg_utils.cpp pkgutil.cpp db_lock.cpp
-LIB_HDR = pkg_utils.h   pkgutil.h   db_lock.h   libpkgutils.h
-LIB_OBJ = pkg_utils.o   pkgutil.o   db_lock.o
+LIB_SRC = db_lock.cpp fs_utils.cpp pkgutil.cpp
+LIB_HDR = db_lock.h   fs_utils.h   pkgutil.h   libpkgutils.h
+LIB_OBJ = db_lock.o   fs_utils.o   pkgutil.o
 
 LIB_TARGET = $(LIB_NAME).a
 

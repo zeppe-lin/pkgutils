@@ -1,17 +1,17 @@
-//! \file  pkg_utils.h
-//! \brief Declaration of utility functions for package management.
+//! \file  fs_utils.h
+//! \brief Declaration of file system utility functions.
 //!
 //! This header file declares a collection of utility functions
 //! used throughout the package management utilities. These functions
 //! provide functionalities such as file mode conversion, filename
 //! manipulation, file existence checks, file comparison, and file
-//! removal.
+//! removal, specifically focusing on file system operations.
 //!
 //! \copyright See COPYING and COPYRIGHT files for corresponding
 //!            information.
 
-#ifndef PKG_UTILS_H
-#define PKG_UTILS_H
+#ifndef FS_UTILS_H
+#define FS_UTILS_H
 
 #include <limits.h>
 #include <sys/param.h>
@@ -82,7 +82,7 @@ bool permissions_equal(const std::string& file1, const std::string& file2);
 void file_remove(const std::string& basedir, const std::string& filename);
 
 
-#endif // PKG_UTILS_H
+#endif // FS_UTILS_H
 
 // vim: sw=2 ts=2 sts=2 et cc=72 tw=70
 // End of file.

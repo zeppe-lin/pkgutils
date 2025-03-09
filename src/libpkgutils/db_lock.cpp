@@ -18,7 +18,7 @@
 #include <cerrno>
 #include <iostream> // for cerr in debug (consider removing in final version)
 #include <cstring>
-#include "pkg_utils.h" // For trim_filename
+#include "fs_utils.h" // For trim_filename
 
 
 /*!
