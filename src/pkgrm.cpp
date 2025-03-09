@@ -2,13 +2,18 @@
 //! \brief pkgrm utility implementation.
 //!        See COPYING and COPYRIGHT files for corresponding information.
 
+#include <iostream>
+#include <string>
+#include <stdexcept>
 #include <unistd.h>
+#include <getopt.h>
 
-#include "pkgrm.h"
+#include "libpkgutils.h"
+
+using namespace std;
 
 void
-pkgrm::print_help()
-  const
+print_help()
 {
   cout << R"(Usage: pkgrm [-Vhv] [-r rootdir] pkgname
 Remove software package.
@@ -22,14 +27,22 @@ Mandatory arguments to long options are mandatory for short options too.
 }
 
 void
-pkgrm::run(int argc, char** argv)
+print_version()
+{
+  // create a pkgutil object to access version info
+  pkgutil util("pkgrm");
+  util.print_version();
+}
+
+int main(int argc, char** argv)
 {
   /*
    * Check command line options.
    */
-  static int o_verbose = 0;
-  static string o_root, o_package;
+  string o_root, o_package;
+  int o_verbose = 0;
   int opt;
+
   static struct option longopts[] = {
     { "root",     required_argument,  NULL,  'r' },
     { "verbose",  no_argument,        NULL,  'v' },
@@ -48,46 +61,65 @@ pkgrm::run(int argc, char** argv)
       o_verbose++;
       break;
     case 'V':
-      return print_version();
+      print_version();
+      return 0;
     case 'h':
-      return print_help();
+      print_help();
+      return 0;
     default:
-      /* throw an empty message since getopt_long already printed out
-       * the error message to stderr */
-      throw invalid_argument("");
+      cerr << "Invalid option." << endl;
+      print_help();
+      return 1;
     }
   }
 
   if (optind == argc)
-    throw invalid_argument("missing package name");
+  {
+    cerr << "error: missing package name" << endl;
+    print_help();
+    return 1;
+  }
   else if (argc - optind > 1)
-    throw invalid_argument("too many arguments");
+  {
+    cerr << "error: too many arguments" << endl;
+    print_help();
+    return 1;
+  }
 
   o_package = argv[optind];
 
   /*
    * Check UID.
    */
-  if (getuid())
-    throw runtime_error("only root can remove packages");
-
-  /*
-   * Remove package.
-   */
+  if (getuid() != 0)
   {
-    db_lock lock(o_root, true);
-    db_open(o_root);
+    cerr << "error: only root can remove packages" << endl;
+    return 1;
+  }
 
-    if (!db_find_pkg(o_package))
+  try
+  {
+    pkgutil util("pkgrm");
+    db_lock lock(o_root, true);
+    util.db_open(o_root);
+
+    if (!util.db_find_pkg(o_package))
       throw runtime_error("package " + o_package + " not installed");
 
     if (o_verbose)
       cout << "removing " << o_package << endl;
 
-    db_rm_pkg(o_package);
-    ldconfig();
-    db_commit();
+    util.db_rm_pkg(o_package);
+    util.ldconfig();
+    util.db_commit();
   }
+  catch (const runtime_error& error)
+  {
+    cerr << "error: " << error.what() << endl;
+    return 1;
+  }
+
+  return EXIT_SUCCESS;
 }
 
 // vim: sw=2 ts=2 sts=2 et cc=72 tw=70

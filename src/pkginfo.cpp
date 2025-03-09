@@ -2,18 +2,23 @@
 //! \brief pkginfo utility implementation.
 //!        See COPYING and COPYRIGHT files for corresponding information.
 
-#include <iterator>
+#include <iostream>
+#include <string>
+#include <stdexcept>
 #include <vector>
 #include <iomanip>
-
+#include <unistd.h>
+#include <getopt.h>
 #include <sys/types.h>
 #include <regex.h>
+#include <iterator> // Required for ostream_iterator
 
-#include "pkginfo.h"
+#include "libpkgutils.h"
+
+using namespace std;
 
 void
-pkginfo::print_help()
-  const
+print_help()
 {
   cout << R"(Usage: pkginfo [-Vh] [-r rootdir]
                {-f file | -i | -l <pkgname | file> | -o pattern}
@@ -31,17 +36,24 @@ Mandatory arguments to long options are mandatory for short options too.
 }
 
 void
-pkginfo::run(int argc, char** argv)
+print_version()
+{
+  pkgutil util("pkginfo");
+  util.print_version();
+}
+
+int
+main(int argc, char** argv)
 {
   /*
    * Check command line options.
    */
-  static int o_footprint_mode = 0;
-  static int o_installed_mode = 0;
-  static int o_list_mode      = 0;
-  static int o_owner_mode     = 0;
-  static string o_root;
-  static string o_arg;
+  int o_footprint_mode = 0;
+  int o_installed_mode = 0;
+  int o_list_mode      = 0;
+  int o_owner_mode     = 0;
+  string o_root;
+  string o_arg;
   int opt;
   static struct option longopts[] = {
     { "footprint",  required_argument,  NULL,  'f' },
@@ -75,37 +87,63 @@ pkginfo::run(int argc, char** argv)
       o_root = optarg;
       break;
     case 'V':
-      return print_version();
+      print_version();
+      return 0;
     case 'h':
-      return print_help();
+      print_help();
+      return 0;
     default:
-      /* throw an empty message since getopt_long already printed out
-       * the error message to stderr */
-      throw invalid_argument("");
+      cerr << "Invalid option." << endl;
+      print_help();
+      return 1;
     }
   }
 
   if (o_footprint_mode + o_installed_mode + o_list_mode + o_owner_mode == 0)
-    throw invalid_argument("option missing");
+  {
+    cerr << "error: option missing" << endl;
+    print_help();
+    return 1;
+  }
 
   if (o_footprint_mode + o_installed_mode + o_list_mode + o_owner_mode > 1)
-    throw invalid_argument("too many options");
+  {
+    cerr << "error: too many options" << endl;
+    print_help();
+    return 1;
+  }
+
+  pkgutil util("pkginfo");
 
   if (o_footprint_mode)
   {
     /*
      * Make footprint.
      */
-    pkg_footprint(o_arg);
+    try
+    {
+      util.pkg_footprint(o_arg);
+    }
+    catch (const runtime_error& error)
+    {
+      cerr << "error: " << error.what() << endl;
+      return 1;
+    }
   }
   else
   {
     /*
      * Modes that require the database to be opened.
      */
+    try
     {
       db_lock lock(o_root, false);
-      db_open(o_root);
+      util.db_open(o_root);
+    }
+    catch (const runtime_error& error)
+    {
+      cerr << "error: " << error.what() << endl;
+      return 1;
     }
 
     if (o_installed_mode)
@@ -113,34 +151,39 @@ pkginfo::run(int argc, char** argv)
       /*
        * List installed packages.
        */
-      for (packages_t::const_iterator
-            i = packages.begin(); i != packages.end(); ++i)
-      {
-        cout << i->first << ' ' << i->second.version << endl;
-      }
+      for (const auto& package_pair : util.getPackages())
+        cout << package_pair.first << ' ' << package_pair.second.version << endl;
     }
     else if (o_list_mode)
     {
       /*
        * List package or file contents.
        */
-      if (db_find_pkg(o_arg))
+      try
       {
-        copy(packages[o_arg].files.begin(),
-             packages[o_arg].files.end(),
-             ostream_iterator<string>(cout, "\n"));
+        if (util.db_find_pkg(o_arg))
+        {
+          copy(util.getPackages().at(o_arg).files.begin(),
+               util.getPackages().at(o_arg).files.end(),
+               ostream_iterator<string>(cout, "\n"));
+        }
+        else if (file_exists(o_arg))
+        {
+          pair<string, pkgutil::pkginfo_t> package = util.pkg_open(o_arg);
+          copy(package.second.files.begin(),
+               package.second.files.end(),
+               ostream_iterator<string>(cout, "\n"));
+        }
+        else
+        {
+          throw runtime_error(o_arg +
+              " is neither an installed package nor a package file");
+        }
       }
-      else if (file_exists(o_arg))
+      catch (const runtime_error& error)
       {
-        pair<string, pkginfo_t> package = pkg_open(o_arg);
-        copy(package.second.files.begin(),
-             package.second.files.end(),
-             ostream_iterator<string>(cout, "\n"));
-      }
-      else
-      {
-        throw runtime_error(o_arg +
-            " is neither an installed package nor a package file");
+        cerr << "error: " << error.what() << endl;
+        return 1;
       }
     }
     else
@@ -151,28 +194,27 @@ pkginfo::run(int argc, char** argv)
       regex_t preg;
       if (regcomp(&preg, o_arg.c_str(), REG_EXTENDED | REG_NOSUB))
       {
-        throw runtime_error("error compiling regular expression '" +
-            o_arg + "', aborting");
+        cerr << "error: fail to compile regular expression '" << o_arg << "', aborting" << endl;
+        return 1;
       }
 
       vector<pair<string, string> > result;
-      result.push_back(pair<string, string>("Package", "File"));
+      result.push_back({"Package", "File"});
 
-      unsigned int width =
-        result.begin()->first.length(); /* width of "Package" */
+      unsigned int width = result[0].first.length(); // width of "Package"
 
-      for (packages_t::const_iterator
-            i = packages.begin(); i != packages.end(); ++i)
+      for (const auto& package_pair : util.getPackages())
       {
-        for (set<string>::const_iterator
-              j = i->second.files.begin(); j != i->second.files.end(); ++j)
+        for (const string& file : package_pair.second.files)
         {
-          const string file('/' + *j);
-          if (!regexec(&preg, file.c_str(), 0, 0, 0))
+          const string full_file = '/' + file;
+
+          if (!regexec(&preg, full_file.c_str(), 0, 0, 0))
           {
-            result.push_back(pair<string, string>(i->first, *j));
-            if (i->first.length() > width)
-              width = i->first.length();
+            result.push_back({package_pair.first, file});
+
+            if (package_pair.first.length() > width)
+              width = package_pair.first.length();
           }
         }
       }
@@ -181,18 +223,15 @@ pkginfo::run(int argc, char** argv)
 
       if (result.size() > 1)
       {
-        for (vector<pair<string, string>>::const_iterator
-              i = result.begin(); i != result.end(); ++i)
-        {
-          cout << left << setw(width + 2) << i->first << i->second << endl;
-        }
+        for (const auto& res_pair : result)
+          cout << left << setw(width + 2) << res_pair.first << res_pair.second << endl;
       }
       else
-      {
-        cout << utilname << ": no owner(s) found" << endl;
-      }
+        cout << "pkginfo: no owner(s) found" << endl;
     }
   }
+
+  return 0;
 }
 
 // vim: sw=2 ts=2 sts=2 et cc=72 tw=70
