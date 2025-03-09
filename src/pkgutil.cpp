@@ -30,6 +30,18 @@
 
 #include "pkgutil.h"
 
+
+//! \def INIT_ARCHIVE(ar)
+//! \brief Initializes a libarchive read object for common
+//!        archive formats.
+//! \param ar The archive read object (`struct archive*`) to
+//!        initialize.
+//!
+//! \details
+//! This macro simplifies the initialization of a libarchive read
+//! object by enabling support for various compression filters and
+//! the tar format.  It enables gzip, bzip2, xz, lzip, and zstd
+//! decompression filters, as well as tar archive format support.
 #define INIT_ARCHIVE(ar)                    \
   archive_read_support_filter_gzip((ar));   \
   archive_read_support_filter_bzip2((ar));  \
@@ -38,10 +50,28 @@
   archive_read_support_filter_zstd((ar));   \
   archive_read_support_format_tar((ar))
 
+
+//! \def DEFAULT_BYTES_PER_BLOCK
+//! \brief Defines the default block size for archive operations.
+//!
+//! \details
+//! This macro defines the default block size, set to 20 * 512
+//! bytes (10240 bytes), used for reading data blocks from archives.
 #define DEFAULT_BYTES_PER_BLOCK (20 * 512)
 
 using __gnu_cxx::stdio_filebuf;
 
+/**
+ * \brief Constructor for the pkgutil class.
+ * \param name The name of the utility.
+ *
+ * \details
+ * Initializes the `pkgutil` object with the given utility name.
+ * This constructor also sets up signal handlers to ignore SIGHUP,
+ * SIGINT, SIGQUIT, and SIGTERM signals. This is likely to prevent
+ * the utility from being interrupted by these signals during
+ * critical operations.
+ */
 pkgutil::pkgutil(const string& name)
   : utilname(name)
 {
@@ -56,7 +86,34 @@ pkgutil::pkgutil(const string& name)
   sigaction(SIGQUIT, &sa, 0);
   sigaction(SIGTERM, &sa, 0);
 }
-
+/**
+ * \brief Opens and reads the package database from disk.
+ * \param path The path to the directory containing the package
+ *        database.
+ * \throws runtime_error_with_errno If the database file cannot be
+ *        opened or read.
+ *
+ * \details
+ * This function opens the package database file (PKG_DB) located
+ * within the specified `path` directory. It reads each record from
+ * the database, which consists of a package name, package version,
+ * and a list of files belonging to the package. This data is
+ * loaded into the `packages` map, where the key is the package
+ * name and the value is a `pkginfo_t` structure.
+ *
+ * The database file is expected to have the following format:
+ * - Package Name (line)
+ * - Package Version (line)
+ * - File Path 1 (line)
+ * - File Path 2 (line)
+ * - ...
+ * - File Path N (line)
+ * - Empty Line (Record Separator)
+ * - ... (Next Package Record)
+ *
+ * Redundant and trailing slashes in the provided path are trimmed
+ * using `trim_filename`.
+ */
 void
 pkgutil::db_open(const string& path)
 {
@@ -105,6 +162,36 @@ pkgutil::db_open(const string& path)
 #endif
 }
 
+/**
+ * \brief Commits changes to the package database, writing it to
+ *        disk atomically.
+ * \throws runtime_error_with_errno If any file operation during
+ *        commit fails.
+ * \throws runtime_error If writing to the new database file fails.
+ *
+ * \details
+ * This function commits changes made to the in-memory `packages`
+ * database by writing the updated database to disk. It implements
+ * an atomic commit strategy to prevent database corruption in case
+ * of errors or interruptions during the write process.
+ *
+ * The atomic commit process involves the following steps:
+ * 1. Removes any existing incomplete transaction file
+ *    (`.incomplete_transaction`).
+ * 2. Creates a new database file with a temporary name
+ *    (`.incomplete_transaction`) and writes the current in-memory
+ *    `packages` database to this new file.
+ * 3. Flushes and synchronizes the new database file to disk to
+ *    ensure data persistence.
+ * 4. Backs up the old database file by renaming it to `.backup`.
+ * 5. Renames the new database file (from `.incomplete_transaction`)
+ *    to the final database filename, effectively replacing the old
+ *    database with the new one.
+ *
+ * This process ensures that if any error occurs during the commit,
+ * the old database remains intact (backed up as `.backup`), and no
+ * corrupted or partially written database is left in place.
+ */
 void
 pkgutil::db_commit()
 {
@@ -181,18 +268,61 @@ pkgutil::db_commit()
 #endif
 }
 
+/**
+ * \brief Adds a package to the in-memory database.
+ * \param name The name of the package.
+ * \param info The package information (`pkginfo_t`) to add.
+ *
+ * \details
+ * This function adds a package and its associated information to the
+ * in-memory `packages` map. If a package with the same name already
+ * exists, it will be overwritten.
+ */
 void
 pkgutil::db_add_pkg(const string& name, const pkginfo_t& info)
 {
   packages[name] = info;
 }
 
+/**
+ * \brief Checks if a package with the given name exists in the
+ *        database.
+ * \param name The name of the package to search for.
+ * \return True if the package exists in the database, false otherwise.
+ */
 bool
 pkgutil::db_find_pkg(const string& name)
 {
   return (packages.find(name) != packages.end());
 }
 
+/**
+ * \brief Removes a package and its files from the database and
+ *        attempts to delete the files from the filesystem.
+ * \param name The name of the package to remove.
+ *
+ * \details
+ * This function removes a package entry from the `packages`
+ * database and then attempts to delete the files associated with
+ * that package from the filesystem. It performs a two-phase
+ * removal process to ensure files are only deleted if they are no
+ * longer referenced by other packages in the database.
+ *
+ * Phase 1: Collects all files belonging to the package being removed.
+ * Phase 2: Iterates through all remaining packages in the database
+ *          and removes any files from the collected file list that
+ *          are still referenced by other packages. This ensures
+ *          shared files are not deleted prematurely.
+ * Phase 3: Deletes the remaining files in the collected list from
+ *          the filesystem. File deletion is attempted using
+ *          `remove()`. If deletion fails due to errors other than
+ *          `ENOTEMPTY`, an error message is printed to stderr.
+ *
+ * \note File deletion is attempted even if `remove()` fails with
+ *      `ENOTEMPTY` (directory not empty), which might indicate a
+ *      shared directory or files placed in the package directory
+ *      after installation.
+ */
 void
 pkgutil::db_rm_pkg(const string& name)
 {
@@ -244,6 +374,36 @@ pkgutil::db_rm_pkg(const string& name)
   }
 }
 
+/**
+ * \brief Removes a package from the database, keeping a specified
+ *        list of files.
+ * \param name The name of the package to remove.
+ * \param keep_list A set of file paths to keep (not remove from
+ *                 database and filesystem).
+ *
+ * \details
+ * This function removes a package from the `packages` database, but
+ * preserves files listed in the `keep_list`. Similar to
+ * `db_rm_pkg(const string& name)`, it attempts to delete
+ * associated files from the filesystem, but excludes files present
+ * in the `keep_list` and files still referenced by other packages.
+ *
+ * The removal process consists of three phases:
+ * Phase 1: Collects all files belonging to the package.
+ * Phase 2: Excludes files present in the `keep_list` from the
+ *          collected file list.
+ * Phase 3: Excludes files from the remaining list that are still
+ *          referenced by other packages in the database.
+ * Phase 4: Deletes the remaining files in the collected list from
+ *          the filesystem. File deletion is attempted using
+ *          `remove()`. If deletion fails due to errors other than
+ *          `ENOTEMPTY`, an error message is printed to stderr.
+ *
+ * \note Files in `keep_list` are protected from deletion in both
+ *      database and filesystem removal.
+ * \note File deletion is attempted even if `remove()` fails with
+ *      `ENOTEMPTY`, similar to `db_rm_pkg(const string& name)`.
+ */
 void
 pkgutil::db_rm_pkg(const string& name, const set<string>& keep_list)
 {
@@ -316,6 +476,34 @@ pkgutil::db_rm_pkg(const string& name, const set<string>& keep_list)
   }
 }
 
+/**
+ * \brief Removes specific files from the database and attempts to
+ *        delete them from the filesystem.
+ * \param files A set of file paths to remove from the database and
+ *             filesystem.
+ * \param keep_list A set of file paths to keep (not remove from
+ *                 database and filesystem).
+ *
+ * \details
+ * This function removes specified files from the database and
+ * attempts to delete them from the filesystem. Files present in the
+ * `keep_list` are excluded from deletion in both database and
+ * filesystem.
+ *
+ * The removal process includes:
+ * Phase 1: Removes references to the files being removed from all
+ *          packages in the database.
+ * Phase 2: Excludes files present in the `keep_list` from the set
+ *          of files to be removed.
+ * Phase 3: Deletes the remaining files from the filesystem using
+ *          `remove()`. File deletion is attempted using `remove()`.
+ *          If deletion fails due to errors other than `ENOTEMPTY`,
+ *          an error message is printed to stderr.
+ *
+ * \note Files in `keep_list` are protected from deletion.
+ * \note File deletion is attempted even if `remove()` fails with
+ *      `ENOTEMPTY`, similar to package removal functions.
+ */
 void
 pkgutil::db_rm_files(set<string> files, const set<string>& keep_list)
 {
@@ -367,6 +555,40 @@ pkgutil::db_rm_files(set<string> files, const set<string>& keep_list)
   }
 }
 
+/**
+ * \brief Finds file conflicts for a package installation.
+ * \param name The name of the package being installed.
+ * \param info Package information (`pkginfo_t`) of the package to
+ *             be installed.
+ * \return A set of file paths that conflict with the package being
+ *             installed.
+ *
+ * \details
+ * This function identifies file conflicts that would arise if the
+ * package specified by `name` and `info` were to be installed. It
+ * checks for conflicts in both the existing package database and
+ * the filesystem.
+ *
+ * The conflict detection process is performed in four phases:
+ * Phase 1: Finds files in the database that are also present in the
+ *          package being installed and belong to a different package.
+ * Phase 2: Finds files in the filesystem (under the installation
+ *          root) that are also present in the package being
+ *          installed but are not already identified as conflicts in
+ *          the database (Phase 1).
+ * Phase 3: Excludes directories from the set of conflicting files.
+ *          Conflicts are only reported for regular files, symlinks,
+ *          etc., not directories.
+ * Phase 4: If the package being installed is an upgrade of an
+ *          existing package (checked by looking up the package name
+ *          in the database), files that are already owned by the
+ *          package being upgraded are excluded from the conflict
+ *          set. This is because upgrading a package over itself
+ *          should not report conflicts for files it already owns.
+ *
+ * \return A set of strings representing the paths of conflicting
+ *          files.
+ */
 set<string>
 pkgutil::db_find_conflicts(const string& name, const pkginfo_t&  info)
 {
@@ -457,6 +679,39 @@ pkgutil::db_find_conflicts(const string& name, const pkginfo_t&  info)
   return files;
 }
 
+/**
+ * \brief Opens a package file and extracts package information
+ *        (name, version, file list).
+ * \param filename The path to the package file.
+ * \return A pair containing the package name (string) and package
+ *          information (`pkginfo_t`).
+ * \throws runtime_error_with_errno If the package file cannot be
+ *        opened or read by libarchive.
+ * \throws runtime_error If the package file is empty or if package
+ *        name/version cannot be determined.
+ *
+ * \details
+ * This function opens a package file (assumed to be a tar archive
+ * compressed with gzip, bzip2, xz, lzip or zstd) using libarchive
+ * and extracts package metadata and the list of files contained
+ * within the archive.
+ *
+ * The package name and version are extracted from the filename
+ * itself, based on predefined delimiters (VERSION_DELIM, PKG_EXT).
+ * The filename is expected to follow a naming convention like
+ * `package_name-version.PKG_EXT`.
+ *
+ * The function iterates through the archive entries and collects
+ * the pathname of each entry as a file belonging to the package.
+ * It skips reading the actual data content of regular files during
+ * this process to improve efficiency.
+ *
+ * If the archive is empty, or if the package name or version
+ * cannot be parsed from the filename, or if libarchive encounters
+ * an error during opening or reading the archive, a
+ * `runtime_error` or `runtime_error_with_errno` exception is
+ * thrown.
+ */
 pair<string, pkgutil::pkginfo_t>
 pkgutil::pkg_open(const string& filename)
   const
@@ -528,6 +783,58 @@ pkgutil::pkg_open(const string& filename)
   return result;
 }
 
+/**
+ * \brief Installs a package from a package file.
+ * \param filename The path to the package file.
+ * \param keep_list A set of file paths to keep if they already
+ *                 exist on the system.
+ * \param non_install_list A set of file paths within the package
+ *                         that should not be installed.
+ * \param upgrade A boolean flag indicating if this is an upgrade
+ *                 operation.
+ * \throws runtime_error_with_errno If the package file cannot be
+ *        opened or read by libarchive.
+ * \throws runtime_error If file extraction fails for a non-upgrade
+ *        installation.
+ *
+ * \details
+ * This function installs a package from the specified package file.
+ * It uses libarchive to read the package archive and extract its
+ * contents to the filesystem under the root directory defined in
+ * `db_open()`.
+ *
+ * The installation process includes the following steps:
+ * 1. Opens the package file using libarchive.
+ * 2. Sets the current working directory to the installation root.
+ * 3. Iterates through each entry in the archive:
+ *    - Checks if the file is in the `non_install_list`; if so, it
+ *       is ignored.
+ *    - Checks if the file path is in the `keep_list`. If it is and
+ *       the file already exists on the system, the file is rejected
+ *       (moved to a rejected directory `PKG_REJECTED`) instead of
+ *       being installed, and existing files are preserved.
+ *    - Extracts the file from the archive to the filesystem using
+ *       `archive_read_extract()`, preserving owner, permissions,
+ *       and timestamps.
+ *    - If file extraction fails and it's not an upgrade
+ *       operation, a `runtime_error` is thrown.
+ *    - For rejected files (files in `keep_list` that already
+ *       existed):
+ *      - Compares permissions and content (for non-directories) of
+ *         the rejected file with the original file. If they are
+ *         considered equal (permissions and content match), the
+ *         rejected file is removed. Otherwise, a message is
+ *         printed indicating that the file was rejected, and the
+ *         existing version is kept.
+ *
+ * \note If file extraction fails during an upgrade, the
+ *      installation continues with the rest of the package.
+ * \note The function uses `ARCHIVE_EXTRACT_*` flags to control
+ *      extraction behavior (owner, permissions, etc.).
+ * \note Rejection logic involves moving files to a `PKG_REJECTED`
+ *      subdirectory to avoid overwriting existing files in
+ *      `keep_list`.
+ */
 void
 pkgutil::pkg_install(const string& filename,
                      const set<string>& keep_list,
@@ -675,6 +982,27 @@ pkgutil::pkg_install(const string& filename,
   archive_read_free(archive);
 }
 
+/**
+ * \brief Executes the ldconfig utility to update shared library
+ *        cache.
+ *
+ * \details
+ * This function executes the `ldconfig` utility, typically located
+ * at `/sbin/ldconfig` or `/usr/sbin/ldconfig`, to update the
+ * shared library cache. It only executes `ldconfig` if the
+ * configuration file `/etc/ld.so.conf` exists within the
+ * installation root directory.
+ *
+ * It forks a child process to execute `ldconfig` and waits for its
+ * completion. The `-r` option is passed to `ldconfig` along with
+ * the installation root directory to specify an alternate root for
+ * searching libraries.
+ *
+ * In case of errors during `fork()` or `waitpid()`, a
+ * `runtime_error_with_errno` exception is thrown. If `execl()`
+ * fails to execute `ldconfig`, an error message is printed to
+ * stderr, and the child process exits with failure.
+ */
 void
 pkgutil::ldconfig()
   const
@@ -705,6 +1033,43 @@ pkgutil::ldconfig()
   }
 }
 
+/**
+ * \brief Prints the footprint of a package file, displaying
+ *        detailed file information.
+ * \param filename The path to the package file.
+ * \throws runtime_error_with_errno If the package file cannot be
+ *        opened or read by libarchive.
+ * \throws runtime_error If the package file is empty or if reading
+ *        the archive fails.
+ *
+ * \details
+ * This function prints a detailed "footprint" of the specified
+ * package file, listing each file contained in the archive along
+ * with its permissions, owner, group, and special attributes
+ * (like symlink target or device major/minor numbers).
+ *
+ * It performs two passes over the archive:
+ * Pass 1: Iterates through the archive to collect file information
+ *          (path, symlink target, hardlink target, size, device
+ *          numbers, UID, GID, mode) and stores it in a vector of
+ *          `file` structures. Skips reading data content of regular
+ *          files to optimize for speed.
+ * Pass 2: Iterates through the sorted vector of `file` structures
+ *          and prints the footprint information for each file in a
+ *          format similar to `ls -l`, including:
+ *          - File permissions (in string format, e.g.,
+ *            "drwxr-xr-x"). For symlinks, always prints
+ *            "lrwxrwxrwx".
+ *          - User name (or UID if name not found).
+ *          - Group name (or GID if name not found).
+ *          - File path.
+ *          - For symlinks: "-> target".
+ *          - For character/block devices: "(major, minor)".
+ *          - For empty regular files: "(EMPTY)".
+ *
+ * The output is printed to standard output, with each file's
+ * footprint on a new line.
+ */
 void
 pkgutil::pkg_footprint(const string& filename)
   const
@@ -875,6 +1240,16 @@ pkgutil::pkg_footprint(const string& filename)
   }
 }
 
+/**
+ * \brief Prints the version information of the utility to
+ *        standard output.
+ *
+ * \details
+ * This function prints the utility name and version number, as
+ * defined by the `VERSION` macro. It also prints compilation
+ * options if the utility was compiled with ACL or XATTR support
+ * enabled (ENABLE_EXTRACT_ACL, ENABLE_EXTRACT_XATTR).
+ */
 void
 pkgutil::print_version()
   const
@@ -892,6 +1267,38 @@ pkgutil::print_version()
 #endif
 }
 
+/**
+ * \brief Constructor for the db_lock class, acquires a lock on the
+ *        package database directory.
+ * \param root The root directory containing the package database.
+ * \param exclusive A boolean indicating whether to acquire an
+ *                   exclusive lock (true) or a shared lock
+ *                   (false).  If false (shared lock requested), a
+ *                   non-blocking shared lock is attempted.
+ * \throws runtime_error_with_errno If the lock directory cannot be
+ *        opened or if locking fails due to system errors.
+ * \throws runtime_error If a non-blocking lock is requested
+ *                     (exclusive or shared) and the lock cannot
+ *                     be immediately acquired.
+ *
+ * \details
+ * This constructor attempts to acquire a lock (exclusive or
+ * shared) on the package database directory to prevent concurrent
+ * access and data corruption. It opens the directory specified by
+ * `PKG_DIR` within the `root` directory and uses `flock()` to
+ * acquire the requested lock type.
+ *
+ * If an exclusive lock is requested and cannot be acquired
+ * immediately (because another process holds a lock), or if any
+ * error occurs during directory opening or locking (excluding
+ * `EWOULDBLOCK` for non-blocking lock attempts), a
+ * `runtime_error_with_errno` exception is thrown.
+ *
+ * If a non-blocking lock is requested (either exclusive or shared)
+ * and the lock cannot be acquired immediately (returns
+ * `EWOULDBLOCK`), a `runtime_error` is thrown with a message
+ * indicating that the database is locked by another process.
+ */
 db_lock::db_lock(const string& root, bool exclusive)
   : dir(0)
 {
@@ -913,6 +1320,20 @@ db_lock::db_lock(const string& root, bool exclusive)
   }
 }
 
+/**
+ * \brief Destructor for the db_lock class, releases the lock on the
+ *        package database directory.
+ *
+ * \details
+ * This destructor releases the lock acquired by the `db_lock`
+ * constructor on the package database directory. It uses
+ * `flock(LOCK_UN)` to release the lock and `closedir()` to close
+ * the directory stream.
+ *
+ * It's crucial to ensure that `db_lock` objects are properly
+ * destroyed to release the lock and allow other processes to
+ * access the database.
+ */
 db_lock::~db_lock()
 {
   if (dir)
@@ -922,6 +1343,31 @@ db_lock::~db_lock()
   }
 }
 
+/**
+ * \brief Converts a file mode (mode_t) to a string representation
+ *        (like `ls -l`).
+ * \param mode The file mode value (mode_t).
+ * \return A string representing the file mode in `ls -l` format
+ *          (e.g., "drwxr-xr-x").
+ *
+ * \details
+ * This function takes a file mode value (`mode_t`) and generates a
+ * 10-character string representing the file type and permissions,
+ * similar to the output of the `ls -l` command.
+ *
+ * The output string format is:
+ * - Character 1: File type (-, d, l, c, b, s, p, ? for unknown).
+ * - Characters 2-4: User permissions (rwx, and special
+ *                     setuid/setgid/sticky bits as s, S, t, T).
+ * - Characters 5-7: Group permissions (rwx, and special
+ *                     setuid/setgid/sticky bits as s, S, t, T).
+ * - Characters 8-10: Other permissions (rwx, and special
+ *                     setuid/setgid/sticky bits as s, S, t, T).
+ *
+ * Permissions are represented by 'r' (read), 'w' (write), 'x'
+ * (execute), and '-' if permission is not granted.  Special bits
+ * (setuid, setgid, sticky) are represented by 's', 'S', 't', 'T'.
+ */
 string
 mtos(mode_t mode)
 {
@@ -984,6 +1430,19 @@ mtos(mode_t mode)
   return s;
 }
 
+/**
+ * \brief Trims redundant slashes from a filename or path.
+ * \param filename The filename or path string to trim.
+ * \return The trimmed filename string.
+ *
+ * \details
+ * This function removes redundant double slashes ("//") from a
+ * filename or path, replacing them with single slashes.  It
+ * iterates through the string, finding and replacing instances of
+ * "//" until no more are found.
+ *
+ * Example: "path//to///file" becomes "path/to/file"
+ */
 string
 trim_filename(const string& filename)
 {
@@ -1001,6 +1460,19 @@ trim_filename(const string& filename)
   return result;
 }
 
+/**
+ * \brief Checks if a file or directory exists.
+ * \param filename The path to the file or directory to check.
+ * \return True if the file or directory exists, false otherwise.
+ *
+ * \details
+ * This function checks for the existence of a file or directory
+ * at the specified path using `lstat()`. It returns true if
+ * `lstat()` succeeds (returns 0), indicating that the file or
+ * directory exists, and false otherwise.  `lstat()` is used to
+ * also check for the existence of symbolic links without
+ * dereferencing them.
+ */
 bool
 file_exists(const string& filename)
 {
@@ -1008,6 +1480,23 @@ file_exists(const string& filename)
   return !lstat(filename.c_str(), &buf);
 }
 
+/**
+ * \brief Checks if a file is an empty regular file.
+ * \param filename The path to the file to check.
+ * \return True if the file is an empty regular file, false
+ *          otherwise.
+ *
+ * \details
+ * This function checks if a file is an empty regular file. It uses
+ * `lstat()` to get file status information and then checks two
+ * conditions:
+ * 1. `lstat()` must succeed (return 0), indicating the file exists.
+ * 2. The file must be a regular file (`S_ISREG(buf.st_mode)`).
+ * 3. The file size (`buf.st_size`) must be 0.
+ *
+ * Returns true only if all conditions are met, otherwise returns
+ * false.
+ */
 bool
 file_empty(const string& filename)
 {
@@ -1019,6 +1508,32 @@ file_empty(const string& filename)
   return (S_ISREG(buf.st_mode) && buf.st_size == 0);
 }
 
+/**
+ * \brief Checks if two files are equal in content.
+ * \param file1 The path to the first file.
+ * \param file2 The path to the second file.
+ * \return True if the files are equal in content, false otherwise.
+ *
+ * \details
+ * This function compares the content of two files to determine if
+ * they are byte-for-byte identical. It supports comparison for
+ * regular files, symbolic links, character devices, and block
+ * devices.
+ *
+ * For regular files, it opens both files, reads their content in
+ * blocks, and compares the blocks using `memcmp()`. Files are
+ * considered equal if their content is identical and they have the
+ * same size.
+ *
+ * For symbolic links, it reads the link targets using `readlink()`
+ * and compares the target paths.
+ *
+ * For character and block devices, it compares the device numbers
+ * (`st_dev`).
+ *
+ * For other file types or if any error occurs during file
+ * operations or stat calls, the function returns false.
+ */
 bool
 file_equal(const string& file1, const string& file2)
 {
@@ -1094,6 +1609,25 @@ file_equal(const string& file1, const string& file2)
   return false;
 }
 
+/**
+ * \brief Checks if two files have the same permissions, owner, and
+ *        group.
+ * \param file1 The path to the first file.
+ * \param file2 The path to the second file.
+ * \return True if permissions, owner (UID), and group (GID) are
+ *          equal for both files, false otherwise.
+ *
+ * \details
+ * This function compares the permissions (mode), owner (UID), and
+ * group (GID) of two files to determine if they are identical. It
+ * uses `lstat()` to get file status information for both files and
+ * then compares the `st_mode`, `st_uid`, and `st_gid` members of
+ * the `stat` structures.
+ *
+ * Returns true only if all three attributes (mode, UID, GID) are
+ * equal for both files, otherwise returns false.  Returns false if
+ * `lstat()` fails for either file.
+ */
 bool
 permissions_equal(const string& file1, const string& file2)
 {
@@ -1111,6 +1645,28 @@ permissions_equal(const string& file1, const string& file2)
        && (buf1.st_gid  == buf2.st_gid);
 }
 
+/**
+ * \brief Removes a file or a directory recursively.
+ * \param basedir The base directory path.
+ * \param filename The relative path of the file or directory to
+ *                 remove within `basedir`.
+ *
+ * \details
+ * This function removes a file or directory specified by
+ * `filename` relative to `basedir`. If `filename` is not equal to
+ * `basedir` (to prevent accidental removal of the base directory
+ * itself) and `remove()` call fails, it recursively calls
+ * `file_remove` on the parent directory using `dirname()`.  This
+ * recursive call is likely intended for directory cleanup after
+ * removing files within it, but the logic might have unintended
+ * consequences as it attempts to remove parent directories even if
+ * the initial `remove()` failed for a file.
+ *
+ * \warning The recursive behavior of this function, especially
+ *          calling `file_remove` on the parent directory after a
+ *          failed `remove()` on a file, should be reviewed for
+ *          correctness and potential issues.
+ */
 void
 file_remove(const string& basedir, const string& filename)
 {
