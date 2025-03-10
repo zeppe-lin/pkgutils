@@ -148,11 +148,11 @@ make_keep_list(const set<string>& files,
    * \param event Event type to search for (INSTALL or UPGRADE).
    * \param found_rules Output vector to store found rules.
    */
-  auto find_rules = [&](const vector<rule_t>& rules,
+  auto find_rules = [&](const vector<rule_t>& rule_list,
                         rule_t::rule_event_t event,
                         vector<rule_t>& found_rules)
   {
-    for (const auto& rule : rules)
+    for (const auto& rule : rule_list)
     {
       if (rule.event == event)
         found_rules.push_back(rule);
@@ -233,11 +233,11 @@ apply_install_rules(const string& name,
    * \param event Event type to search for (INSTALL or UPGRADE).
    * \param found_rules Output vector to store found rules.
    */
-  auto find_rules = [&](const vector<rule_t>& rules,
+  auto find_rules = [&](const vector<rule_t>& rule_list,
                         rule_t::rule_event_t event,
                         vector<rule_t>& found_rules)
   {
-    for (const auto& rule : rules)
+    for (const auto& rule : rule_list)
     {
       if (rule.event == event)
         found_rules.push_back(rule);
