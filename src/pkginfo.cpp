@@ -8,6 +8,7 @@
 //! \copyright See COPYING and COPYRIGHT files for corresponding
 //!            information.
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -228,7 +229,8 @@ main(int argc, char** argv)
       vector<pair<string, string> > result;
       result.push_back({"Package", "File"});
 
-      unsigned int width = result[0].first.length(); // "Package" width
+      // "Package" width
+      int width = static_cast<int>(result[0].first.length());
 
       for (const auto& package_pair : util.getPackages())
       {
@@ -239,9 +241,7 @@ main(int argc, char** argv)
           if (!regexec(&preg, full_file.c_str(), 0, 0, 0))
           {
             result.push_back({package_pair.first, file});
-
-            if (package_pair.first.length() > width)
-              width = package_pair.first.length();
+            width = max(width, static_cast<int>(package_pair.first.length()));
           }
         }
       }
