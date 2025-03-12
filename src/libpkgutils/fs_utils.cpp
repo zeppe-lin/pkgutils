@@ -238,7 +238,7 @@ file_equal(const std::string& file1, const std::string& file2)
       f2.read(buffer2, 4096);
 
       if (    f1.gcount() != f2.gcount()
-           || memcmp(buffer1, buffer2, f1.gcount())
+           || memcmp(buffer1, buffer2, static_cast<size_t>(f1.gcount()))
            || f1.eof() != f2.eof())
         return false;
     }
