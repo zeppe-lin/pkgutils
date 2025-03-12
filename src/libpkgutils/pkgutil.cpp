@@ -1302,8 +1302,8 @@ pkgutil::pkg_footprint(const std::string& filename)
 
     file.size = archive_entry_size(entry);   // Get size
     file.rdev = archive_entry_rdev(entry);   // Get device ID
-    file.uid  = archive_entry_uid(entry);    // Get UID
-    file.gid  = archive_entry_gid(entry);    // Get GID
+    file.uid  = static_cast<uid_t>(archive_entry_uid(entry)); // Get UID
+    file.gid  = static_cast<gid_t>(archive_entry_gid(entry)); // Get GID
     file.mode = archive_entry_mode(entry);   // Get mode
 
     files.push_back(file); // Add file info to vector
