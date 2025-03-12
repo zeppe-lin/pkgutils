@@ -7,6 +7,7 @@ adding, removing and basic information gathering.
 
 This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
+  * separate the code into distinct library and utilities
   * GNU-style options/help/usage
   * better GNU Coding Standards support
   * manual pages in mdoc(7) format
