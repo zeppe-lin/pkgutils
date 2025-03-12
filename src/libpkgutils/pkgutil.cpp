@@ -1416,34 +1416,34 @@ pkgutil::print_version()
   version_stream << utilname << " from pkgutils " << VERSION
                  << " (libpkgutils " << LIB_VERSION;
 
-  std::ostringstream options_stream;
-  bool options_added = false;
+  std::vector<std::string> options;
 
 #ifdef ENABLE_EXTRACT_ACL
-  options_stream << "acl";
-  options_added = true;
+  options.push_back("acl");
 #endif
 
 #ifdef ENABLE_EXTRACT_XATTR
-  if (options_added)
-    options_stream << ", "; // add comma if ACL was already added
-  options_stream << "xattr";
-  options_added = true;
+  options.push_back("xattr");
 #endif
 
 #ifndef NDEBUG
-  if (options_added)
-    options_stream << ", ";
-  options_stream << "debug";
-  options_added = true;
+  options.push_back("debug");
 #endif
 
-  std::string options_string = options_stream.str();
-  if (!options_string.empty())
-    version_stream << ": " << options_string;
+  if (!options.empty())
+  {
+    version_stream << ": ";
+
+    // join options with commas
+    for (size_t i = 0; i < options.size(); ++i)
+    {
+      version_stream << options[i];
+      if (i < options.size() - 1)
+        version_stream << ", ";
+    }
+  }
 
   version_stream << ")";
-
   std::cout << version_stream.str() << std::endl;
 }
 
