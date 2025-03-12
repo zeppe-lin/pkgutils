@@ -229,8 +229,7 @@ file_equal(const std::string& file1, const std::string& file2)
     if (!f1 || !f2)
       return false;
 
-    while (!f1.eof() && !f2.eof()) // Check EOF for both streams at
-                                   // start
+    while (!f1.eof())
     {
       char buffer1[4096];
       char buffer2[4096];
@@ -238,20 +237,13 @@ file_equal(const std::string& file1, const std::string& file2)
       f1.read(buffer1, 4096);
       f2.read(buffer2, 4096);
 
-      // XXX: Should file_equal() return different errors if files are
-      // equal/non-equal/read error occured?
-
-      if (f1.fail() || f2.fail())
-        return false; // Read error occurred, files are not comparable
-                      // (or not equal)
-
       if (    f1.gcount() != f2.gcount()
-           || memcmp(buffer1, buffer2, static_cast<size_t>(f1.gcount())))
-        return false; // Content or size mismatch
+           || memcmp(buffer1, buffer2, static_cast<size_t>(f1.gcount()))
+           || f1.eof() != f2.eof())
+        return false;
     }
 
-    // After the loop, check if both reached EOF simultaneously
-    return f1.eof() == f2.eof();
+    return true;
   }
   /*
    * Symlinks.
