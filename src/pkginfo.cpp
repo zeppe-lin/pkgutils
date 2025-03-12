@@ -24,6 +24,10 @@
 
 using namespace std;
 
+// Forward declarations
+void print_help();
+void print_version();
+
 /*!
  * \brief Prints the help message for pkginfo utility.
  *
