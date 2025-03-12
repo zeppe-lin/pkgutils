@@ -1,20 +1,20 @@
 OVERVIEW
 ========
 
-This repository contains pkgutils, a set of utilities like pkgadd(1),
-pkgrm(8), and pkginfo(1) that are used for managing software packages:
-adding, removing and basic information gathering.
+This repository contains `pkgutils`, a set of utilities like
+`pkgadd(1)`, `pkgrm(8)`, and `pkginfo(1)` used for managing software
+packages: adding, removing, and gathering basic information.
 
-This distribution is a fork of CRUX' pkgutils as of commit 9ca0da6
-(Sat Nov 17 2018) with the following differences:
-  * separate the code into distinct library and utilities
+This distribution is a fork of CRUX's `pkgutils` as of commit
+`9ca0da6` (Sat Nov 17 2018) with the following differences:
+  * Organized the code into a library (`libpkgutils`) and utilities
   * GNU-style options/help/usage
-  * better GNU Coding Standards support
-  * manual pages in mdoc(7) format
-  * split pkgadd(8) manual page into pkgadd(8) and pkgadd.conf(5)
-  * zstd packages support
-  * vim syntax highlight for `pkgadd.conf` file
-  * optional support for preserving ACLs & xattrs by pkgadd(8)
+  * Better GNU Coding Standards support
+  * Manual pages in `mdoc(7)` format
+  * Split `pkgadd(8)` manual page into `pkgadd(8)` and `pkgadd.conf(5)`
+  * `zstd` packages support
+  * Vim syntax highlighting for `pkgadd.conf` file
+  * Optional support for preserving ACLs & xattrs by `pkgadd(8)`
 
 See git log for complete/further differences.
 
@@ -28,12 +28,12 @@ REQUIREMENTS
 Build time
 ----------
   * C++11 compiler (GCC 4.8.1 and later, Clang 3.3 and later)
-  * POSIX sh(1p), make(1p) and "mandatory utilities"
-  * pkg-config(1) is optional, for static linking
-  * libarchive(3) to unpack an archive files
+  * POSIX `sh(1p)`, `make(1p)` and "mandatory utilities"
+  * `pkg-config(1)` is optional, for static linking
+  * `libarchive(3)` to unpack archive files
 
-Also, see [rejmerge][1], an utility that merges files that were
-rejected by pkgadd(8) during package upgrades.
+Also, see [rejmerge][1], a utility that merges files rejected by
+`pkgadd(8)` during package upgrades.
 
 [1]: https://github.com/zeppe-lin/rejmerge
 
@@ -41,19 +41,22 @@ rejected by pkgadd(8) during package upgrades.
 INSTALL
 =======
 
-The shell commands `make && make install` should build and install
-this package.
+To build and install this package, run the following shell commands:
 
-For static linking you need `pkg-config(1)` and run `make` as the
-following:
+```sh
+make && make install
+```
+
+For static linking, you need `pkg-config(1)` and should run `make` as
+follows:
 
 ```sh
 make LDFLAGS="-static `pkg-config --static --libs libarchive`"
 ```
 
-See `config.mk` file for configuration parameters, and
-`src/pathnames.h` for absolute filenames and settings that pkgutils
-wants for various defaults.
+See the `config.mk` file for configuration parameters and the
+`src/pathnames.h` file for absolute filenames and settings that pkgutils
+uses for various defaults.
 
 
 DOCUMENTATION
