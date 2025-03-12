@@ -162,7 +162,8 @@ pkgutil::db_open(const std::string& path)
     throw std::runtime_error(std::string("could not open ") + filename +
                              ": " + strerror(errno));
 
-  stdio_filebuf<char> filebuf(fd, std::ios::in, getpagesize());
+  stdio_filebuf<char> filebuf(fd, std::ios::in,
+                              static_cast<size_t>(getpagesize()));
   std::istream in(&filebuf);
   if (!in)
     throw std::runtime_error(std::string("could not read ") + filename +
@@ -257,7 +258,8 @@ pkgutil::db_commit()
     throw std::runtime_error(std::string("could not create ") +
                              dbfilename_new + ": " + strerror(errno));
 
-  stdio_filebuf<char> filebuf_new(fd_new, std::ios::out, getpagesize());
+  stdio_filebuf<char> filebuf_new(fd_new, std::ios::out,
+                                  static_cast<size_t>(getpagesize()));
   std::ostream db_new(&filebuf_new);
 
   for (packages_t::const_iterator
