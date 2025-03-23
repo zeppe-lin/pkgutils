@@ -1,0 +1,3 @@
+# build files and artefacts
+libpkgutils.a
+*.o
