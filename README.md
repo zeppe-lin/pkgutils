@@ -10,7 +10,7 @@ This distribution is a fork of CRUX's `pkgutils` as of commit
   * Organized the code into a library (`libpkgutils`) and utilities
   * GNU-style options/help/usage
   * Better GNU Coding Standards support
-  * Manual pages in `mdoc(7)` format
+  * Manual pages in `scdoc(5)` format
   * Split `pkgadd(8)` manual page into `pkgadd(8)` and `pkgadd.conf(5)`
   * `zstd` packages support
   * Vim syntax highlighting for `pkgadd.conf` file
@@ -31,6 +31,7 @@ Build time
   * POSIX `sh(1p)`, `make(1p)` and "mandatory utilities"
   * `pkg-config(1)` is optional, for static linking
   * `libarchive(3)` to unpack archive files
+  * scdoc to build man pages
 
 Also, see [rejmerge][1], a utility that merges files rejected by
 `pkgadd(8)` during package upgrades.
@@ -55,8 +56,8 @@ make LDFLAGS="-static `pkg-config --static --libs libarchive`"
 ```
 
 See the `config.mk` file for configuration parameters and the
-`src/pathnames.h` file for absolute filenames and settings that pkgutils
-uses for various defaults.
+`src/pathnames.h` file for absolute filenames and settings that
+pkgutils uses for various defaults.
 
 
 DOCUMENTATION
@@ -65,7 +66,8 @@ DOCUMENTATION
 Online documentation
 --------------------
 
-Refer to the human-readable man pages located in the `/man` directory.
+Refer to the human-readable manual pages located in the `/man`
+directory.
 
 
 LICENSE
