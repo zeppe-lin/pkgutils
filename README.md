@@ -65,11 +65,7 @@ DOCUMENTATION
 Online documentation
 --------------------
 
-Manual pages:
-- [pkgadd.8](https://zeppe-lin.github.io/pkgadd.8.html)
-- [pkgadd.conf.5](https://zeppe-lin.github.io/pkgadd.conf.5.html)
-- [pkginfo.1](https://zeppe-lin.github.io/pkginfo.1.html)
-- [pkgrm.8](https://zeppe-lin.github.io/pkgrm.8.html)
+Refer to the human-readable man pages located in the `/man` directory.
 
 
 LICENSE
