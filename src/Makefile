@@ -17,8 +17,6 @@ all: $(BIN1) $(BIN8)
 .cpp.o:
 	$(CXX) -c $< $(LIB_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 
-lint:
-
 $(LIB_TARGET):
 	cd $(LIB_DIR) && $(MAKE)
 
@@ -47,4 +45,4 @@ clean:
 	rm -f $(OBJS) $(BIN1) $(BIN8)
 	cd $(LIB_DIR) && $(MAKE) clean
 
-.PHONY: all lint install uninstall clean
+.PHONY: all install uninstall clean
