@@ -1,0 +1,5 @@
+# build artefacts
+pkgadd.8
+pkgadd.conf.5
+pkginfo.1
+pkgrm.8
