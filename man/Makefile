@@ -6,12 +6,12 @@ MAN1 = pkginfo.1
 MAN5 = pkgadd.conf.5
 MAN8 = pkgadd.8 pkgrm.8
 
-all:
+all: $(MAN1) $(MAN5) $(MAN8)
 
-lint:
-	mandoc -Tlint $(MAN1) $(MAN5) $(MAN8)
+$(MAN1) $(MAN5) $(MAN8):
+	scdoc < $@.scdoc > $@
 
-install:
+install: all
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man5
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man8
@@ -28,5 +28,6 @@ uninstall:
 	cd $(DESTDIR)$(MANPREFIX)/man8 && rm -f $(MAN8)
 
 clean:
+	rm -f $(MAN1) $(MAN5) $(MAN8)
 
-.PHONY: all lint install uninstall clean
+.PHONY: all install uninstall clean

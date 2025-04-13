@@ -1,0 +1,69 @@
+PKGINFO(1)
+
+# NAME
+
+pkginfo - display software package information
+
+# SYNOPSIS
+
+*pkginfo* [*-Vh*] [*-r* _rootdir_] \
+{*-f* _file_ | *-i* | *-l* <_pkgname_ | _file_> | *-o* _pattern_}
+
+# DESCRIPTION
+
+*pkginfo* is a package management utility, which displays information
+about software packages that are installed on the system or that
+reside in a particular directory.
+
+The options are as follows:
+
+*-f* _file_, *--footprint*=_file_
+	Print footprint for file.
+
+	This feature is mainly used by *pkgmk*(8) to create and
+	compare package footprints.
+
+*-i*, *--installed*
+	List installed packages and their version.
+
+*-l* <_pkgname_ | _file_>, *--list*=<_pkgname_ | _file_>
+	List files owned by the specified package or contained in
+	_file_.
+
+*-o* _pattern_, *--owner*=_pattern_
+	List owner(s) of file(s) matching _pattern_, where the pattern
+	is a regex in *regex*(3) format.
+
+*-r* _rootdir_, *--root*=_rootdir_
+	Specify an alternate root directory instead of the default
+	'*/*'.
+
+	This should be used if you want to display information about a
+	package that is installed on a temporary mounted partition,
+	which is "owned" by another system.  By using this option
+	you specify which package database to use.
+
+*-V*, *--version*
+	Print version and exit.
+
+*-h*, *--help*
+	Print help and exit.
+
+*Note*: Options *-f*/*--footprint*, *-i*/*--installed*, *-l*/*--list*,
+and *-o*/*--owner* are mutually exclusive.
+
+# FILES
+
+_/var/lib/pkg/db_
+	Database of currently installed packages.
+
+# EXIT STATUS
+	The *pkginfo* utility exits 0 on success, and >0 if an error
+	occurs.
+
+# SEE ALSO
+
+*pkgadd*(8),
+*pkgrm*(8)
+
+; vim: ft=scdoc cc=72 tw=70

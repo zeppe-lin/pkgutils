@@ -1,0 +1,103 @@
+PKGADD.CONF(5)
+
+# NAME
+
+pkgadd.conf - configuration file for pkgadd
+
+# SYNOPSIS
+
+*/etc/pkgadd.conf*
+
+# DESCRIPTION
+
+This manual page describes the format of the *pkgadd.conf* file.  This
+file can be used to alter the way *pkgadd*(8) upgrade and/or install
+the package.
+
+*pkgadd.conf* file contain rules, that are built out of three
+fragments: *Event*, *Pattern* and *Action*.  The *Event* describes in
+what kind of situation this rule applies.  Currently there are two
+types of events: _UPGRADE_ and _INSTALL_.  _UPGRADE_ rules are applied
+when a package is installed over an existing version, and _INSTALL_
+rules are applied in any case.  The *Pattern* is a regular expression
+in *regex*(3) format.  The *Action* applicable to both the _UPGRADE_
+and _INSTALL_ event is _YES_ and _NO_.  More than one rule of the same
+*Event* type is allowed, in which case the first rule will have the
+lowest priority and the last rule will have the highest priority.
+
+For example:
+
+```
+# Event    Pattern                 Action
+UPGRADE    ^etc/.*$                NO
+UPGRADE    ^var/log/.*$            NO
+UPGRADE    ^etc/X11/.*$            YES
+UPGRADE    ^etc/X11/XF86Config$    NO
+```
+
+The above example will cause *pkgadd*(8) to never upgrade anything in
+_/etc_ or _/var/log_ (subdirectories included), except files in
+_/etc/X11_ (subdirectories included), unless it is the files
+_/etc/X11/XF86Config_.  The default rule is to upgrade/install
+everything, rules in this file are exceptions to that rule.
+
+*Important*:
+	The *Pattern* should never contain an initial slash ('*/*')
+	since you are referring to the files in the package, not the
+	files on the disk.
+
+If *pkgadd*(8) finds that a specific file should not be upgraded it
+will install it under _/var/lib/pkg/rejected/_.  The user is then free
+to examine/use/remove that file manually or use *rejmerge*(8) to
+manage rejected files.
+
+# FILES
+
+_/etc/pkgadd.conf_
+	Default location for the file described in this manual page.
+
+_/var/lib/pkg/db_
+	Database of currently installed packages.
+
+_/var/lib/pkg/rejected/_
+	Directory where rejected files are stored.
+
+# EXAMPLES
+
+What follows is a sample configuration file which may, or may not
+match your environment:
+
+```
+#
+# /etc/pkgadd.conf: pkgadd(8) configuration
+#
+# See pkgadd.conf(5) for more information.
+#
+
+# <Event>      <Pattern>                  <Action>
+
+# Default rule (implicit)
+#UPGRADE       ^.*$                       YES
+
+UPGRADE        ^var/log/.*$               NO
+UPGRADE        ^var/spool/cron/.*$        NO
+UPGRADE        ^var/run/utmp$             NO
+
+UPGRADE        ^etc/rc.*$                 YES
+UPGRADE        ^etc/rc\.conf$             NO
+
+# End of file.
+```
+
+All lines which begin with the '*#*' character are comments and will
+not be parsed.  The first three rules will cause *pkgadd*(8) to never
+upgrade anything in _/var/log_ (subdirectories included), never
+upgrade anything in _/var/spool/cron_ and never upgrade
+_/var/run/utmp_ file.  The last two rules will cause *pkgadd*(8) to
+upgrade any _/etc/rc\*_ files, except _/etc/rc.conf_ system settings.
+
+# SEE ALSO
+
+*pkgadd*(8)
+
+; vim: ft=scdoc cc=72 tw=70

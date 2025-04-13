@@ -1,0 +1,90 @@
+PKGADD(8)
+
+# NAME
+
+pkgadd - install or upgrade software package
+
+# SYNOPSIS
+
+*pkgadd* [*-Vfhuv*] [*-c* _conffile_] [*-r* _rootdir_] _file_
+
+# DESCRIPTION
+
+*pkgadd* is a package management utility, which installs or upgrades a
+software package.  The package itself is an archive of files, and its
+contents have a directory structure format.
+
+The following archive formats are supported:
+```
+* .pkg.tar.gz
+* .pkg.tar.bz2
+* .pkg.tar.lz
+* .pkg.tar.zst
+* .pkg.tar.xz
+```
+
+By default, *pkgadd* does not preserve packages' Access Control Lists
+(*acl*(5)) and Extended attributes (*xattr*(7)) unless it has been
+compiled with that support.  To see if these options are enabled,
+check the command output of *pkgadd -v*.
+
+The options are as follows:
+
+*-c* _conffile_, *--config*=_conffile_
+	Specify an alternate configuration file instead of the default
+	_/etc/pkgadd.conf_.
+
+*-f*, *--force*
+	Force installation, overwrite conflicting files.
+
+	If the package that is about to be installed contains files
+	that are already installed this option will cause all those
+	files to be overwritten.
+
+	*This option should be used with care, preferably not at all*.
+
+*-r* _rootdir_, *--root*=_rootdir_
+	Specify an alternate root directory instead of the default
+	'*/*'.
+
+	This should not be used as a way to install software into
+	e.g., _/usr/local_ instead of _/usr_.  Instead this should be
+	used if you want to install a package on a temporary mounted
+	partition, which is "owned" by another system.  By using this
+	option you not only specify where the software should be
+	installed, but you also specify which package database to use.
+
+*-u*, *--upgrade*
+	Upgrade/replace package with the same name as _file_.
+
+*-v*, *--verbose*
+	Explain what is being done.
+
+*-V*, *--version*
+	Print version and exit.
+
+*-h*, *--help*
+	Print help and exit.
+
+# FILES
+
+_/etc/pkgadd.conf_
+	Default configuration file.
+
+_/var/lib/pkg/db_
+	Database of currently installed packages.
+
+_/var/lib/pkg/rejected/_
+	Directory where rejected files are stored.
+
+# EXIT STATUS
+
+The *pkgadd* utility exits 0 on success, and >0 if an error occurs.
+
+# SEE ALSO
+
+*pkginfo*(1),
+*pkgadd.conf*(5),
+*pkgrm*(8)
+
+; vim: ft=scdoc cc=72 tw=70
