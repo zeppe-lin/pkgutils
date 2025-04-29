@@ -79,7 +79,7 @@ _/var/lib/pkg/rejected/_
 
 # EXIT STATUS
 
-The *pkgadd* utility exits 0 on success, and >0 if an error occurs.
+*0* on success, and *>0* if an error occurs.
 
 # SEE ALSO
 
