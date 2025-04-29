@@ -2,7 +2,7 @@
 .SUFFIXES: .cpp .o
 
 include ../config.mk
-include ../extra/flags-extra.mk
+#include ../extra/flags-extra.mk
 
 OBJS = pkgadd.o pkginfo.o pkgrm.o pkgutil.o
 BIN1 = pkginfo
