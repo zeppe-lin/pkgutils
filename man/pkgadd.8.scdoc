@@ -26,7 +26,7 @@ The following archive formats are supported:
 By default, *pkgadd* does not preserve packages' Access Control Lists
 (*acl*(5)) and Extended attributes (*xattr*(7)) unless it has been
 compiled with that support.  To see if these options are enabled,
-check the command output of *pkgadd -v*.
+check the command output of *pkgadd --version*.
 
 The options are as follows:
 
