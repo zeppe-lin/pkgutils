@@ -58,8 +58,8 @@ _/var/lib/pkg/db_
 	Database of currently installed packages.
 
 # EXIT STATUS
-	The *pkginfo* utility exits 0 on success, and >0 if an error
-	occurs.
+
+*0* on success, and *>0* if an error occurs.
 
 # SEE ALSO
 
