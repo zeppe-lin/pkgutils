@@ -2,7 +2,7 @@
 .SUFFIXES: .cpp .o
 
 include ../../config.mk
-include ../../extra/flags-extra.mk
+#include ../../extra/flags-extra.mk
 include config.mk
 
 LIB_SRC = db_lock.cpp fs_utils.cpp pkgutil.cpp
