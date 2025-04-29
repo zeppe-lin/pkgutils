@@ -84,7 +84,7 @@ UPGRADE        ^var/spool/cron/.*$        NO
 UPGRADE        ^var/run/utmp$             NO
 
 UPGRADE        ^etc/rc.*$                 YES
-UPGRADE        ^etc/rc\.conf$             NO
+UPGRADE        ^etc/rc\\.conf$             NO
 
 # End of file.
 ```
