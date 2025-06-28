@@ -3,6 +3,7 @@
 
 include ../config.mk
 #include ../extra/flags-extra.mk
+#include ../extra/flags-sanitizer.mk
 
 OBJS = pkgadd.o pkginfo.o pkgrm.o pkgutil.o
 BIN1 = pkginfo
