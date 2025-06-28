@@ -46,17 +46,15 @@ const int PKGADD_CONF_MAXLINE = 256;
  * \struct rule_t
  * \brief Structure to represent a rule from the configuration file.
  *
- *  This structure defines a rule that specifies actions to be taken
+ * This structure defines a rule that specifies actions to be taken
  * during package installation or upgrade based on file patterns.
  */
 struct rule_t {
     //! \enum rule_event_t
     //! \brief Events that trigger a rule.
     enum rule_event_t {
-      //! Rule triggered during package installation.
-      INSTALL,
-      //! Rule triggered during package upgrade.
-      UPGRADE
+      INSTALL, //!< Rule triggered during package installation.
+      UPGRADE  //!< Rule triggered during package upgrade.
     };
 
     //! \var event
