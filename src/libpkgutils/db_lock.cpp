@@ -9,15 +9,17 @@
 //!            information.
 
 #include "db_lock.h"
-#include "pkgutil.h" // pkgutil::PKG_DIR
-#include <stdexcept> // for std::runtime_error
+#include "pkgutil.h"  // pkgutil::PKG_DIR
+                      //
+#include <stdexcept>  // For std::runtime_error
 #include <string>
 #include <dirent.h>
 #include <sys/file.h>
 #include <unistd.h>
 #include <cerrno>
-#include <iostream> // for cerr in debug (consider removing in final version)
+#include <iostream>   // For cerr in debug (consider removing in final version)
 #include <cstring>
+
 #include "fs_utils.h" // For trim_filename
 
 
