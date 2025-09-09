@@ -30,7 +30,8 @@ EVENT   PATTERN   ACTION
 	Specified when the rule applies:
 
 	_INSTALL_
-		applies at all time
+		applies at all times
+
 	_UPGRADE_
 		applies only when replacing an existing package
 
@@ -55,6 +56,17 @@ The package database and rejected files are read from and written to
 under that root.
 Use *rejmerge*(8) to inspect or merge them.
 
+# FILES
+
+_/etc/pkgadd.conf_
+	Configuration file.
+
+_/var/lib/pkg/db_
+	Package database.
+
+_/var/lib/pkg/rejected/_
+	Directory for rejected files.
+
 # EXAMPLES
 
 Block upgrades to _/etc_ and _/var/log_, except under _/etc/X11_, but
@@ -66,17 +78,6 @@ UPGRADE   ^var/log/.*$          NO
 UPGRADE   ^etc/X11/.*$          YES
 UPGRADE   ^etc/X11/XF86Config$  NO
 ```
-
-# FILES
-
-_/etc/pkgadd.conf_
-	Configuration file.
-
-_/var/lib/pkg/db_
-	Package database.
-
-_/var/lib/pkg/rejected/_
-	Directory for rejected files.
 
 # SEE ALSO
 
