@@ -2,7 +2,7 @@ PKGRM(8)
 
 # NAME
 
-pkgrm - uninstall software package
+pkgrm - remove an installed software package
 
 # SYNOPSIS
 
@@ -10,38 +10,52 @@ pkgrm - uninstall software package
 
 # DESCRIPTION
 
-*pkgrm* is a package management utility, which uninstalls a previously
-installed software package.
+The *pkgrm* utility removes an installed software package.
 
 The options are as follows:
 
 *-r* _rootdir_, *--root*=_rootdir_
-	Specify an alternate root directory instead of the default
-	'*/*'.
-
-	This should be used if you want to remove a package from a
-	temporary mounted partition, which is "owned" by another
-	system.  By using this option you not only specify where the
-	software is installed, but you also specify which package
-	database to use.
+	Use _rootdir_ as the root directory instead of */*.
+	The package database is read from and written to under
+	_rootdir_.
 
 *-v*, *--verbose*
-	Explain what is being done.
+	Print actions as they are performed.
 
 *-V*, *--version*
 	Print version and exit.
 
 *-h*, *--help*
-	Print help and exit.
+	Print usage information and exit.
+
+_pkgname_
+	Name of the installed package to remove.
 
 # FILES
 
 _/var/lib/pkg/db_
-	Database of currently installed packages.
+	Package database.
+
+# EXAMPLES
+
+Remove a package:
+```
+pkgrm foo
+```
+
+Remove from a chroot:
+```
+pkgrm -r /mnt foo
+```
 
 # EXIT STATUS
 
-*0* on success, and *>0* if an error occurs.
+*0* on success, *>0* on error.
+
+# WARNINGS
+
+Removing a package may leave empty directories behind if they are
+shared with other packages or contain local files.
 
 # SEE ALSO
 

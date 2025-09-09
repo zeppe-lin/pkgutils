@@ -2,89 +2,100 @@ PKGADD(8)
 
 # NAME
 
-pkgadd - install or upgrade software package
+pkgadd - install or upgrade a software package
 
 # SYNOPSIS
 
-*pkgadd* [*-Vfhuv*] [*-c* _conffile_] [*-r* _rootdir_] _file_
+*pkgadd* [*-Vfhuv*] [*-c* _conffile_] [*-r* _rootdir_] _package_
 
 # DESCRIPTION
 
-*pkgadd* is a package management utility, which installs or upgrades a
-software package.  The package itself is an archive of files, and its
-contents have a directory structure format.
+The *pkgadd* utility installs or upgrades a software package.
+A package is an archive containing a directory hierarchy.
 
-The following archive formats are supported:
-```
-* .pkg.tar.gz
-* .pkg.tar.bz2
-* .pkg.tar.lz
-* .pkg.tar.zst
-* .pkg.tar.xz
-```
+Supported formats are those provided by *libarchive*(3), such as:
+tar.gz, tar.bz2, tar.lz, tar.zst, tar.xz.
 
-By default, *pkgadd* does not preserve packages' Access Control Lists
-(*acl*(5)) and Extended attributes (*xattr*(7)) unless it has been
-compiled with that support.  To see if these options are enabled,
-check the command output of *pkgadd --version*.
+If built with ACL (*acl*(5)) and extended attribute (*xattr*(7))
+support, *pkgadd* preserves them.
+Use '*pkgadd --version*' to verify.
 
 The options are as follows:
 
 *-c* _conffile_, *--config*=_conffile_
-	Specify an alternate configuration file instead of the default
+	Read configuration from _conffile_ instead of
 	_/etc/pkgadd.conf_.
 
-*-f*, *--force*
-	Force installation, overwrite conflicting files.
-
-	If the package that is about to be installed contains files
-	that are already installed this option will cause all those
-	files to be overwritten.
-
-	*This option should be used with care, preferably not at all*.
-
 *-r* _rootdir_, *--root*=_rootdir_
-	Specify an alternate root directory instead of the default
-	'*/*'.
-
-	This should not be used as a way to install software into
-	e.g., _/usr/local_ instead of _/usr_.  Instead this should be
-	used if you want to install a package on a temporary mounted
-	partition, which is "owned" by another system.  By using this
-	option you not only specify where the software should be
-	installed, but you also specify which package database to use.
+	Use _rootdir_ as the root directory instead of */*.
+	The package database and rejected-files directory are read
+	from and written to under _rootdir_.
+	Intended for chroot or alternate roots.
+	Not for subpath installs such as _/usr/local_.
 
 *-u*, *--upgrade*
-	Upgrade/replace package with the same name as _file_.
+	Upgrade the installed package that has the same name as
+	_package_.
+
+*-f*, *--force*
+	Overwrite existing files.
+	Dangerous; avoid unless required.
 
 *-v*, *--verbose*
-	Explain what is being done.
+	Print actions as they are performed.
 
 *-V*, *--version*
 	Print version and exit.
 
 *-h*, *--help*
-	Print help and exit.
+	Print usage information and exit.
+
+_package_
+	Path to the package archive to install or upgrade.
 
 # FILES
 
 _/etc/pkgadd.conf_
-	Default configuration file.
+	Configuration file.
 
 _/var/lib/pkg/db_
-	Database of currently installed packages.
+	Package database.
 
 _/var/lib/pkg/rejected/_
-	Directory where rejected files are stored.
+	Directory for rejected files.
+
+# EXAMPLES
+
+Install a package into the default root:
+```
+pkgadd foo-1.0.tar.xz
+```
+
+Upgrade an installed package:
+```
+pkgadd -u foo-1.1.tar.xz
+```
+
+Install into a chroot:
+```
+pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
+```
 
 # EXIT STATUS
 
-*0* on success, and *>0* if an error occurs.
+*0* on success, *>0* on error.
+
+# SECURITY CONSIDERATIONS
+
+Packages may contain device nodes, FIFOs, symlinks, and setuid files.
+Review package contents before installation.
+Do not install packages from untrusted sources.
+Avoid *-f* unless the replacement is intended.
 
 # SEE ALSO
 
-*pkginfo*(1),
 *pkgadd.conf*(5),
+*pkginfo*(1),
 *pkgrm*(8)
 
 ; vim: ft=scdoc cc=72 tw=70
