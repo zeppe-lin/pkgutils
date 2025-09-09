@@ -30,10 +30,10 @@ EVENT   PATTERN   ACTION
 	Specified when the rule applies:
 
 	_INSTALL_
-		applies at all times
+		Applies at all times.
 
 	_UPGRADE_
-		applies only when replacing an existing package
+		Applies only when replacing an existing package.
 
 *PATTERN*
 	A regular expression (in *regex*(3) format) matching the file
@@ -42,9 +42,9 @@ EVENT   PATTERN   ACTION
 
 *ACTION*
 	_YES_
-		install or upgrade the file
+		Install or upgrade the file.
 	_NO_
-		reject the file
+		Reject the file.
 
 Rules are evaluated in order; the last matching rule takes effect.
 
@@ -81,8 +81,19 @@ UPGRADE   ^etc/X11/XF86Config$  NO
 
 # SEE ALSO
 
+*regex*(3),
 *pkgadd*(8),
-*rejmerge*(8),
-*regex*(3)
+*rejmerge*(8)
+
+# HISTORY
+
+The _pkgadd.conf_ file format first appeared in pkgutils, written by
+Per Lidén <per@fukt.bth.se> for CRUX.
+
+pkgutils was maintained for many years by CRUX team <https://crux.nu>.
+
+This implementation was reworked for Zeppe-Lin by Alexandr Savca
+<alexandr.savca89@gmail.com> and is maintained by Zeppe-Lin Team
+<https://zeppe-lin.github.io>.
 
 ; vim: ft=scdoc cc=72 tw=70

@@ -6,7 +6,7 @@ pkgrm - remove an installed software package
 
 # SYNOPSIS
 
-*pkgrm* [*-Vhv*] [*-r* _rootdir_] _pkgname_
+*pkgrm* [*-Vhv*] [*-r* _root-dir_] _package-name_
 
 # DESCRIPTION
 
@@ -14,10 +14,12 @@ The *pkgrm* utility removes an installed software package.
 
 The options are as follows:
 
-*-r* _rootdir_, *--root*=_rootdir_
-	Use _rootdir_ as the root directory instead of */*.
+*-r* _root-dir_, *--root*=_root-dir_
+	Use an alternate root directory.
 	The package database is read from and written to under
-	_rootdir_.
+	_root-dir_.
+
+	Default: */*.
 
 *-v*, *--verbose*
 	Print actions as they are performed.
@@ -28,13 +30,17 @@ The options are as follows:
 *-h*, *--help*
 	Print usage information and exit.
 
-_pkgname_
+_package-name_
 	Name of the installed package to remove.
 
 # FILES
 
 _/var/lib/pkg/db_
 	Package database.
+
+# EXIT STATUS
+
+*0* on success, *>0* on error.
 
 # EXAMPLES
 
@@ -48,18 +54,25 @@ Remove from a chroot:
 pkgrm -r /mnt foo
 ```
 
-# EXIT STATUS
-
-*0* on success, *>0* on error.
-
-# WARNINGS
-
-Removing a package may leave empty directories behind if they are
-shared with other packages or contain local files.
-
 # SEE ALSO
 
 *pkginfo*(1),
 *pkgadd*(8)
+
+# HISTORY
+
+The *pkgrm* utility first appeared in pkgutils, written by Per Lidén
+<per@fukt.bth.se> for CRUX.
+
+pkgutils was maintained for many years by CRUX team <https://crux.nu>.
+
+This implementation was reworked for Zeppe-Lin by Alexandr Savca
+<alexandr.savca89@gmail.com> and is maintained by Zeppe-Lin Team
+<https://zeppe-lin.github.io>.
+
+# CAVEATS
+
+Removing a package may leave empty directories behind if they are
+shared with other packages or contain local files.
 
 ; vim: ft=scdoc cc=72 tw=70

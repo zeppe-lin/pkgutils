@@ -6,7 +6,10 @@ pkginfo - display software package information
 
 # SYNOPSIS
 
-*pkginfo* [*-Vh*] [*-r* _rootdir_] {*-f* _package_ | *-i* | *-l* _pkgname_ | *-l* _package_ | *-o* _pathpattern_}
+*pkginfo* \
+[*-Vh*] \
+[*-r* _root-dir_] \
+{*-f* _package-archive_ | *-i* | *-l* _package_ | *-o* _path-pattern_}
 
 # DESCRIPTION
 
@@ -15,27 +18,29 @@ package archives.
 
 The options are as follows:
 
-*-f* _package_, *--footprint*=_package_
-	Print the footprint of _package_.
+*-f* _package-archive_, *--footprint*=_package-archive_
+	Print the footprint of _package-archive_.
 	Used by *pkgmk*(8) to create and compare footprints.
 
 *-i*, *--installed*
 	List installed packages and their versions.
 
-*-l* _pkgname_, *--list*=_pkgname_
-	List files owned by the installed package _pkgname_.
-
 *-l* _package_, *--list*=_package_
-	List files contained in the package archive _package_.
+	If _package_ is a package name, list files owned by the
+	installed package.
+	If _package_ is a package archive, list files contained in the
+	archive.
 
-*-o* _pathpattern_, *--owner*=_pathpattern_
-	List packages owning files that match _pathpattern_.
-	The _pathpattern_ is a *regex*(3) expression applied to file
-	paths recorder in the package database.
+*-o* _path-pattern_, *--owner*=_path-pattern_
+	List packages owning files that match _path-pattern_.
+	The _path-pattern_ is a *regex*(3) expression applied to file
+	paths recorded in the package database.
 
-*-r* _rootdir_, *--root*=_rootdir_
-	Use _rootdir_ as the root directory instead of */*.
-	The package database is read from under _rootdir_.
+*-r* _root-dir_, *--root*=_root-dir_
+	Use an alternate root directory.
+	The package database is read from under _root-dir_.
+
+	Default: */*.
 
 *-V*, *--version*
 	Print version and exit.
@@ -49,6 +54,10 @@ The *-f*, *-i*, *-l*, and *-o* options are mutually exclusive.
 
 _/var/lib/pkg/db_
 	Package database.
+
+# EXIT STATUS
+
+*0* on success, *>0* on error.
 
 # EXAMPLES
 
@@ -72,14 +81,21 @@ Find the package that owns a file path:
 pkginfo -o '^/usr/bin/foo$'
 ```
 
-# EXIT STATUS
-
-*0* on success, *>0* on error.
-
 # SEE ALSO
 
+*regex*(3),
 *pkgadd*(8),
-*pkgrm*(8),
-*regex*(3)
+*pkgrm*(8)
+
+# HISTORY
+
+The *pkginfo* utility first appeared in pkgutils, written by Per Lidén
+<per@fukt.bth.se> for CRUX.
+
+pkgutils was maintained for many years by CRUX team <https://crux.nu>.
+
+This implementation was reworked for Zeppe-Lin by Alexandr Savca
+<alexandr.savca89@gmail.com> and is maintained by Zeppe-Lin Team
+<https://zeppe-lin.github.io>.
 
 ; vim: ft=scdoc cc=72 tw=70

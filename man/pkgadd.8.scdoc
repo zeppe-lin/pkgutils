@@ -6,7 +6,8 @@ pkgadd - install or upgrade a software package
 
 # SYNOPSIS
 
-*pkgadd* [*-Vfhuv*] [*-c* _conffile_] [*-r* _rootdir_] _package_
+*pkgadd* [*-Vfhuv*] [*-c* _config-file_] [*-r* _root-dir_] \
+_package-archive_
 
 # DESCRIPTION
 
@@ -18,24 +19,27 @@ tar.gz, tar.bz2, tar.lz, tar.zst, tar.xz.
 
 If built with ACL (*acl*(5)) and extended attribute (*xattr*(7))
 support, *pkgadd* preserves them.
-Use '*pkgadd --version*' to verify.
+Run '*pkgadd --version*' to verify.
 
 The options are as follows:
 
-*-c* _conffile_, *--config*=_conffile_
-	Read configuration from _conffile_ instead of
-	_/etc/pkgadd.conf_.
+*-c* _config-file_, *--config*=_config-file_
+	Use an alternate configuration file.
 
-*-r* _rootdir_, *--root*=_rootdir_
-	Use _rootdir_ as the root directory instead of */*.
+	Default: _/etc/pkgadd.conf_.
+
+*-r* _root-dir_, *--root*=_root-dir_
+	Use an alternate root directory.
 	The package database and rejected-files directory are read
-	from and written to under _rootdir_.
+	from and written to under _root-dir_.
 	Intended for chroot or alternate roots.
 	Not for subpath installs such as _/usr/local_.
 
+	Default: */*.
+
 *-u*, *--upgrade*
-	Upgrade the installed package that has the same name as
-	_package_.
+	Upgrade the installed package with the same name as in
+	_package-archive_.
 
 *-f*, *--force*
 	Overwrite existing files.
@@ -50,7 +54,7 @@ The options are as follows:
 *-h*, *--help*
 	Print usage information and exit.
 
-_package_
+_package-archive_
 	Path to the package archive to install or upgrade.
 
 # FILES
@@ -63,6 +67,10 @@ _/var/lib/pkg/db_
 
 _/var/lib/pkg/rejected/_
 	Directory for rejected files.
+
+# EXIT STATUS
+
+*0* on success, *>0* on error.
 
 # EXAMPLES
 
@@ -81,9 +89,22 @@ Install into a chroot:
 pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 ```
 
-# EXIT STATUS
+# SEE ALSO
 
-*0* on success, *>0* on error.
+*pkginfo*(1),
+*pkgadd.conf*(5),
+*pkgrm*(8)
+
+# HISTORY
+
+The *pkgadd* utility first appeared in pkgutils, written by Per Lidén
+<per@fukt.bth.se> for CRUX.
+
+pkgutils was maintained for many years by CRUX team <https://crux.nu>.
+
+This implementation was reworked for Zeppe-Lin by Alexandr Savca
+<alexandr.savca89@gmail.com> and is maintained by Zeppe-Lin Team
+<https://zeppe-lin.github.io>.
 
 # SECURITY CONSIDERATIONS
 
@@ -91,11 +112,5 @@ Packages may contain device nodes, FIFOs, symlinks, and setuid files.
 Review package contents before installation.
 Do not install packages from untrusted sources.
 Avoid *-f* unless the replacement is intended.
-
-# SEE ALSO
-
-*pkgadd.conf*(5),
-*pkginfo*(1),
-*pkgrm*(8)
 
 ; vim: ft=scdoc cc=72 tw=70
