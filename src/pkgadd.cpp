@@ -411,17 +411,17 @@ read_config(const string& root, const string& configFile)
 void
 print_help()
 {
-  cout << R"(Usage: pkgadd [-Vfhuv] [-c conffile] [-r rootdir] file
-Install software package.
+  cout << R"(Usage: pkgadd [-Vfhuv] [-c conffile] [-r rootdir] package
+Install or upgrade a software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -c, --config=conffile    specify an alternate configuration file
-  -f, --force              force install, overwrite conflicting files
-  -r, --root=rootdir       specify an alternate root directory
-  -u, --upgrade            upgrade package with the same name
-  -v, --verbose            explain what is being done
-  -V, --version            print version and exit
-  -h, --help               print help and exit
+  -c, --config=conffile   use an alternate configuration file
+  -r, --root=rootdir      use an alternate root directory
+  -u, --upgrade           upgrade the installed package
+  -f, --force             force install, overwrite conflicting files
+  -v, --verbose           explain what is being done
+  -V, --version           print version and exit
+  -h, --help              print this message and exit
 )";
 }
 

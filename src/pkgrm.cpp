@@ -33,13 +33,13 @@ void
 print_help()
 {
   cout << R"(Usage: pkgrm [-Vhv] [-r rootdir] pkgname
-Remove software package.
+Remove an installed software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -r, --root=rootdir    specify an alternate root directory
-  -v, --verbose       explain what is being done
-  -V, --version       print version and exit
-  -h, --help          print help and exit
+  -r, --root=rootdir   use an alternate root directory
+  -v, --verbose        explain what is being done
+  -V, --version        print version and exit
+  -h, --help           print this message and exit
 )";
 }
 

@@ -39,17 +39,18 @@ void
 print_help()
 {
   cout << R"(Usage: pkginfo [-Vh] [-r rootdir]
-                 {-f file | -i | -l <pkgname | file> | -o pattern}
+               {-f package | -i | -l pkgname | -l package | -o pathpattern}
 Display software package information.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -f, --footprint=file         print footprint for file
-  -i, --installed              list installed packages and their version
-  -l, --list=<pkgname | file>  list files in package or file
-  -o, --owner=pattern          list owner(s) of file(s) matching pattern
-  -r, --root=rootdir           specify an alternate root directory
-  -V, --version              print version and exit
-  -h, --help                 print help and exit
+  -f, --footprint=package   print the footprint of a package
+  -i, --installed           list installed packages and their versions
+  -l, --list=pkgname        list files owned by the installed package
+  -l, --list=package        list files contained in the package archive
+  -o, --owner=pattern       list packages owning files matching a pattern
+  -r, --root=rootdir        use an alternate root directory
+  -V, --version             print version and exit
+  -h, --help                print this message and exit
 )";
 }
 
