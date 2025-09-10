@@ -85,15 +85,4 @@ UPGRADE   ^etc/X11/XF86Config$  NO
 *pkgadd*(8),
 *rejmerge*(8)
 
-# HISTORY
-
-The _pkgadd.conf_ file format first appeared in pkgutils, written by
-Per Lidén <per@fukt.bth.se> for CRUX.
-
-pkgutils was maintained for many years by CRUX team <https://crux.nu>.
-
-This implementation was reworked for Zeppe-Lin by Alexandr Savca
-<alexandr.savca89@gmail.com> and is maintained by Zeppe-Lin Team
-<https://zeppe-lin.github.io>.
-
 ; vim: ft=scdoc cc=72 tw=70

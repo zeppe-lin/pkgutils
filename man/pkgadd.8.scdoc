@@ -95,17 +95,6 @@ pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 *pkgadd.conf*(5),
 *pkgrm*(8)
 
-# HISTORY
-
-The *pkgadd* utility first appeared in pkgutils, written by Per Lidén
-<per@fukt.bth.se> for CRUX.
-
-pkgutils was maintained for many years by CRUX team <https://crux.nu>.
-
-This implementation was reworked for Zeppe-Lin by Alexandr Savca
-<alexandr.savca89@gmail.com> and is maintained by Zeppe-Lin Team
-<https://zeppe-lin.github.io>.
-
 # SECURITY CONSIDERATIONS
 
 Packages may contain device nodes, FIFOs, symlinks, and setuid files.

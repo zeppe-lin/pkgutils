@@ -59,17 +59,6 @@ pkgrm -r /mnt foo
 *pkginfo*(1),
 *pkgadd*(8)
 
-# HISTORY
-
-The *pkgrm* utility first appeared in pkgutils, written by Per Lidén
-<per@fukt.bth.se> for CRUX.
-
-pkgutils was maintained for many years by CRUX team <https://crux.nu>.
-
-This implementation was reworked for Zeppe-Lin by Alexandr Savca
-<alexandr.savca89@gmail.com> and is maintained by Zeppe-Lin Team
-<https://zeppe-lin.github.io>.
-
 # CAVEATS
 
 Removing a package may leave empty directories behind if they are
