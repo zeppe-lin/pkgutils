@@ -12,10 +12,11 @@ _package-archive_
 # DESCRIPTION
 
 The *pkgadd* utility installs or upgrades a software package.
-A package is an archive containing a directory hierarchy.
+A package is an tar-based archive containing a directory hierarchy
+that represents the filesystem layout to be installed.
 
-Supported formats are those provided by *libarchive*(3), such as:
-tar.gz, tar.bz2, tar.lz, tar.zst, tar.xz.
+Supported formats are those described in *packages*(7) and depend on
+*libarchive*(3).
 
 If built with ACL (*acl*(5)) and extended attribute (*xattr*(7))
 support, *pkgadd* preserves them.
@@ -84,7 +85,7 @@ Upgrade an installed package:
 pkgadd -u foo-1.1.tar.xz
 ```
 
-Install into a chroot:
+Install into a chroot with alternate config:
 ```
 pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 ```
@@ -93,6 +94,7 @@ pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 
 *pkginfo*(1),
 *pkgadd.conf*(5),
+*packages*(7),
 *pkgrm*(8)
 
 # SECURITY CONSIDERATIONS

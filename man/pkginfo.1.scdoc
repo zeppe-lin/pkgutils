@@ -20,7 +20,8 @@ The options are as follows:
 
 *-f* _package-archive_, *--footprint*=_package-archive_
 	Print the footprint of _package-archive_.
-	Used by *pkgmk*(8) to create and compare footprints.
+
+	Mainly used by *pkgmk*(8) to create and compare footprints.
 
 *-i*, *--installed*
 	List installed packages and their versions.
@@ -84,6 +85,7 @@ pkginfo -o '^/usr/bin/foo$'
 # SEE ALSO
 
 *regex*(3),
+*packages*(7),
 *pkgadd*(8),
 *pkgrm*(8)
 

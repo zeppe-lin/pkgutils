@@ -61,16 +61,13 @@ Use *rejmerge*(8) to inspect or merge them.
 _/etc/pkgadd.conf_
 	Configuration file.
 
-_/var/lib/pkg/db_
-	Package database.
-
 _/var/lib/pkg/rejected/_
 	Directory for rejected files.
 
 # EXAMPLES
 
-Block upgrades to _/etc_ and _/var/log_, except under _/etc/X11_, but
-not _/etc/X11/XF86Config_:
+Block upgrades to _/etc_ and _/var/log_, but permit _/etc/X11_ except
+for _/etc/X11/XF86Config_:
 
 ```
 UPGRADE   ^etc/.*$              NO
@@ -82,6 +79,7 @@ UPGRADE   ^etc/X11/XF86Config$  NO
 # SEE ALSO
 
 *regex*(3),
+*packages*(7),
 *pkgadd*(8),
 *rejmerge*(8)
 

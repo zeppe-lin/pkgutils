@@ -57,6 +57,7 @@ pkgrm -r /mnt foo
 # SEE ALSO
 
 *pkginfo*(1),
+*packages*(7),
 *pkgadd*(8)
 
 # CAVEATS

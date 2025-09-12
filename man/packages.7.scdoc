@@ -6,18 +6,18 @@ packages - from sources to installed software
 
 # DESCRIPTION
 
-A *package* is software prepared from source code into a format that
-can be installed and tracked by the system.
-It is built from a *package source*: a directory containing a
-_Pkgfile_ and supporting metadata (_.md5sum_, _.footprint_, and
-optional files) that defines how to build it reproducibly with
-*pkgmk*(8).
+A *package* is software built from source into an installable archive
+that can be tracked by the system.
+Packages are created from *package sources*.
+
+A *package source* is a directory containing a _Pkgfile_ and
+supporting metadata (_.md5sum_, _.footprint_, and optional files).
+It specifies how to build the software reproducibly with *pkgmk*(8).
 
 Building a package source produces a *package archive*: a compressed
 tarball of pre-built files, with no embedded metadata.
-Installing a package archive adds its files to the system and records
-it in the package database at _/var/lib/pkg/db_ as an installed
-package.
+Installing an archive copies its files to the system and records them
+in the package database at _/var/lib/pkg/db_.
 
 # PACKAGE ARCHIVE FORMAT
 
@@ -33,23 +33,23 @@ For example:
 ed#1.21-1.pkg.tar.gz
 ```
 
-The '*#*' separates the name from its version; the dash separates
-version from release.
-The default compression is .pkg.tar.gz, but .pkg.tar.bz2, .pkg.tar.lz,
-.pkg.tar.zst, and .pkg.tar.xz are also supported.
+The '*#*' separates the package name from its version; the dash
+separates version from release.
+The default format is _.pkg.tar.gz_, but _.pkg.tar.bz2_,
+_.pkg.tar.lz_, _.pkg.tar.xz_, and _.pkg.tar.zst_ are also supported.
 
 # PACKAGE DATABASE
 
-The package database at _/var/lib/pkg/db_ is a plain text file listing
-all installed packages and their contents.
-Each package record consists of:
+The package database at _/var/lib/pkg/db_ is a plain-text file listing
+installed packages and their contents.
+Each package record has the form:
 
 ```
 <name>                 # Package name
 <version>-<release>    # Version and release
 <path>/                # Directory (trailing slash)
 <path>/<file>          # File
-(blank line)           # Separates records
+(blank line)           # Record separator
 ```
 
 Paths are relative to the filesystem root.
@@ -70,6 +70,11 @@ usr/share/man/man1/ed.1.gz
 This manifest is written by *pkgadd*(8) when installing a package
 archive, and read by *pkgadd*(8), *pkgrm*(8), and *pkginfo*(1) to
 track, remove, or inspect installed packages.
+
+# FILES
+
+_/var/lib/pkg/db_
+	Package database.
 
 # SEE ALSO
 
