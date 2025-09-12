@@ -1,0 +1,85 @@
+PACKAGES(7)
+
+# NAME
+
+packages - from sources to installed software
+
+# DESCRIPTION
+
+A *package* is software prepared from source code into a format that
+can be installed and tracked by the system.
+It is built from a *package source*: a directory containing a
+_Pkgfile_ and supporting metadata (_.md5sum_, _.footprint_, and
+optional files) that defines how to build it reproducibly with
+*pkgmk*(8).
+
+Building a package source produces a *package archive*: a compressed
+tarball of pre-built files, with no embedded metadata.
+Installing a package archive adds its files to the system and records
+it in the package database at _/var/lib/pkg/db_ as an installed
+package.
+
+# PACKAGE ARCHIVE FORMAT
+
+Package archives use the following naming scheme:
+
+```
+name#version-release.pkg.tar.<compression>
+```
+
+For example:
+
+```
+ed#1.21-1.pkg.tar.gz
+```
+
+The '*#*' separates the name from its version; the dash separates
+version from release.
+The default compression is .pkg.tar.gz, but .pkg.tar.bz2, .pkg.tar.lz,
+.pkg.tar.zst, and .pkg.tar.xz are also supported.
+
+# PACKAGE DATABASE
+
+The package database at _/var/lib/pkg/db_ is a plain text file listing
+all installed packages and their contents.
+Each package record consists of:
+
+```
+<name>                 # Package name
+<version>-<release>    # Version and release
+<path>/                # Directory (trailing slash)
+<path>/<file>          # File
+(blank line)           # Separates records
+```
+
+Paths are relative to the filesystem root.
+For example, a record for *ed* might begin:
+
+```
+ed
+1.21-1
+bin/
+bin/ed
+usr/
+usr/share/
+usr/share/man/
+usr/share/man/man1/
+usr/share/man/man1/ed.1.gz
+```
+
+This manifest is written by *pkgadd*(8) when installing a package
+archive, and read by *pkgadd*(8), *pkgrm*(8), and *pkginfo*(1) to
+track, remove, or inspect installed packages.
+
+# SEE ALSO
+
+*pkginfo*(1),
+*pkgman*(1),
+*pkgmk.Pkgfile*(5),
+*packaging*(7),
+*pkgadd*(8),
+*pkgmk*(8),
+*pkgrm*(8),
+*rejmerge*(8)
+
+; vim: ft=scdoc cc=72 tw=70
