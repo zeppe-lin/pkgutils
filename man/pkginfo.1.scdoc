@@ -21,7 +21,8 @@ The options are as follows:
 *-f* _package-archive_, *--footprint*=_package-archive_
 	Print the footprint of _package-archive_.
 
-	Mainly used by *pkgmk*(8) to create and compare footprints.
+	This option is mainly used by *pkgmk*(8) to create and compare
+	package archive footprints.
 
 *-i*, *--installed*
 	List installed packages and their versions.

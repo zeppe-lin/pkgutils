@@ -2,7 +2,7 @@ PACKAGES(7)
 
 # NAME
 
-packages - from sources to installed software
+packages - package source, archives, and database
 
 # DESCRIPTION
 
@@ -15,7 +15,7 @@ supporting metadata (_.md5sum_, _.footprint_, and optional files).
 It specifies how to build the software reproducibly with *pkgmk*(8).
 
 Building a package source produces a *package archive*: a compressed
-tarball of pre-built files, with no embedded metadata.
+tar file of pre-built files, with no embedded metadata.
 Installing an archive copies its files to the system and records them
 in the package database at _/var/lib/pkg/db_.
 
@@ -33,8 +33,8 @@ For example:
 ed#1.21-1.pkg.tar.gz
 ```
 
-The '*#*' separates the package name from its version; the dash
-separates version from release.
+The '*#*' separates name from version; the dash separates version from
+release.
 The default format is _.pkg.tar.gz_, but _.pkg.tar.bz2_,
 _.pkg.tar.lz_, _.pkg.tar.xz_, and _.pkg.tar.zst_ are also supported.
 
@@ -69,7 +69,7 @@ usr/share/man/man1/ed.1.gz
 
 This manifest is written by *pkgadd*(8) when installing a package
 archive, and read by *pkgadd*(8), *pkgrm*(8), and *pkginfo*(1) to
-track, remove, or inspect installed packages.
+track, remove, or inspect installed software.
 
 # FILES
 
@@ -79,7 +79,6 @@ _/var/lib/pkg/db_
 # SEE ALSO
 
 *pkginfo*(1),
-*pkgman*(1),
 *pkgmk.Pkgfile*(5),
 *packaging*(7),
 *pkgadd*(8),

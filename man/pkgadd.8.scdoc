@@ -11,12 +11,11 @@ _package-archive_
 
 # DESCRIPTION
 
-The *pkgadd* utility installs or upgrades a software package.
-A package is an tar-based archive containing a directory hierarchy
-that represents the filesystem layout to be installed.
-
-Supported formats are those described in *packages*(7) and depend on
-*libarchive*(3).
+The *pkgadd* utility installs or upgrades software packages.
+Package archives are tar files with a directory hierarchy to be
+installed.
+See *packages*(7) for the archive format and supported compression
+types.
 
 If built with ACL (*acl*(5)) and extended attribute (*xattr*(7))
 support, *pkgadd* preserves them.
@@ -33,8 +32,8 @@ The options are as follows:
 	Use an alternate root directory.
 	The package database and rejected-files directory are read
 	from and written to under _root-dir_.
-	Intended for chroot or alternate roots.
-	Not for subpath installs such as _/usr/local_.
+	Intended for chroot or alternate roots, not for subpath
+	installs such as _/usr/local_.
 
 	Default: */*.
 
@@ -75,7 +74,7 @@ _/var/lib/pkg/rejected/_
 
 # EXAMPLES
 
-Install a package into the default root:
+Install a package:
 ```
 pkgadd foo-1.0.tar.xz
 ```
@@ -97,11 +96,12 @@ pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 *packages*(7),
 *pkgrm*(8)
 
-# SECURITY CONSIDERATIONS
+# CAVEATS
 
-Packages may contain device nodes, FIFOs, symlinks, and setuid files.
-Review package contents before installation.
-Do not install packages from untrusted sources.
-Avoid *-f* unless the replacement is intended.
+Package archives may contain device nodes, FIFOs, symlinks, or setuid
+files.
+Review contents before installation.
+Do not install from untrusted sources.
+Use *-f* only when replacement is intended.
 
 ; vim: ft=scdoc cc=72 tw=70
