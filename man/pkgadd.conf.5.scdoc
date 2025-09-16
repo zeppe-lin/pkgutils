@@ -64,6 +64,14 @@ _/etc/pkgadd.conf_
 _/var/lib/pkg/rejected/_
 	Directory for rejected files.
 
+# NOTES
+
+Rules in _pkgadd.conf_ apply only at install or upgrade time.
+They do not alter the contents of the package archive itself, which
+must be built reproducibly with *pkgmk*(8).
+Rejected files are preserved under the rejected-files directory for
+later inspection or merging with *rejmerge*(8).
+
 # EXAMPLES
 
 Block upgrades to _/etc_ and _/var/log_, but permit _/etc/X11_ except
@@ -78,9 +86,15 @@ UPGRADE   ^etc/X11/XF86Config$  NO
 
 # SEE ALSO
 
+*pkgadd*(8),
+*pkginfo*(1),
+*pkgrm*(8),
+*pkgmk*(8),
+*pkgmk.conf*(5),
+*rejmerge*(8),
+*rejmerge.conf*(5),
 *regex*(3),
 *packages*(7),
-*pkgadd*(8),
-*rejmerge*(8)
+*packaging*(7)
 
 ; vim: ft=scdoc cc=72 tw=70

@@ -18,7 +18,8 @@ Building a package source produces a *package archive*: a compressed
 tar file of pre-built files, with no embedded metadata.
 Installing an archive copies its files to the system and records them
 in the package database at _/var/lib/pkg/db_.
-
+; Package sources are usually organised into collections; see
+; *collections*(7).
 # PACKAGE ARCHIVE FORMAT
 
 Package archives use the following naming scheme:
@@ -78,12 +79,19 @@ _/var/lib/pkg/db_
 
 # SEE ALSO
 
-*pkginfo*(1),
-*pkgmk.Pkgfile*(5),
 *packaging*(7),
-*pkgadd*(8),
+; *collections*(7),
 *pkgmk*(8),
+*pkgmk.conf*(5),
+*pkgmk.32bit*(5),
+*pkgmk.Pkgfile*(5),
+*pkgmk.footprint*(5),
+*pkgmk.md5sum*(5),
+*pkgmk.nostrip*(5),
+*pkginfo*(1),
+*pkgadd*(8),
 *pkgrm*(8),
-*rejmerge*(8)
+*rejmerge*(8),
+*rejmerge.conf*(5)
 
 ; vim: ft=scdoc cc=72 tw=70

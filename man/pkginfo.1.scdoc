@@ -61,6 +61,15 @@ _/var/lib/pkg/db_
 
 *0* on success, *>0* on error.
 
+# NOTES
+
+*pkginfo*(1) reads only the package database maintained by *pkgadd*(8)
+and *pkgrm*(8), or the contents of package archives created by
+*pkgmk*(8).
+It does not parse arbitrary tarballs or directories.
+Use *pkgmk*(8) to build archives and *pkgadd*(8) to install them so
+that *pkginfo*(1) can report accurately.
+
 # EXAMPLES
 
 List installed packages:
@@ -85,9 +94,14 @@ pkginfo -o '^/usr/bin/foo$'
 
 # SEE ALSO
 
+*pkgadd*(8),
+*pkgrm*(8),
+*pkgmk*(8),
+*pkgmk.conf*(5),
+*rejmerge*(8),
+*rejmerge.conf*(5),
 *regex*(3),
 *packages*(7),
-*pkgadd*(8),
-*pkgrm*(8)
+*packaging*(7)
 
 ; vim: ft=scdoc cc=72 tw=70

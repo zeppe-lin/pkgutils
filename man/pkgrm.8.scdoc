@@ -42,6 +42,13 @@ _/var/lib/pkg/db_
 
 *0* on success, *>0* on error.
 
+# NOTES
+
+*pkgrm*(8) removes only packages that were installed with *pkgadd*(8)
+and recorded in the package database.
+It does not remove arbitrary directories or files outside the
+database.
+
 # EXAMPLES
 
 Remove a package:
@@ -57,8 +64,13 @@ pkgrm -r /mnt foo
 # SEE ALSO
 
 *pkginfo*(1),
+*pkgadd*(8),
+*pkgmk*(8),
+*pkgmk.conf*(5),
+*rejmerge*(8),
+*rejmerge.conf*(5),
 *packages*(7),
-*pkgadd*(8)
+*packaging*(7)
 
 # CAVEATS
 

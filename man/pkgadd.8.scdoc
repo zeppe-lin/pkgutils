@@ -72,6 +72,14 @@ _/var/lib/pkg/rejected/_
 
 *0* on success, *>0* on error.
 
+# NOTES
+
+*pkgadd*(8) installs only package archives created by *pkgmk*(8).
+It does not support arbitrary tarballs or archives lacking the
+expected package layout as described in *packages*(7).
+Always build packages with *pkgmk*(8) to ensure compatibility with the
+package database and tools.
+
 # EXAMPLES
 
 Install a package:
@@ -91,10 +99,15 @@ pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 
 # SEE ALSO
 
-*pkginfo*(1),
 *pkgadd.conf*(5),
+*pkginfo*(1),
+*pkgrm*(8),
+*pkgmk*(8),
+*pkgmk.conf*(5),
+*rejmerge*(8),
+*rejmerge.conf*(5),
 *packages*(7),
-*pkgrm*(8)
+*packaging*(7)
 
 # CAVEATS
 
