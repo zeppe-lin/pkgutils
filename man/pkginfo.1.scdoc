@@ -95,6 +95,7 @@ pkginfo -o '^/usr/bin/foo$'
 # SEE ALSO
 
 *pkgadd*(8),
+*pkgadd.conf*(5),
 *pkgrm*(8),
 *pkgmk*(8),
 *pkgmk.conf*(5),

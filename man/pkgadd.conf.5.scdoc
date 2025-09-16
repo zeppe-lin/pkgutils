@@ -87,8 +87,8 @@ UPGRADE   ^etc/X11/XF86Config$  NO
 # SEE ALSO
 
 *pkgadd*(8),
-*pkginfo*(1),
 *pkgrm*(8),
+*pkginfo*(1),
 *pkgmk*(8),
 *pkgmk.conf*(5),
 *rejmerge*(8),

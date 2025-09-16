@@ -80,7 +80,6 @@ _/var/lib/pkg/db_
 # SEE ALSO
 
 *packaging*(7),
-; *collections*(7),
 *pkgmk*(8),
 *pkgmk.conf*(5),
 *pkgmk.32bit*(5),
@@ -88,9 +87,10 @@ _/var/lib/pkg/db_
 *pkgmk.footprint*(5),
 *pkgmk.md5sum*(5),
 *pkgmk.nostrip*(5),
-*pkginfo*(1),
 *pkgadd*(8),
+*pkgadd.conf*(5),
 *pkgrm*(8),
+*pkginfo*(1),
 *rejmerge*(8),
 *rejmerge.conf*(5)
 

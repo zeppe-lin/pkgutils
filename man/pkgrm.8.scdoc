@@ -63,8 +63,9 @@ pkgrm -r /mnt foo
 
 # SEE ALSO
 
-*pkginfo*(1),
 *pkgadd*(8),
+*pkgadd.conf*(5),
+*pkginfo*(1),
 *pkgmk*(8),
 *pkgmk.conf*(5),
 *rejmerge*(8),

@@ -100,8 +100,8 @@ pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 # SEE ALSO
 
 *pkgadd.conf*(5),
-*pkginfo*(1),
 *pkgrm*(8),
+*pkginfo*(1),
 *pkgmk*(8),
 *pkgmk.conf*(5),
 *rejmerge*(8),
