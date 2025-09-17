@@ -84,7 +84,7 @@ pkginfo -l foo
 
 Show files in an archive:
 ```
-pkginfo -l foo-1.0.tar.xz
+pkginfo -l foo-1.0.pkg.tar.xz
 ```
 
 Find the package that owns a file path:
