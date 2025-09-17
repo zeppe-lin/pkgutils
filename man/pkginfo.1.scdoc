@@ -6,10 +6,8 @@ pkginfo - display software package information
 
 # SYNOPSIS
 
-*pkginfo* \
-[*-Vh*] \
-[*-r* _root-dir_] \
-{*-f* _package-archive_ | *-i* | *-l* _package_ | *-o* _path-pattern_}
+*pkginfo* [*-Vh*] [*-r* _root-dir_] \
+*-f* _package-archive_ | *-l* _package_ | *-o* _path-pattern_ | *-i*
 
 # DESCRIPTION
 
@@ -18,14 +16,17 @@ package archives.
 
 The options are as follows:
 
+*-r* _root-dir_, *--root*=_root-dir_
+	Use an alternate root directory.
+	The package database is read from under _root-dir_.
+
+	Default: */*.
+
 *-f* _package-archive_, *--footprint*=_package-archive_
 	Print the footprint of _package-archive_.
 
 	This option is mainly used by *pkgmk*(8) to create and compare
 	package archive footprints.
-
-*-i*, *--installed*
-	List installed packages and their versions.
 
 *-l* _package_, *--list*=_package_
 	If _package_ is a package name, list files owned by the
@@ -38,19 +39,16 @@ The options are as follows:
 	The _path-pattern_ is a *regex*(3) expression applied to file
 	paths recorded in the package database.
 
-*-r* _root-dir_, *--root*=_root-dir_
-	Use an alternate root directory.
-	The package database is read from under _root-dir_.
-
-	Default: */*.
+*-i*, *--installed*
+	List installed packages and their versions.
 
 *-V*, *--version*
 	Print version and exit.
 
 *-h*, *--help*
-	Print usage information and exit.
+	Print usage and exit.
 
-The *-f*, *-i*, *-l*, and *-o* options are mutually exclusive.
+The *-f*, *-l*, *-o*, and *-i* options are mutually exclusive.
 
 # FILES
 
