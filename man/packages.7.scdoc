@@ -18,9 +18,11 @@ Building a package source produces a *package archive*: a compressed
 tar file of pre-built files, with no embedded metadata.
 Installing an archive copies its files to the system and records them
 in the package database at _/var/lib/pkg/db_.
-; Package sources are usually organised into collections; see
+
+; Package sources are often organised into collections; see
 ; *collections*(7).
-# PACKAGE ARCHIVE FORMAT
+
+# PACKAGE NAMING
 
 Package archives use the following naming scheme:
 
@@ -34,10 +36,48 @@ For example:
 ed#1.21-1.pkg.tar.gz
 ```
 
-The '*#*' separates name from version; the dash separates version from
-release.
-The default format is _.pkg.tar.gz_, but _.pkg.tar.bz2_,
-_.pkg.tar.lz_, _.pkg.tar.xz_, and _.pkg.tar.zst_ are also supported.
+The '*#*' separates the package name from its version.
+The dash separates version from release.
+The suffix indicates the compression algorithm.
+
+# ARCHIVE FORMAT
+
+The archive itself is a tar file containing the package contents.
+The default format is GNU tar.
+Other formats supported by *pkgmk*(8) are:
+
+```
+Format   Description
+------   -----------
+gnutar   GNU tar format
+pax      POSIX 1003.1-2001 (pax) format
+ustar    POSIX 1003.1-1988 (ustar) format
+v7       Old V7 tar format
+```
+
+The archive format may be selected with *pkgmk*(8) using *-af*, or
+set by configuration variables in *pkgmk.conf*(5).
+
+See *libarchive-formats*(5) for details on these formats.
+
+# COMPRESSION MODES
+
+Package archives are compressed after creation.
+The default compression is gzip, producing a _.pkg.tar.gz_ file.
+Other supported modes are:
+
+```
+Extension   Algorithm
+---------   ---------
+gz          gzip
+bz2         bzip2
+xz          xz
+lz          lzip
+zst         zstd
+```
+
+The compression mode is controlled by configuration variables in
+*pkgmk.conf*(5).
 
 # PACKAGE DATABASE
 
@@ -76,6 +116,31 @@ track, remove, or inspect installed software.
 
 _/var/lib/pkg/db_
 	Package database.
+
+# NOTES
+
+A package archive has two independent layers:
+
+*Archive format*
+	The tar format used to store files
+	(e.g., gnutar, pax, ustar, v7).
+	This is selected by *pkgmk*(8) with *-af* or by
+	PKGMK_ARCHIVE_FORMAT in *pkgmk.conf*(5).
+
+*Compression mode*
+	The algorithm applied after the archive is created
+	(e.g., gzip, bzip2, xz, lzip, zstd).
+	This is controlled by PKGMK_COMPRESSION_MODE in
+	*pkgmk.conf*(5).
+
+The archive format and compression mode are independent.
+For example, a package may use pax format with gzip compression, or
+ustar format with xz compression.
+
+Distributions may override the defaults in their shipped
+*pkgmk.conf*(5).
+For example, Zeppe-Lin defaults to pax format to preserve extended
+attributes.
 
 # SEE ALSO
 
