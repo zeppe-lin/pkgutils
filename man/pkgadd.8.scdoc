@@ -36,8 +36,9 @@ The options are as follows:
 	_package-archive_.
 
 *-f*, *--force*
-	Overwrite existing files.
-	Dangerous; avoid unless required.
+	Force install; overwrite existing files.
+
+	*Dangerous; avoid unless required*.
 
 *-v*, *--verbose*
 	Print actions as they are performed.
