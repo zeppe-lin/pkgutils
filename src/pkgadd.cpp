@@ -415,13 +415,13 @@ print_help()
 Install or upgrade a software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -c, --config=config-file   Use an alternate configuration file
-  -r, --root=root-dir        Use an alternate root directory
-  -u, --upgrade              Upgrade the installed package
-  -f, --force                Force install, overwrite conflicting files
-  -v, --verbose              Explain what is being done
-  -V, --version              Print version and exit
-  -h, --help                 Print this message and exit
+  -c, --config=config-file  Use an alternate configuration file
+  -r, --root=root-dir       Use an alternate root directory
+  -u, --upgrade             Upgrade the installed package
+  -f, --force               Force install, overwrite conflicting files
+  -v, --verbose             Print actions as they are performed
+  -V, --version             Print version and exit
+  -h, --help                Print this help and exit
 )";
 }
 

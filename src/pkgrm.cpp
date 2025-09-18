@@ -36,10 +36,10 @@ print_help()
 Remove an installed software package.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -r, --root=root-dir   Use an alternate root directory
-  -v, --verbose         Explain what is being done
-  -V, --version         Print version and exit
-  -h, --help            Print this message and exit
+  -r, --root=root-dir  Use an alternate root directory
+  -v, --verbose        Print actions as they are performed
+  -V, --version        Print version and exit
+  -h, --help           Print this help and exit
 )";
 }
 
