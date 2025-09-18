@@ -11,8 +11,10 @@ pkginfo - display software package information
 
 # DESCRIPTION
 
-The *pkginfo* utility displays information about installed packages or
-package archives.
+The *pkginfo* utility displays information about installed software
+packages or package archives.
+It can list installed packages, show files belonging to a package, or
+find which package owns a specific file.
 
 The options are as follows:
 
@@ -24,9 +26,8 @@ The options are as follows:
 
 *-f* _package-archive_, *--footprint*=_package-archive_
 	Print the footprint of _package-archive_.
-
-	This option is mainly used by *pkgmk*(8) to create and compare
-	package archive footprints.
+	Mainly used by *pkgmk*(8) to create and compare package
+	archive footprints.
 
 *-l* _package_, *--list*=_package_
 	If _package_ is a package name, list files owned by the
@@ -40,7 +41,7 @@ The options are as follows:
 	paths recorded in the package database.
 
 *-i*, *--installed*
-	List installed packages and their versions.
+	List all installed packages and their versions.
 
 *-V*, *--version*
 	Print version and exit.
@@ -48,7 +49,7 @@ The options are as follows:
 *-h*, *--help*
 	Print usage and exit.
 
-The *-f*, *-l*, *-o*, and *-i* options are mutually exclusive.
+The options *-f*, *-l*, *-o*, and *-i* are mutually exclusive.
 
 # FILES
 
@@ -57,35 +58,29 @@ _/var/lib/pkg/db_
 
 # EXIT STATUS
 
-*0* on success, *>0* on error.
-
-# NOTES
-
-*pkginfo*(1) reads only the package database maintained by *pkgadd*(8)
-and *pkgrm*(8), or the contents of package archives created by
-*pkgmk*(8).
-It does not parse arbitrary tarballs or directories.
-Use *pkgmk*(8) to build archives and *pkgadd*(8) to install them so
-that *pkginfo*(1) can report accurately.
+*0*
+	Success.
+*>0*
+	An error occurred.
 
 # EXAMPLES
 
-List installed packages:
+List all installed packages and their versions:
 ```
 pkginfo -i
 ```
 
-Show files in an installed package:
+List files in an installed package named "foo":
 ```
 pkginfo -l foo
 ```
 
-Show files in an archive:
+List files within a package archive:
 ```
 pkginfo -l foo-1.0.pkg.tar.xz
 ```
 
-Find the package that owns a file path:
+Find the package that owns the _/usr/bin/foo_ file:
 ```
 pkginfo -o '^/usr/bin/foo$'
 ```
@@ -93,14 +88,15 @@ pkginfo -o '^/usr/bin/foo$'
 # SEE ALSO
 
 *pkgadd*(8),
-*pkgadd.conf*(5),
 *pkgrm*(8),
 *pkgmk*(8),
-*pkgmk.conf*(5),
-*rejmerge*(8),
-*rejmerge.conf*(5),
-*regex*(3),
-*packages*(7),
-*packaging*(7)
+*packages*(7)
+
+# NOTES
+
+The *pkginfo*(1) utility reads only information from the package
+database maintained by *pkgadd*(8)/*pkgrm*(8), or directly from
+archives created by *pkgmk*(8).
+It cannot parse arbitrary directories or tar files.
 
 ; vim: ft=scdoc cc=72 tw=70

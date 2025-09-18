@@ -11,15 +11,9 @@ _package-archive_
 
 # DESCRIPTION
 
-The *pkgadd* utility installs or upgrades software packages.
-Package archives are tar files with a directory hierarchy to be
-installed.
-See *packages*(7) for the archive format and supported compression
-types.
-
-If built with ACL (*acl*(5)) and extended attribute (*xattr*(7))
-support, *pkgadd* preserves them.
-Run '*pkgadd --version*' to verify.
+The *pkgadd* utility installs or upgrades a software package.
+It reads a package archive and extracts its contents into the
+filesystem, updating the package database.
 
 The options are as follows:
 
@@ -52,7 +46,7 @@ The options are as follows:
 	Print version and exit.
 
 *-h*, *--help*
-	Print usage information and exit.
+	Print usage and exit.
 
 _package-archive_
 	Path to the package archive to install or upgrade.
@@ -70,31 +64,26 @@ _/var/lib/pkg/rejected/_
 
 # EXIT STATUS
 
-*0* on success, *>0* on error.
-
-# NOTES
-
-*pkgadd*(8) installs only package archives created by *pkgmk*(8).
-It does not support arbitrary tarballs or archives lacking the
-expected package layout as described in *packages*(7).
-Always build packages with *pkgmk*(8) to ensure compatibility with the
-package database and tools.
+*0*
+	Success.
+*>0*
+	An error occurred.
 
 # EXAMPLES
 
-Install a package:
+Install a package from a ".tar.xz" archive:
 ```
-pkgadd foo-1.0.tar.xz
+pkgadd foo-1.0.pkg.tar.xz
 ```
 
 Upgrade an installed package:
 ```
-pkgadd -u foo-1.1.tar.xz
+pkgadd -u foo-1.1.pkg.tar.xz
 ```
 
-Install into a chroot with alternate config:
+Install into a chroot environment with alternate config:
 ```
-pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
+pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.pkg.tar.xz
 ```
 
 # SEE ALSO
@@ -111,10 +100,20 @@ pkgadd -r /mnt -c /mnt/etc/pkgadd.conf foo-1.0.tar.xz
 
 # CAVEATS
 
-Package archives may contain device nodes, FIFOs, symlinks, or setuid
-files.
-Review contents before installation.
-Do not install from untrusted sources.
-Use *-f* only when replacement is intended.
+The *pkgadd* utility is designed exclusively for package archives
+created by *pkgmk*(8).
+It does not support arbitrary tar files or archives that lack the
+expected package layout as described in *packages*(7).
+
+# SECURITY CONSIDERATIONS
+
+Package archives may contain file types such as device nodes, FIFOs,
+symbolic links, or files with setuid permissions.
+*Never install a package from an untrusted source*.
+It is highly recommended to inspect a package's contents before
+installation.
+
+Additionally, the *-f* flag overwrites existing files and can be
+destructive; use it with extreme caution.
 
 ; vim: ft=scdoc cc=72 tw=70

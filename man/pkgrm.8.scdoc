@@ -11,6 +11,8 @@ pkgrm - remove an installed software package
 # DESCRIPTION
 
 The *pkgrm* utility removes an installed software package.
+It does this by consulting the package database to identify and delete
+all files that belong to that package.
 
 The options are as follows:
 
@@ -28,10 +30,7 @@ The options are as follows:
 	Print version and exit.
 
 *-h*, *--help*
-	Print usage information and exit.
-
-_package-name_
-	Name of the installed package to remove.
+	Print usage and exit.
 
 # FILES
 
@@ -40,23 +39,19 @@ _/var/lib/pkg/db_
 
 # EXIT STATUS
 
-*0* on success, *>0* on error.
-
-# NOTES
-
-*pkgrm*(8) removes only packages that were installed with *pkgadd*(8)
-and recorded in the package database.
-It does not remove arbitrary directories or files outside the
-database.
+*0*
+	Success.
+*>0*
+	An error occurred.
 
 # EXAMPLES
 
-Remove a package:
+Remove a package named "foo":
 ```
 pkgrm foo
 ```
 
-Remove from a chroot:
+Remove from an alternate root directory:
 ```
 pkgrm -r /mnt foo
 ```
@@ -64,16 +59,16 @@ pkgrm -r /mnt foo
 # SEE ALSO
 
 *pkgadd*(8),
-*pkgadd.conf*(5),
-*pkginfo*(1),
+*pkginfo*(8),
 *pkgmk*(8),
-*pkgmk.conf*(5),
-*rejmerge*(8),
-*rejmerge.conf*(5),
-*packages*(7),
-*packaging*(7)
+*packages*(7)
 
 # CAVEATS
+
+The *pkgrm*(8) utility can only remove packages installed using
+*pkgadd*(8).
+It will not remove arbitrary directories or files not recorded in the
+package database.
 
 Removing a package may leave empty directories behind if they are
 shared with other packages or contain local files.
