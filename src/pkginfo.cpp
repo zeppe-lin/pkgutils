@@ -43,15 +43,16 @@ print_help()
 Display software package information.
 
 Mandatory arguments to long options are mandatory for short options too.
-  -r, --root=root-dir              Use an alternate root directory
-  -f, --footprint=package-archive  Print a package's footprint
-  -l, --list=package               List files owned by an installed package
-                                   or contained in its archive
-  -o, --owner=path-pattern         List packages that own files matching a
-                                   pattern
-  -i, --installed                  List installed packages and their versions
-  -V, --version                    Print version and exit
-  -h, --help                       Print this help and exit
+  -r, --root=root-dir       Use an alternate root directory
+  -f, --footprint=package-archive
+                            Print a package's footprint
+  -l, --list=package        List files owned by an installed package
+                            or contained in package archive
+  -o, --owner=path-pattern  List packages that own files matching a
+                            pattern
+  -i, --installed           List installed packages and their versions
+  -V, --version             Print version and exit
+  -h, --help                Print this help and exit
 )";
 }
 
