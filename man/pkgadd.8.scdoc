@@ -6,8 +6,7 @@ pkgadd - install or upgrade a software package
 
 # SYNOPSIS
 
-*pkgadd* [*-Vfhuv*] [*-c* _config-file_] [*-r* _root-dir_] \
-_package-archive_
+*pkgadd* [*-Vfhuv*] [*-c* _config-file_] [*-r* _root-dir_] _package-archive_
 
 # DESCRIPTION
 
