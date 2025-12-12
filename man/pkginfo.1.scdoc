@@ -6,7 +6,7 @@ pkginfo - display software package information
 
 # SYNOPSIS
 
-*pkginfo* [*-Vh*] [*-r* _root-dir_]++
+*pkginfo* [*-Vh*] [*-r* _root-dir_] \
         {*-f* _package-archive_ | *-l* _package_ | *-o* _path-pattern_ | *-i*}
 
 # DESCRIPTION
