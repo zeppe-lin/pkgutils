@@ -5,8 +5,7 @@
 //! RAII-style locking for the package database directory to prevent
 //! concurrent access.
 //!
-//! \copyright See COPYING and COPYRIGHT files for corresponding
-//!            information.
+//! \copyright See COPYING for license terms and COPYRIGHT for notices.
 
 #ifndef DB_LOCK_H
 #define DB_LOCK_H

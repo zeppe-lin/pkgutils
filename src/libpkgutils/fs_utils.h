@@ -7,8 +7,7 @@
 //! manipulation, file existence checks, file comparison, and file
 //! removal, specifically focusing on file system operations.
 //!
-//! \copyright See COPYING and COPYRIGHT files for corresponding
-//!            information.
+//! \copyright See COPYING for license terms and COPYRIGHT for notices.
 
 #ifndef FS_UTILS_H
 #define FS_UTILS_H

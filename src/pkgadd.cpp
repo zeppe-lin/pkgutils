@@ -5,8 +5,7 @@
 //! It handles package installation, upgrades, conflict detection,
 //! and rule-based file management based on configuration files.
 //!
-//! \copyright See COPYING and COPYRIGHT files for corresponding
-//!            information.
+//! \copyright See COPYING for license terms and COPYRIGHT for notices.
 
 #include <iostream>
 #include <fstream>

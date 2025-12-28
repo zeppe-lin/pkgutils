@@ -5,8 +5,7 @@
 //! which manages locking and unlocking the package database directory
 //! using `flock()` system calls.
 //!
-//! \copyright See COPYING and COPYRIGHT files for corresponding
-//!            information.
+//! \copyright See COPYING for license terms and COPYRIGHT for notices.
 
 #include "db_lock.h"
 #include "pkgutil.h"  // pkgutil::PKG_DIR

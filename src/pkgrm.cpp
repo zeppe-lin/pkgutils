@@ -5,8 +5,7 @@
 //! from the system. It handles package removal and related cleanup
 //! tasks.
 //!
-//! \copyright See COPYING and COPYRIGHT files for corresponding
-//!            information.
+//! \copyright See COPYING for license terms and COPYRIGHT for notices.
 
 #include <iostream>
 #include <string>

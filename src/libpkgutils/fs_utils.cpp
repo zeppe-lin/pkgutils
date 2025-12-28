@@ -7,8 +7,7 @@
 //! checks, file comparison, and file removal, specifically focusing on
 //! file system operations.
 //!
-//! \copyright See COPYING and COPYRIGHT files for corresponding
-//!            information.
+//! \copyright See COPYING for license terms and COPYRIGHT for notices.
 
 #include "fs_utils.h"
 #include <string>

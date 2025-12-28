@@ -1,3 +1,6 @@
+//! \file libpkgutils.h
+//! \copyright See COPYING for license terms and COPYRIGHT for notices.
+
 #ifndef LIB_PKG_UTILS_H
 #define LIB_PKG_UTILS_H
 
