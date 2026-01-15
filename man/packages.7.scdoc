@@ -19,8 +19,10 @@ tar file of pre-built files, with no embedded metadata.
 Installing an package archive copies its files into the filesystem and
 records them in the package database at _/var/lib/pkg/db_.
 
+; XXX
 ; Package sources are often organised into collections; see
 ; *collections*(7).
+; FIXME: add collections(7) to pkgman.
 
 # PACKAGE NAMING
 
@@ -143,19 +145,24 @@ attributes.
 
 # SEE ALSO
 
-*packaging*(7),
+*packaging*(7)
+
 *pkgmk*(8),
 *pkgmk.conf*(5),
 *pkgmk.32bit*(5),
 *pkgmk.Pkgfile*(5),
 *pkgmk.footprint*(5),
 *pkgmk.md5sum*(5),
-*pkgmk.nostrip*(5),
+*pkgmk.nostrip*(5)
+
 *pkgadd*(8),
 *pkgadd.conf*(5),
 *pkgrm*(8),
-*pkginfo*(1),
+*pkginfo*(1)
+
 *rejmerge*(8),
 *rejmerge.conf*(5)
+
+*pkgman*(1)
 
 ; vim: ft=scdoc cc=72 tw=70
