@@ -1,5 +1,5 @@
 # bash completion for pkgrm(8), pkgadd(8) and pkginfo(1)
-# See COPYING and COPYRIGHT files for corresponding information.
+# See COPYING for license terms and COPYRIGHT for notices.
 
 _pkgrm()
 {
