@@ -3,20 +3,47 @@ name: Build CI
 on:
   push:
     branches: [ "master" ]
+    paths: &build_paths
+      - "Makefile"
+      - "config.mk"
+      - "src/**"
+      - ".github/**"
   pull_request:
     branches: [ "master" ]
+    paths: *build_paths
 
 jobs:
-  test:
+  build-man:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Install build dependencies
-      run: sudo apt-get install -y libarchive-dev nettle-dev libacl1-dev scdoc
+      - name: Install scdoc
+        run: sudo apt-get install -y scdoc
 
-    - name: Build
-      run: make
+      - name: Generate man pages
+        run: make -C man
 
-# End of file.
+  build-glibc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install build dependencies
+        run: sudo apt-get install -y libarchive-dev nettle-dev libacl1-dev
+
+      - name: Build (glibc)
+        run: make -C src
+
+  build-musl:
+    runs-on: ubuntu-latest
+    container: alpine:latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install build dependencies
+        run: apk add build-base g++ make libarchive acl
+
+      - name: Build (musl)
+        run: make -C src
+
