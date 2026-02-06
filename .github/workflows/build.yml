@@ -3,14 +3,15 @@ name: Build CI
 on:
   push:
     branches: [ "master" ]
-    paths: &build_paths
+    paths: &paths
       - "Makefile"
       - "config.mk"
       - "src/**"
       - ".github/**"
+
   pull_request:
     branches: [ "master" ]
-    paths: *build_paths
+    paths: *paths
 
 jobs:
   build-man:
