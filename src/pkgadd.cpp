@@ -128,7 +128,7 @@ void print_version();
  * \return Set of files to keep (not remove) during upgrade.
  *
  * This function iterates through the conflicting files and applies
- * the 'UPGRADE' rules from the configuration. If a rule matches a
+ * the 'UPGRADE' rules from the configuration.  If a rule matches a
  * file and its action is 'NO' (false), the file is added to the
  * keep list.
  */
@@ -160,7 +160,8 @@ make_keep_list(const set<string>& files,
    * \brief Local lambda function to check if a rule applies to a file.
    * \param rule Configuration rule.
    * \param file File path to check against the rule.
-   * \return True if the rule's pattern matches the file path, false otherwise.
+   * \return True if the rule's pattern matches the file path,
+   *         False otherwise.
    */
   auto rule_applies_to_file = [&](const rule_t& rule, const string& file)
   {
@@ -211,7 +212,7 @@ make_keep_list(const set<string>& files,
  * \return Set of files that were *not* installed (excluded by rules).
  *
  * This function iterates through the files in the package information
- * and applies 'INSTALL' rules from the configuration. If a rule
+ * and applies 'INSTALL' rules from the configuration.  If a rule
  * matches a file, the rule's action (YES/NO) determines if the
  * file is included in the install set or excluded (non-install set).
  */
@@ -245,7 +246,8 @@ apply_install_rules(const string& name,
    * \brief Local lambda function to check if a rule applies to a file.
    * \param rule Configuration rule.
    * \param file File path to check against the rule.
-   * \return True if the rule's pattern matches the file path, false otherwise.
+   * \return True if the rule's pattern matches the file path,
+   *         False otherwise.
    */
   auto rule_applies_to_file = [&](const rule_t& rule,
                                   const string& file)
@@ -307,10 +309,10 @@ apply_install_rules(const string& name,
  * \param configFile Optional path to an alternate configuration file.
  * \return Vector of configuration rules read from the file.
  *
- * This function reads the configuration file line by line, parsing
- * each non-empty, non-comment line into a rule_t structure.
- * Each rule specifies an event (INSTALL/UPGRADE), a regular
- * expression pattern, and an action (YES/NO).
+ * Reads the configuration file line by line, parsing each non-empty,
+ * non-comment line into a rule_t structure.  Each rule specifies an
+ * event (INSTALL/UPGRADE), a regular expression pattern, and an action
+ * (YES/NO).
  */
 vector<rule_t>
 read_config(const string& root, const string& configFile)
@@ -426,7 +428,8 @@ Mandatory arguments to long options are mandatory for short options too.
 
 
 /*!
- * \brief Prints the version information for pkgadd utility to standard output.
+ * \brief Prints the version information for pkgadd utility to standard
+ *        output.
  *
  * Retrieves the version string from the pkgutil library and displays
  * it to the user.
@@ -445,9 +448,9 @@ print_version()
  * \param argv Argument vector from command line.
  * \return EXIT_SUCCESS on successful execution, EXIT_FAILURE on error.
  *
- * This function parses command line arguments, performs package
- * installation or upgrade based on options and configuration rules,
- * and handles error conditions.
+ * Parses command line arguments, performs package installation or
+ * upgrade based on options and configuration rules, and handles error
+ * conditions.
  */
 int
 main(int argc, char** argv)
@@ -588,6 +591,3 @@ main(int argc, char** argv)
   util.ldconfig();
   return EXIT_SUCCESS;
 }
-
-// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
-// End of file.

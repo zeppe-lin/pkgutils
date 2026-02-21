@@ -2,7 +2,7 @@
 //! \brief pkginfo utility implementation.
 //!
 //! The `pkginfo` utility is used to display information about
-//! software packages and package files. It can list installed
+//! software packages and package files.  It can list installed
 //! packages, display package contents, and show file ownership.
 //!
 //! \copyright See COPYING for license terms and COPYRIGHT for notices.
@@ -58,8 +58,8 @@ Mandatory arguments to long options are mandatory for short options too.
 /*!
  * \brief Prints the version information for pkginfo utility.
  *
- * Retrieves the version string from the pkgutil library and
- * displays it to the user via standard output.
+ * Retrieves the version string from the pkgutil library and displays it
+ * to the user via standard output.
  */
 void
 print_version()
@@ -74,11 +74,11 @@ print_version()
  * \param argv Argument vector from command line.
  * \return EXIT_SUCCESS on successful execution, EXIT_FAILURE on error.
  *
- * This function parses command line arguments, retrieves and
- * displays package information based on the selected mode
- * (footprint, installed packages, list package contents, owner lookup),
- * and handles error conditions.
-*/
+ * Parses command line arguments, retrieves and displays package
+ * information based on the selected mode (footprint, installed
+ * packages, list package contents, owner lookup), and handles error
+ * conditions.
+ */
 int
 main(int argc, char** argv)
 {
@@ -267,6 +267,3 @@ main(int argc, char** argv)
 
   return EXIT_SUCCESS;
 }
-
-// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
-// End of file.

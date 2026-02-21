@@ -45,8 +45,8 @@ Mandatory arguments to long options are mandatory for short options too.
 /*!
  * \brief Prints the version information for pkgrm utility.
  *
- * Retrieves the version string from the pkgutil library and
- * displays it to the user via standard output.
+ * Retrieves the version string from the pkgutil library and displays it
+ * to the user via standard output.
  */
 void
 print_version()
@@ -61,9 +61,9 @@ print_version()
  * \param argv Argument vector from command line.
  * \return EXIT_SUCCESS on successful execution, EXIT_FAILURE on error.
  *
- * This function parses command line arguments, performs package
- * removal, and handles error conditions.
-*/
+ * Parses command line arguments, performs package removal, and handles
+ * error conditions.
+ */
 int
 main(int argc, char** argv)
 {
@@ -143,6 +143,3 @@ main(int argc, char** argv)
 
   return EXIT_SUCCESS;
 }
-
-// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
-// End of file.
