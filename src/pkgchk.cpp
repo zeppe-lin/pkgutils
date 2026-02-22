@@ -189,11 +189,22 @@ check_links(pkgutil& util, const std::string& pkgname,
       continue;
     }
 
-    auto immOwners = find_owners(util, escape_regex(immediate));
+    // Strip root before ownership lookup
+    auto strip_root = [&](const std::string& p) -> std::string {
+      if (!root.empty() && p.rfind(root, 0) == 0)
+        return p.substr(root.size());
+      return p;
+    };
+
+    std::string relImmediate = strip_root(immediate);
+    auto immOwners = find_owners(util, escape_regex(relImmediate));
+
     char* resolvedPath = realpath(immediate.c_str(), nullptr);
     std::string resolved = resolvedPath ? resolvedPath : immediate;
     free(resolvedPath);
-    auto finOwners = find_owners(util, escape_regex(resolved));
+
+    std::string relResolved = strip_root(resolved);
+    auto finOwners = find_owners(util, escape_regex(relResolved));
 
     if (immOwners.count(pkgname) || finOwners.count(pkgname))
       continue;
