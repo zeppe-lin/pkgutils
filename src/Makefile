@@ -5,8 +5,8 @@ include ../config.mk
 #include ../extra/flags-extra.mk
 #include ../extra/flags-sanitizer.mk
 
-OBJS = pkgadd.o pkginfo.o pkgrm.o pkgutil.o
-BIN1 = pkginfo
+OBJS = pkgutil.o pkgadd.o pkgrm.o pkgchk.o pkginfo.o
+BIN1 = pkgchk pkginfo
 BIN8 = pkgadd pkgrm
 
 LIB_DIR      = ./libpkgutils
@@ -28,6 +28,9 @@ pkgrm: pkgrm.o $(LIB_TARGET)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 pkginfo: pkginfo.o $(LIB_TARGET)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+pkgchk: pkgchk.o $(LIB_TARGET)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 install: all

@@ -2,7 +2,7 @@
 
 include ../config.mk
 
-MAN1 = pkginfo.1
+MAN1 = pkgchk.1 pkginfo.1
 MAN5 = pkgadd.conf.5
 MAN7 = packages.7
 MAN8 = pkgadd.8 pkgrm.8
