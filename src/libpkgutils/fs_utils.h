@@ -1,13 +1,15 @@
-//! \file  fs_utils.h
-//! \brief Declaration of file system utility functions.
-//!
-//! This header file declares a collection of utility functions
-//! used throughout the package management utilities. These functions
-//! provide functionalities such as file mode conversion, filename
-//! manipulation, file existence checks, file comparison, and file
-//! removal, specifically focusing on file system operations.
-//!
-//! \copyright See COPYING for license terms and COPYRIGHT for notices.
+/*!
+ * \file  fs_utils.h
+ * \brief Declaration of file system utility functions.
+ *
+ * This header file declares a collection of utility functions used
+ * throughout the package management utilities.  These functions
+ * provide functionalities such as file mode conversion, filename
+ * manipulation, file existence checks, file comparison, and file
+ * removal, specifically focusing on file system operations.
+ *
+ * \copyright See COPYING for license terms and COPYRIGHT for notices.
+ */
 
 #ifndef FS_UTILS_H
 #define FS_UTILS_H
@@ -30,9 +32,11 @@
 #define DEFAULT_BYTES_PER_BLOCK (20 * 512)
 
 /*!
- * \brief Converts a file mode (mode_t) to a string representation (like `ls -l`).
+ * \brief Converts a file mode (mode_t) to a string representation
+ *        (like `ls -l`).
  * \param mode The file mode value (mode_t).
- * \return A string representing the file mode in `ls -l` format (e.g., "drwxr-xr-x").
+ * \return A string representing the file mode in `ls -l` format
+ *         (e.g., "drwxr-xr-x").
  */
 std::string mtos(mode_t mode);
 
@@ -66,22 +70,21 @@ bool file_empty(const std::string& filename);
 bool file_equal(const std::string& file1, const std::string& file2);
 
 /*!
- * \brief Checks if two files have the same permissions, owner, and group.
+ * \brief Checks if two files have the same permissions, owner, and
+ *        group.
  * \param file1 The path to the first file.
  * \param file2 The path to the second file.
- * \return True if permissions, owner (UID), and group (GID) are equal for both files, false otherwise.
+ * \return True if permissions, owner (UID), and group (GID) are equal
+ *         for both files, false otherwise.
  */
 bool permissions_equal(const std::string& file1, const std::string& file2);
 
 /*!
  * \brief Removes a file or a directory recursively.
  * \param basedir The base directory path.
- * \param filename The relative path of the file or directory to remove within `basedir`.
+ * \param filename The relative path of the file or directory to
+ *                 remove within `basedir`.
  */
 void file_remove(const std::string& basedir, const std::string& filename);
 
-
 #endif // FS_UTILS_H
-
-// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
-// End of file.

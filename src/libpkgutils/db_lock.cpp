@@ -1,12 +1,13 @@
-//! \file  db_lock.cpp
-//! \brief Implementation of the db_lock class for database locking.
-//!
-//! This file contains the implementation of the `db_lock` class,
-//! which manages locking and unlocking the package database directory
-//! using `flock()` system calls.
-//!
-//! \copyright See COPYING for license terms and COPYRIGHT for notices.
-
+/*!
+ * \file  db_lock.cpp
+ * \brief Implementation of the db_lock class for database locking.
+ *
+ * This file contains the implementation of the `db_lock` class, which
+ * manages locking and unlocking the package database directory using
+ * `flock()` system calls.
+ *
+ * \copyright See COPYING for license terms and COPYRIGHT for notices.
+ */
 #include "db_lock.h"
 #include "pkgutil.h"  // pkgutil::PKG_DIR
                       //
@@ -16,7 +17,8 @@
 #include <sys/file.h>
 #include <unistd.h>
 #include <cerrno>
-#include <iostream>   // For cerr in debug (consider removing in final version)
+#include <iostream>   // XXX For cerr in debug
+                      // XXX (consider removing in final version)
 #include <cstring>
 
 #include "fs_utils.h" // For trim_filename
@@ -37,15 +39,14 @@
  * \details
  * This constructor attempts to acquire a lock (exclusive or shared)
  * on the package database directory to prevent concurrent access and
- * data corruption. It opens the directory specified by `PKG_DIR`
+ * data corruption.  It opens the directory specified by `PKG_DIR`
  * within the `root` directory and uses `flock()` to acquire the
  * requested lock type.
  *
  * If an exclusive lock is requested and cannot be acquired
- * immediately (because another process holds a lock), or if any
- * error occurs during directory opening or locking (excluding
- * `EWOULDBLOCK` for non-blocking lock attempts), a
- * `std::runtime_error` is thrown.
+ * immediately (because another process holds a lock), or if any error
+ * occurs during directory opening or locking (excluding `EWOULDBLOCK`
+ * for non-blocking lock attempts), a `std::runtime_error` is thrown.
  *
  * If a non-blocking lock is requested (either exclusive or shared)
  * and the lock cannot be acquired immediately (returns
@@ -90,13 +91,13 @@ db_lock::db_lock(const std::string& root, bool exclusive)
  *
  * \details
  * This destructor releases the lock acquired by the `db_lock`
- * constructor on the package database directory. It uses
- * `flock(LOCK_UN)` to release the lock and `closedir()` to close
- * the directory stream.
+ * constructor on the package database directory.  It uses
+ * `flock(LOCK_UN)` to release the lock and `closedir()` to close the
+ * directory stream.
  *
  * It's crucial to ensure that `db_lock` objects are properly
- * destroyed to release the lock and allow other processes to
- * access the database.
+ * destroyed to release the lock and allow other processes to access
+ * the database.
  */
 db_lock::~db_lock()
 {
@@ -107,6 +108,3 @@ db_lock::~db_lock()
     dir = nullptr;
   }
 }
-
-// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
-// End of file.

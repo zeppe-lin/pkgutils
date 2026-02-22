@@ -1,13 +1,15 @@
-//! \file  fs_utils.cpp
-//! \brief Implementation of file system utility functions.
-//!
-//! This file implements a collection of utility functions used throughout
-//! the package management utilities. These functions provide functionalities
-//! such as file mode conversion, filename manipulation, file existence
-//! checks, file comparison, and file removal, specifically focusing on
-//! file system operations.
-//!
-//! \copyright See COPYING for license terms and COPYRIGHT for notices.
+/*!
+ * \file fs_utils.cpp
+ * \brief Implementation of file system utility functions.
+ *
+ * This file implements a collection of utility functions used
+ * throughout the package management utilities.  These functions
+ * provide functionalities such as file mode conversion, filename
+ * manipulation, file existence checks, file comparison, and file
+ * removal, specifically focusing on file system operations.
+ *
+ * \copyright See COPYING for license terms and COPYRIGHT for notices.
+ */
 
 #include "fs_utils.h"
 #include <string>
@@ -19,9 +21,11 @@
 #include <libgen.h>
 
 /*!
- * \brief Converts a file mode (mode_t) to a string representation (like `ls -l`).
+ * \brief Converts a file mode (mode_t) to a string representation
+ *        (like `ls -l`).
  * \param mode The file mode value (mode_t).
- * \return A string representing the file mode in `ls -l` format (e.g., "drwxr-xr-x").
+ * \return A string representing the file mode in `ls -l` format
+ *         (e.g., "drwxr-xr-x").
  *
  * \details
  * This function takes a file mode value (`mode_t`) and generates a
@@ -110,9 +114,9 @@ mtos(mode_t mode)
  *
  * \details
  * This function removes redundant double slashes ("//") from a
- * filename or path, replacing them with single slashes.  It
- * iterates through the string, finding and replacing instances of
- * "//" until no more are found.
+ * filename or path, replacing them with single slashes.  It iterates
+ * through the string, finding and replacing instances of "//" until
+ * no more are found.
  *
  * Example: "path//to///file" becomes "path/to/file"
  */
@@ -139,12 +143,11 @@ trim_filename(const std::string& filename)
  * \return True if the file or directory exists, false otherwise.
  *
  * \details
- * This function checks for the existence of a file or directory
- * at the specified path using `lstat()`. It returns true if
- * `lstat()` succeeds (returns 0), indicating that the file or
- * directory exists, and false otherwise.  `lstat()` is used to
- * also check for the existence of symbolic links without
- * dereferencing them.
+ * This function checks for the existence of a file or directory at
+ * the specified path using `lstat()`.  It returns true if `lstat()`
+ * succeeds (returns 0), indicating that the file or directory exists,
+ * and false otherwise.  `lstat()` is used to also check for the
+ * existence of symbolic links without dereferencing them.
  */
 bool
 file_exists(const std::string& filename)
@@ -156,7 +159,7 @@ file_exists(const std::string& filename)
 /*!
  * \brief Checks if a file is an empty regular file.
  * \param filename The path to the file to check.
- * \return True if the file is an empty regular file, false otherwise.
+ * \return True if the file is an empty regular file, False otherwise.
  *
  * \details
  * This function checks if a file is an empty regular file. It uses
@@ -184,16 +187,16 @@ file_empty(const std::string& filename)
  * \brief Checks if two files are equal in content.
  * \param file1 The path to the first file.
  * \param file2 The path to the second file.
- * \return True if the files are equal in content, false otherwise.
+ * \return True if the files are equal in content, False otherwise.
  *
  * \details
  * This function compares the content of two files to determine if
- * they are byte-for-byte identical. It supports comparison for
+ * they are byte-for-byte identical.  It supports comparison for
  * regular files, symbolic links, character devices, and block
  * devices.
  *
  * For regular files, it opens both files, reads their content in
- * blocks, and compares the blocks using `memcmp()`. Files are
+ * blocks, and compares the blocks using `memcmp()`.  Files are
  * considered equal if their content is identical and they have the
  * same size.
  *
@@ -282,17 +285,19 @@ file_equal(const std::string& file1, const std::string& file2)
 }
 
 /*!
- * \brief Checks if two files have the same permissions, owner, and group.
+ * \brief Checks if two files have the same permissions, owner, and
+ *        group.
  * \param file1 The path to the first file.
  * \param file2 The path to the second file.
- * \return True if permissions, owner (UID), and group (GID) are equal for both files, false otherwise.
+ * \return True if permissions, owner (UID), and group (GID) are equal
+ *         for both files, False otherwise.
  *
  * \details
  * This function compares the permissions (mode), owner (UID), and
- * group (GID) of two files to determine if they are identical. It
+ * group (GID) of two files to determine if they are identical.  It
  * uses `lstat()` to get file status information for both files and
- * then compares the `st_mode`, `st_uid`, and `st_gid` members of
- * the `stat` structures.
+ * then compares the `st_mode`, `st_uid`, and `st_gid` members of the
+ * `stat` structures.
  *
  * Returns true only if all three attributes (mode, UID, GID) are
  * equal for both files, otherwise returns false.  Returns false if
@@ -318,26 +323,28 @@ permissions_equal(const std::string& file1, const std::string& file2)
 /*!
  * \brief Removes a file or a directory recursively.
  * \param basedir The base directory path.
- * \param filename The relative path of the file or directory to remove within `basedir`.
+ * \param filename The relative path of the file or directory to
+ *                 remove within `basedir`.
  *
  * \details
- * This function removes a file or directory specified by
- * `filename` relative to `basedir`. If `filename` is not equal to
- * `basedir` (to prevent accidental removal of the base directory
- * itself) and `remove()` call fails, it recursively calls
- * `file_remove` on the parent directory using `dirname()`.  This
- * recursive call is likely intended for directory cleanup after
- * removing files within it, but the logic might have unintended
- * consequences as it attempts to remove parent directories even if
- * the initial `remove()` failed for a file.
+ * This function removes a file or directory specified by `filename`
+ * relative to `basedir`.  If `filename` is not equal to `basedir`
+ * (to prevent accidental removal of the base directory itself) and
+ * `remove()` call fails, it recursively calls `file_remove` on the
+ * parent directory using `dirname()`.  This recursive call is likely
+ * intended for directory cleanup after removing files within it, but
+ * the logic might have unintended consequences as it attempts to
+ * remove parent directories even if the initial `remove()` failed for
+ * a file.
  *
  * \warning The recursive behavior of this function, especially
  *          calling `file_remove` on the parent directory after a
  *          failed `remove()` on a file, should be reviewed for
- *          correctness and potential issues. The current implementation
- *          might lead to unintended directory removals. It's recommended
- *          to carefully consider if recursive removal of parent directories
- *          is the desired behavior in all cases of `remove()` failure.
+ *          correctness and potential issues.  The current
+ *          implementation might lead to unintended directory
+ *          removals.  It's recommended to carefully consider if
+ *          recursive removal of parent directories is the desired
+ *          behavior in all cases of `remove()` failure.
  */
 void
 file_remove(const std::string& basedir, const std::string& filename)
@@ -349,6 +356,3 @@ file_remove(const std::string& basedir, const std::string& filename)
     free(path);
   }
 }
-
-// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
-// End of file.

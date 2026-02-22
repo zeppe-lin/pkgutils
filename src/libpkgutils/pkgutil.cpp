@@ -1,12 +1,14 @@
-//! \file  pkgutil.cpp
-//! \brief Implementation of the pkgutil class for package management.
-//!
-//! This file contains the implementation of the `pkgutil` class,
-//! providing the core logic for package management operations such as
-//! database handling, package installation, removal, and conflict
-//! resolution.
-//!
-//! \copyright See COPYING for license terms and COPYRIGHT for notices.
+/*!
+ * \file  pkgutil.cpp
+ * \brief Implementation of the pkgutil class for package management.
+ *
+ * This file contains the implementation of the `pkgutil` class,
+ * providing the core logic for package management operations such as
+ * database handling, package installation, removal, and conflict
+ * resolution.
+ *
+ * \copyright See COPYING for license terms and COPYRIGHT for notices.
+ */
 
 #include "pkgutil.h"
 #include "db_lock.h"
@@ -39,61 +41,82 @@
 #include <archive_entry.h>
 
 
-//! \def DEFAULT_BYTES_PER_BLOCK
-//! \brief Defines the default block size for archive operations.
-//!
-//! \details
-//! This macro defines the default block size, set to 20 * 512
-//! bytes (10240 bytes), used for reading data blocks from archives
-//! by libarchive functions. This block size is used when opening and
-//! reading package archive files.
+/*!
+ * \def DEFAULT_BYTES_PER_BLOCK
+ * \brief Defines the default block size for archive operations.
+ *
+ * \details
+ * This macro defines the default block size, set to 20 * 512 bytes
+ * (10240 bytes), used for reading data blocks from archives by
+ * libarchive functions.  This block size is used when opening and
+ * reading package archive files.
+ */
 #define DEFAULT_BYTES_PER_BLOCK (20 * 512)
 
 using __gnu_cxx::stdio_filebuf;
 
-//! \name Static Member Initialization
-//! \brief Initialization of static member variables of pkgutil class.
+/*!
+ * \name Static Member Initialization
+ * \brief Initialization of static member variables of pkgutil class.
+ */
+
 //! @{
 
-//! \var pkgutil::PKG_DB
-//! \brief Path to the package database file (relative to root).
+/*!
+ * \var pkgutil::PKG_DB
+ * \brief Path to the package database file (relative to root).
+ */
 const char* pkgutil::PKG_DB         = "var/lib/pkg/db";
 
-//! \var pkgutil::PKG_DIR
-//! \brief Path to the package directory (relative to root, for locking).
+/*!
+ * \var pkgutil::PKG_DIR
+ * \brief Path to the package directory (relative to root, for
+ *        locking).
+ */
 const char* pkgutil::PKG_DIR        = "var/lib/pkg";
 
-//! \var pkgutil::PKG_REJECTED
-//! \brief Path to the rejected files directory (relative to root).
+/*!
+ * \var pkgutil::PKG_REJECTED
+ * \brief Path to the rejected files directory (relative to root).
+ */
 const char* pkgutil::PKG_REJECTED   = "var/lib/pkg/rejected";
 
-//! \var pkgutil::VERSION_DELIM
-//! \brief Delimiter used in package filenames to separate name and version.
+/*!
+ * \var pkgutil::VERSION_DELIM
+ * \brief Delimiter used in package filenames to separate name and
+ *        version.
+ */
 const char* pkgutil::VERSION_DELIM  = "#";
 
-//! \var pkgutil::PKG_EXT
-//! \brief Extension for package files.
+/*!
+ * \var pkgutil::PKG_EXT
+ * \brief Extension for package files.
+ */
 const char* pkgutil::PKG_EXT        = ".pkg.tar";
 
-//! \var pkgutil::LDCONFIG_CONF
-//! \brief Path to the ldconfig configuration file (relative to root).
+/*!
+ * \var pkgutil::LDCONFIG_CONF
+ * \brief Path to the ldconfig configuration file (relative to root).
+ */
 const char* pkgutil::LDCONFIG_CONF  = "/etc/ld.so.conf";
 
-//! \var pkgutil::LDCONFIG
-//! \brief Path to the ldconfig utility executable.
+/*!
+ * \var pkgutil::LDCONFIG
+ * \brief Path to the ldconfig utility executable.
+ */
 const char* pkgutil::LDCONFIG       = "/sbin/ldconfig";
 //                                  or /usr/sbin/ldconfig, check system
 
 //! @}
 
-
 /*!
  * \brief Constructor for pkgutil class.
- * \param name Name of the utility using pkgutil (e.g., "pkgadd", "pkgrm").
+ * \param name Name of the utility using pkgutil
+ *             (e.g., "pkgadd", "pkgrm").
  *
  * \details
  * The constructor initializes the `pkgutil` object with the name of
- * the utility that is using it. It also sets up signal handling to
+ * the utility that is using it.  It also sets up signal handling to
  * ignore certain signals (SIGHUP, SIGINT, SIGQUIT, SIGTERM) to
  * prevent interruption of package management operations by these
  * signals.
@@ -116,7 +139,8 @@ pkgutil::pkgutil(const std::string& name)
 /*!
  * \brief Opens the package database.
  * \param path Root path where the database is located.
- * \throws std::runtime_error If the database cannot be opened or read.
+ * \throws std::runtime_error If the database cannot be opened or
+ *                            read.
  *
  * \details
  * This method performs the following steps to open the package
@@ -201,12 +225,12 @@ pkgutil::db_open(const std::string& path)
 /*!
  * \brief Commits changes to the package database.
  *
- * \throws std::runtime_error If database commit fails due to
- *                          write errors or synchronization issues.
+ * \throws std::runtime_error If database commit fails due to write
+ *                            errors or synchronization issues.
  *
  * \details
  * This method implements a transactional commit to update the
- * package database safely. It follows these steps:
+ * package database safely.  It follows these steps:
  * 1.  Defines filenames for the database, a new database
  *     (incomplete transaction), and a backup.
  * 2.  Removes any existing incomplete transaction file from a
@@ -229,10 +253,10 @@ pkgutil::db_open(const std::string& path)
  * 11. Renames the new database (incomplete transaction) to the
  *     actual database filename, completing the commit.
  *
- * Error handling is performed at each step. If any operation fails
+ * Error handling is performed at each step.  If any operation fails
  * (e.g., file creation, writing, renaming), a `std::runtime_error`
  * is thrown with an appropriate error message, and the transaction
- * is considered failed. The use of a temporary file and backup
+ * is considered failed.  The use of a temporary file and backup
  * minimizes the risk of database corruption during commit operations.
  */
 void
@@ -320,10 +344,10 @@ pkgutil::db_commit()
  *
  * \details
  * This method adds a new package entry into the internal `packages`
- * map.  The map is used as an in-memory representation of the
- * package database. The actual database file on disk is updated
- * only when `db_commit()` is called. This function simply updates
- * the in-memory database representation.
+ * map.  The map is used as an in-memory representation of the package
+ * database.  The actual database file on disk is updated only when
+ * `db_commit()` is called.  This function simply updates the
+ * in-memory database representation.
  */
 void
 pkgutil::db_add_pkg(const std::string& name, const pkginfo_t& info)
@@ -337,12 +361,11 @@ pkgutil::db_add_pkg(const std::string& name, const pkginfo_t& info)
  * \return True if the package is found, false otherwise.
  *
  * \details
- * This method checks for the existence of a package in the
- * internal `packages` map. It uses the `find()` method of the map
- * to search for the package name. It returns `true` if the package
- * name is found as a key in the `packages` map, indicating that
- * the package is present in the database. Otherwise, it returns
- * `false`.
+ * This method checks for the existence of a package in the internal
+ * `packages` map.  It uses the `find()` method of the map to search
+ * for the package name.  It returns `true` if the package name is
+ * found as a key in the `packages` map, indicating that the package
+ * is present in the database.  Otherwise, it returns `false`.
  */
 bool
 pkgutil::db_find_pkg(const std::string& name)
@@ -356,29 +379,30 @@ pkgutil::db_find_pkg(const std::string& name)
  *
  * \details
  * This method removes a package from the database and attempts to
- * delete the files associated with it. The removal process is done
+ * delete the files associated with it.  The removal process is done
  * in several phases:
 
- * 1.  **Phase 1: Initial File Set**: Retrieves the set of files
- *     belonging to the package being removed from the `packages`
- *     map.
- * 2.  **Phase 2: Exclude Referenced Files**: Iterates through all
- *     other packages in the database. For each file in the initial
- *     file set, it checks if any other package still references
- *     this file. If a file is referenced by another package, it is
- *     removed from the file set to be deleted. This prevents
- *     deleting files that are shared or required by other installed
- *     packages.
- * 3.  **Phase 3: File Deletion**: Iterates through the remaining
- *     files in the file set (in reverse order to handle directory
- *     deletions correctly). For each file, it constructs the full
- *     path, checks if the file exists, and attempts to remove it
- *     using `remove()`. If file removal fails (except for `ENOTEMPTY`
- *     errors which are ignored for directory removal), an error
- *     message is printed to `std::cerr`.
+ * 1.  Initial File Set:
+ *     Retrieves the set of files belonging to the package being
+ *     removed from the `packages` map.
+ * 2.  Exclude Referenced Files:
+ *     Iterates through all other packages in the database.  For each
+ *     file in the initial file set, it checks if any other package
+ *     still references this file.  If a file is referenced by another
+ *     package, it is removed from the file set to be deleted.  This
+ *     prevents deleting files that are shared or required by other
+ *     installed packages.
+ * 3.  File Deletion:
+ *     Iterates through the remaining files in the file set
+ *     (in reverse order to handle directory deletions correctly).
+ *     For each file, it constructs the full path, checks if the file
+ *     exists, and attempts to remove it using `remove()`.  If file
+ *     removal fails (except for `ENOTEMPTY` errors which are ignored
+ *     for directory removal), an error message is printed to
+ *     `std::cerr`.
 
  * After file deletion, the package entry is removed from the
- * `packages` map. The database changes are not committed to disk
+ * `packages` map.  The database changes are not committed to disk
  * until `db_commit()` is called.
  *
  * \note Reverse iteration over files is used to ensure directories
@@ -421,7 +445,7 @@ pkgutil::db_rm_pkg(const std::string& name)
 #endif
 
   /*
-   * Delete the files from filesystem. Reverse iteration is important
+   * Delete the files from filesystem.  Reverse iteration is important
    * for directory removal to work correctly (remove files before
    * directories).
    */
@@ -439,27 +463,30 @@ pkgutil::db_rm_pkg(const std::string& name)
 }
 
 /*!
- * \brief Removes a package from the database, keeping specified files.
+ * \brief Removes a package from the database, keeping specified
+ *        files.
  * \param name Package name to remove.
- * \param keep_list Set of files to keep (not delete) during package removal.
+ * \param keep_list Set of files to keep (not delete) during package
+ *                  removal.
  *
  * \details
  * This method is an overloaded version of `db_rm_pkg` that provides
  * the option to keep specific files from being deleted during
- * package removal. It performs the following steps:
+ * package removal.  It performs the following steps:
  *
- * 1.  **Phase 1: Initial File Set**: Retrieves the set of files
- *     belonging to the package to be removed.
- * 2.  **Phase 2: Exclude Keep List Files**: Removes files present
- *     in the `keep_list` from the initial file set. These are the
- *     files that the user wants to preserve.
- * 3.  **Phase 3: Exclude Referenced Files**: Similar to the base
- *     `db_rm_pkg` method, it iterates through other packages and
- *     removes any files from the file set that are still referenced
- *     by other packages.
- * 4.  **Phase 4: File Deletion**: Deletes the remaining files in the
- *     file set from the filesystem, similar to the base
- *     `db_rm_pkg` method.
+ * 1.  Initial File Set:
+ *     Retrieves the set of files belonging to the package to be
+ *     removed.
+ * 2.  Exclude Keep List Files:
+ *     Removes files present in the `keep_list` from the initial file
+ *     set.  These are the files that the user wants to preserve.
+ * 3.  Exclude Referenced Files:
+ *     Similar to the base `db_rm_pkg` method, it iterates through
+ *     other packages and removes any files from the file set that are
+ *     still referenced by other packages.
+ * 4.  File Deletion:
+ *     Deletes the remaining files in the file set from the
+ *     filesystem, similar to the base `db_rm_pkg` method.
  *
  * After file deletion, the package entry is removed from the
  * `packages` map.  Database changes are not committed until
@@ -523,7 +550,7 @@ pkgutil::db_rm_pkg(const std::string& name, const std::set<std::string>& keep_li
 #endif
 
   /*
-   * Delete the files from filesystem. Reverse iteration is important
+   * Delete the files from filesystem.  Reverse iteration is important
    * for directory removal to work correctly (remove files before
    * directories).
    */
@@ -544,32 +571,36 @@ pkgutil::db_rm_pkg(const std::string& name, const std::set<std::string>& keep_li
 }
 
 /*!
- * \brief Removes specified files from the filesystem and database records.
+ * \brief Removes specified files from the filesystem and database
+ *        records.
  * \param files Set of files to remove.
- * \param keep_list Set of files to keep (not delete) during file removal.
+ * \param keep_list Set of files to keep (not delete) during file
+ *                  removal.
  *
  * \details
  * This method is designed to remove a specific set of files,
  * potentially across multiple packages, while respecting a list of
  * files to keep.  The process is as follows:
  *
- * 1.  **Phase 1: Remove Database References**: Iterates through all
- *     packages in the database. For each package, it removes
- *     references to any file that is present in the input `files`
- *     set from the package's file list.  This ensures that the
- *     database is updated to reflect the removal of these files.
- * 2.  **Phase 2: Exclude Keep List Files**: Removes files present in
- *     the `keep_list` from the input `files` set. These are the
- *     files that should be preserved.
- * 3.  **Phase 3: File Deletion**: Deletes the remaining files in the
- *     `files` set from the filesystem.  Similar to package removal,
- *     it iterates in reverse order and attempts to remove each file
- *     using `remove()`.  Handles `ENOTEMPTY` errors gracefully and
- *     reports other removal errors to `std::cerr`.
+ * 1.  Remove Database References:
+ *     Iterates through all packages in the database.  For each
+ *     package, it removes references to any file that is present in
+ *     the input `files` set from the package's file list.  This
+ *     ensures that the database is updated to reflect the removal of
+ *     these files.
+ * 2.  Exclude Keep List Files:
+ *     Removes files present in the `keep_list` from the input `files`
+ *     set.  These are the files that should be preserved.
+ * 3.  File Deletion:
+ *     Deletes the remaining files in the `files` set from the
+ *     filesystem.  Similar to package removal, it iterates in reverse
+ *     order and attempts to remove each file using `remove()`.
+ *     Handles `ENOTEMPTY` errors gracefully and reports other removal
+ *     errors to `std::cerr`.
  *
  * This method is useful for scenarios where a set of files needs to
  * be removed independently of package removal, such as cleaning up
- * orphaned or outdated files. Database changes are committed only
+ * orphaned or outdated files.  Database changes are committed only
  * when `db_commit()` is called.
  *
  * \note Reverse iteration during file deletion is important for
@@ -608,7 +639,7 @@ pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& k
   }
 
   /*
-   * Delete the files from filesystem. Reverse iteration is important
+   * Delete the files from filesystem.  Reverse iteration is important
    * for directory removal to work correctly (remove files before
    * directories).
    */
@@ -631,7 +662,8 @@ pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& k
 /*!
  * \brief Finds file conflicts for a package.
  * \param name Package name.
- * \param info Package information (`pkginfo_t`) of the package to check.
+ * \param info Package information (`pkginfo_t`) of the package to
+ *             check.
  * \return Set of conflicting files.
  *
  * \details
@@ -639,34 +671,35 @@ pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& k
  * from installing a new package. It checks for conflicts in two
  * main phases:
  *
- * 1.  **Phase 1: Database Conflicts**:  Iterates through all
- *     currently installed packages in the database (excluding the
- *     package being installed itself, if it's an upgrade). For each
- *     installed package, it finds the intersection of the files
- *     from the package being installed and the files of the
- *     currently installed package.  Any common files are considered
- *     conflicts and added to the `files` set.
- * 2.  **Phase 2: Filesystem Conflicts**: Iterates through all files
- *     of the package being installed. For each file, it checks if
- *     the file already exists in the filesystem (under the root
- *     directory). If a file exists in the filesystem and was not
- *     already identified as a conflict in Phase 1 (database
- *     conflicts), it is added to the `files` set of conflicts.
- * 3.  **Phase 3: Exclude Directories**:  Removes directory paths
- *     from the set of conflicting files.  The conflict detection
- *     logic primarily focuses on file conflicts, not directory
- *     conflicts. Directories are typically handled by the archive
- *     extraction process.
- * 4.  **Phase 4: Upgrade Exclusion**: If the package being checked
- *     is an upgrade of an already installed package (i.e., a
- *     package with the same name already exists in the database),
- *     files that are already owned by the existing package are
- *     removed from the conflict set.  In an upgrade scenario, files
- *     owned by the previous version are typically replaced and not
- *     considered conflicts.
+ * 1.  Database Conflicts:
+ *     Iterates through all currently installed packages in the
+ *     database (excluding the package being installed itself, if it's
+ *     an upgrade).  For each installed package, it finds the
+ *     intersection of the files from the package being installed and
+ *     the files of the currently installed package.  Any common files
+ *     are considered conflicts and added to the `files` set.
+ * 2.  Filesystem Conflicts:
+ *     Iterates through all files of the package being installed.
+ *     For each file, it checks if the file already exists in the
+ *     filesystem (under the root directory).  If a file exists in the
+ *     filesystem and was not already identified as a conflict in
+ *     Phase 1 (database conflicts), it is added to the `files` set of
+ *     conflicts.
+ * 3.  Exclude Directories:
+ *     Removes directory paths from the set of conflicting files.
+ *     The conflict detection logic primarily focuses on file
+ *     conflicts, not directory conflicts.  Directories are typically
+ *     handled by the archive extraction process.
+ * 4.  Upgrade Exclusion:
+ *     If the package being checked is an upgrade of an already
+ *     installed package (i.e., a package with the same name already
+ *     exists in the database), files that are already owned by the
+ *     existing package are removed from the conflict set.  In an
+ *     upgrade scenario, files owned by the previous version are
+ *     typically replaced and not considered conflicts.
  *
  * The method returns a `std::set<std::string>` containing the paths
- * of all identified conflicting files. This set can be used to
+ * of all identified conflicting files.  This set can be used to
  * inform the user about potential conflicts before proceeding with
  * package installation.
  */
@@ -697,7 +730,7 @@ pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  i
 #endif
 
   /*
-   * Phase 2: Find conflicting files in filesystem. Add files that
+   * Phase 2: Find conflicting files in filesystem.  Add files that
    * exist in filesystem, but not in database conflicts yet.
    */
   for (std::set<std::string>::iterator
@@ -717,7 +750,7 @@ pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  i
 #endif
 
   /*
-   * Phase 3: Exclude directories from conflict list. We are only
+   * Phase 3: Exclude directories from conflict list.  We are only
    * interested in file conflicts, not directory conflicts.
    */
   std::set<std::string> tmp = files; // Create a copy for iteration
@@ -765,42 +798,49 @@ pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  i
 /*!
  * \brief Opens a package file and extracts package information.
  * \param filename Path to the package file.
- * \return Pair containing package name and package information (`pkginfo_t`).
- * \throws std::runtime_error If the package file cannot be opened or read,
- *                          or if the package format is invalid.
+ * \return Pair containing package name and package information
+ *         (`pkginfo_t`).
+ * \throws std::runtime_error If the package file cannot be opened or
+ *                            read, or if the package format is
+ *                            invalid.
  *
  * \details
  * This method opens a package archive file, extracts metadata, and
- * reads the list of files contained within the archive. It performs
+ * reads the list of files contained within the archive.  It performs
  * the following actions:
  *
- * 1.  **Filename Parsing**: Extracts the package name and version
- *     from the provided `filename`. It assumes a filename format
- *     like `package_name#version.pkg.tar`, using `VERSION_DELIM`
- *     ("#") and `PKG_EXT` (".pkg.tar") to parse the name and version.
- *     If name or version cannot be determined from the filename, it
- *     throws a `std::runtime_error`.
- * 2.  **Libarchive Initialization**: Initializes a libarchive read
- *     object using the `INIT_ARCHIVE` macro, which enables support
- *     for gzip, bzip2, xz, lzip, zstd compression and tar format.
- * 3.  **Archive Opening**: Opens the package file using
- *     `archive_read_open_filename()`. If the file cannot be opened
- *     or read by libarchive, it throws a `std::runtime_error` with
- *     the libarchive error message.
- * 4.  **Archive Processing**: Reads through the archive entries
- *     (headers and data) using `archive_read_next_header()`. For
- *     each entry, it extracts the pathname and inserts it into the
- *     `files` set within the `pkginfo_t` structure. It skips
- *     reading data for regular files using `archive_read_data_skip()`.
- * 5.  **Error Checking**: Checks if any entries were read from the
- *     archive. If no entries are found (i.e., empty archive) or if
- *     `archive_errno()` indicates an error after reading, it throws
- *     a `std::runtime_error`.
- * 6.  **Cleanup**: Frees the libarchive read object using
- *     `archive_read_free()`.
- * 7.  **Return Value**: Returns a `std::pair` containing the
- *     extracted package name and the `pkginfo_t` structure, which
- *     includes the version and the set of files from the archive.
+ * 1.  Filename Parsing:
+ *     Extracts the package name and version from the provided
+ *     `filename`.  It assumes a filename format like
+ *     `package_name#version.pkg.tar`, using `VERSION_DELIM` ("#") and
+ *     `PKG_EXT` (".pkg.tar") to parse the name and version.  If name
+ *     or version cannot be determined from the filename, it throws a
+ *     `std::runtime_error`.
+ * 2.  Libarchive Initialization:
+ *     Initializes a libarchive read object using the `INIT_ARCHIVE`
+ *     macro, which enables support for gzip, bzip2, xz, lzip, zstd
+ *     compression and tar format.
+ * 3.  Archive Opening:
+ *     Opens the package file using `archive_read_open_filename()`.
+ *     If the file cannot be opened or read by libarchive, it throws a
+ *     `std::runtime_error` with the libarchive error message.
+ * 4.  Archive Processing:
+ *     Reads through the archive entries (headers and data) using
+ *     `archive_read_next_header()`.  For each entry, it extracts the
+ *     pathname and inserts it into the `files` set within the
+ *     `pkginfo_t` structure.  It skips reading data for regular files
+ *     using `archive_read_data_skip()`.
+ * 5.  Error Checking:
+ *     Checks if any entries were read from the archive.  If no
+ *     entries are found (i.e., empty archive) or if `archive_errno()`
+ *     indicates an error after reading, it throws a
+ *     `std::runtime_error`.
+ * 6.  Cleanup:
+ *     Frees the libarchive read object using `archive_read_free()`.
+ * 7.  Return Value:
+ *     Returns a `std::pair` containing the extracted package name and
+ *     the `pkginfo_t` structure, which includes the version and the
+ *     set of files from the archive.
  *
  * This method uses libarchive to handle various archive formats and
  * compression methods, providing a robust way to read package file
@@ -884,79 +924,87 @@ pkgutil::pkg_open(const std::string& filename)
 
 /*!
  * \brief Installs a package from a package file.
- * \param filename Path to the package file.
- * \param keep_list Set of files to keep if conflicts arise.
+ * \param filename         Path to the package file.
+ * \param keep_list        Set of files to keep if conflicts arise.
  * \param non_install_list Set of files to skip during installation.
- * \param upgrade Boolean indicating if this is an upgrade operation.
+ * \param upgrade          Boolean indicating if this is an upgrade
+ *                         operation.
  * \throws std::runtime_error If package installation fails due to
- *                          archive errors, file extraction problems,
- *                          or other installation issues.
+ *                            archive errors, file extraction
+ *                            problems, or other installation issues.
  *
  * \details
  * This method installs a package from a provided package archive
- * file. It performs the following steps:
+ * file.  It performs the following steps:
  *
- * 1.  **Libarchive Initialization**: Initializes a libarchive read
- *     object using `INIT_ARCHIVE`.
- * 2.  **Archive Opening**: Opens the package file for reading using
+ * 1.  Libarchive Initialization:
+ *     Initializes a libarchive read object using `INIT_ARCHIVE`.
+ * 2.  Archive Opening:
+ *     Opens the package file for reading using
  *     `archive_read_open_filename()`.
- * 3.  **Directory Change**: Changes the current working directory
- *     to the root directory specified for package operations.
- * 4.  **Absolute Root Path**: Gets the absolute path of the root
- *     directory using `getcwd()`.
- * 5.  **Archive Extraction Loop**: Iterates through each entry in
- *     the archive using `archive_read_next_header()`. For each entry:
- *     a.  **Filename Extraction**: Gets the pathname of the archive
- *         entry.
- *     b.  **Rejected Directory Path Construction**: Constructs the
- *         full path to the "rejected" directory where files are
- *         moved if they conflict or are kept.
- *     c.  **Original and Real Filename Construction**: Constructs
- *         the original target filename (within the root directory)
- *         and initializes the `real_filename` to this original name.
- *     d.  **Non-Install List Check**: Checks if the current
- *         archive entry's filename is present in the `non_install_list`.
- *         If it is, the file is ignored (not installed), a message
- *         is printed, and the process continues to the next entry.
- *     e.  **Rejection Check**: Checks if a file with the same name
- *         already exists at the `real_filename` location AND if the
- *         current archive entry's filename is present in the
- *         `keep_list`. If both conditions are true, it means a
- *         conflict is detected, and the existing file should be
- *         "rejected" (kept, not overwritten). In this case,
- *         `real_filename` is updated to point to a new location
+ * 3.  Directory Change:
+ *     Changes the current working directory to the root directory
+ *     specified for package operations.
+ * 4.  Absolute Root Path:
+ *     Gets the absolute path of the root directory using `getcwd()`.
+ * 5.  Archive Extraction Loop:
+ *     Iterates through each entry in the archive using
+ *     `archive_read_next_header()`.  For each entry:
+ *     a.  Filename Extraction:
+ *         Gets the pathname of the archive entry.
+ *     b.  Rejected Directory Path Construction:
+ *         Constructs the full path to the "rejected" directory where
+ *         files are moved if they conflict or are kept.
+ *     c.  Original and Real Filename Construction:
+ *         Constructs the original target filename (within the root
+ *         directory) and initializes the `real_filename` to this
+ *         original name.
+ *     d.  Non-Install List Check:
+ *         Checks if the current archive entry's filename is present
+ *         in the `non_install_list`.  If it is, the file is ignored
+ *         (not installed), a message is printed, and the process
+ *         continues to the next entry.
+ *     e.  Rejection Check:
+ *         Checks if a file with the same name already exists at the
+ *         `real_filename` location AND if the current archive entry's
+ *         filename is present in the `keep_list`.  If both conditions
+ *         are true, it means a conflict is detected, and the existing
+ *         file should be "rejected" (kept, not overwritten).  In this
+ *         case, `real_filename` is updated to point to a new location
  *         within the "rejected" directory.
- *     f.  **Pathname Update**: Updates the archive entry's pathname
- *         to the `real_filename` using `archive_entry_set_pathname()`.
- *         This ensures that libarchive extracts the file to the
- *         correct (potentially rejected) location.
- *     g.  **Extraction Flags**: Sets extraction flags for
- *         `archive_read_extract()` to control extraction behavior
- *         (owner, permissions, time, unlink, ACLs, XATTRs, if
- *         enabled at compile time).
- *     h.  **File Extraction**: Extracts the file using
- *         `archive_read_extract()`. If extraction fails, an error
- *         message is printed. If it's not an upgrade, a
- *         `std::runtime_error` is thrown to abort installation on
- *         extraction failure. For upgrades, installation continues
- *         despite individual file extraction failures.
- *     i.  **Rejected File Handling**: After extraction, if the
- *         `real_filename` is different from the `original_filename`
- *         (meaning the file was rejected), it checks if the
- *         existing rejected file should be removed.  It compares
- *         permissions and file content (or emptiness) to decide
- *         whether to remove the rejected file. If removal is
+ *     f.  Pathname Update:
+ *         Updates the archive entry's pathname to the `real_filename`
+ *         using `archive_entry_set_pathname()`.  This ensures that
+ *         libarchive extracts the file to the correct (potentially
+ *         rejected) location.
+ *     g.  Extraction Flags:
+ *         Sets extraction flags for `archive_read_extract()` to
+ *         control extraction behavior (owner, permissions, time,
+ *         unlink, ACLs, XATTRs, if enabled at compile time).
+ *     h.  File Extraction:
+ *         Extracts the file using `archive_read_extract()`.
+ *         If extraction fails, an error message is printed.  If it's
+ *         not an upgrade, a `std::runtime_error` is thrown to abort
+ *         installation on extraction failure.  For upgrades,
+ *         installation continues despite individual file extraction
+ *         failures.
+ *     i.  Rejected File Handling:
+ *         After extraction, if the `real_filename` is different from
+ *         the `original_filename` (meaning the file was rejected), it
+ *         checks if the existing rejected file should be removed.
+ *         It compares permissions and file content (or emptiness) to
+ *         decide whether to remove the rejected file.  If removal is
  *         deemed appropriate, `file_remove()` is used to remove the
- *         rejected file. Otherwise, a message is printed indicating
+ *         rejected file.  Otherwise, a message is printed indicating
  *         that the rejected file is kept.
- * 6.  **Post-Extraction Check**: After processing all archive
- *     entries, checks if any entries were actually processed. If
- *     not, and there was no archive error, it throws a
- *     `std::runtime_error` indicating an empty package. If there was
- *     an archive error, it throws an error indicating the file
- *     could not be read.
- * 7.  **Cleanup**: Frees the libarchive read object using
- *     `archive_read_free()`.
+ * 6.  Post-Extraction Check:
+ *     After processing all archive entries, checks if any entries
+ *     were actually processed.  If not, and there was no archive
+ *     error, it throws a `std::runtime_error` indicating an empty
+ *     package.  If there was an archive error, it throws an error
+ *     indicating the file could not be read.
+ * 7.  Cleanup:
+ *     Frees the libarchive read object using `archive_read_free()`.
  *
  * This installation process handles file conflicts, file rejection
  * (keeping existing files), and optional file skipping based on
@@ -1123,33 +1171,36 @@ pkgutil::pkg_install(const std::string& filename,
  *
  * \details
  * This method is responsible for running the `ldconfig` utility to
- * update the shared library cache. It is typically called after
+ * update the shared library cache.  It is typically called after
  * installing or removing packages that contain shared libraries.
  * The method performs the following steps:
  *
- * 1.  **Configuration File Check**: Checks if the `ldconfig`
- *     configuration file (`LDCONFIG_CONF`) exists within the root
- *     directory. `ldconfig` is only executed if this configuration
- *     file exists, as it indicates that shared libraries are managed
- *     on the system.
- * 2.  **Fork Process**: If the configuration file exists, it forks a
- *     child process using `fork()`.
- * 3.  **Execute ldconfig in Child Process**: In the child process,
- *     it attempts to execute `ldconfig` using `execl()`. The `-r`
- *     option is passed to `ldconfig` along with the root directory
- *     to specify an alternate root for scanning shared libraries.
- *     If `execl()` fails, an error message is printed to
- *     `std::cerr`, and the child process exits with failure status.
- * 4.  **Wait for Child Process in Parent**: In the parent process,
- *     it waits for the child process to complete using `waitpid()`.
- *     If `waitpid()` fails, a `std::runtime_error` is thrown.
+ * 1.  Configuration File Check:
+ *     Checks if the `ldconfig` configuration file (`LDCONFIG_CONF`)
+ *     exists within the root directory.  `ldconfig` is only executed
+ *     if this configuration file exists, as it indicates that shared
+ *     libraries are managed on the system.
+ * 2.  Fork Process:
+ *     If the configuration file exists, it forks a child process
+ *     using `fork()`.
+ * 3.  Execute ldconfig in Child Process:
+ *     In the child process, it attempts to execute `ldconfig` using
+ *     `execl()`.  The `-r` option is passed to `ldconfig` along with
+ *     the root directory to specify an alternate root for scanning
+ *     shared libraries.  If `execl()` fails, an error message is
+ *     printed to `std::cerr`, and the child process exits with
+ *     failure status.
+ * 4.  Wait for Child Process in Parent:
+ *     In the parent process, it waits for the child process to
+ *     complete using `waitpid()`.  If `waitpid()` fails, a
+ *     `std::runtime_error` is thrown.
  *
- * This method uses `fork()` and `execl()` to execute `ldconfig` in
- * a separate process to avoid blocking the package management
- * utility and to ensure that `ldconfig` runs with the correct
- * environment and permissions. Error handling is included for fork
- * and waitpid system calls, as well as for the case where `ldconfig`
- * execution fails within the child process.
+ * This method uses `fork()` and `execl()` to execute `ldconfig` in a
+ * separate process to avoid blocking the package management utility
+ * and to ensure that `ldconfig` runs with the correct environment and
+ * permissions.  Error handling is included for fork and waitpid
+ * system calls, as well as for the case where `ldconfig` execution
+ * fails within the child process.
  */
 void
 pkgutil::ldconfig()
@@ -1187,50 +1238,55 @@ pkgutil::ldconfig()
 /*!
  * \brief Prints the footprint of a package file.
  * \param filename Path to the package file.
- * \throws std::runtime_error If the package file cannot be opened or read.
+ * \throws std::runtime_error If the package file cannot be opened or
+ *                            read.
  *
  * \details
  * This method generates and prints a footprint of the contents of a
- * package file. The footprint provides a detailed listing of each
+ * package file.  The footprint provides a detailed listing of each
  * entry in the archive, including permissions, ownership, filename,
  * and special file type information (symlinks, device nodes, empty
- * files). The method performs a two-pass process:
+ * files).  The method performs a two-pass process:
  *
- * **Pass 1: Archive Scan and Metadata Collection**:
+ * Pass 1: Archive Scan and Metadata Collection:
  * 1.  Initializes a libarchive read object using `INIT_ARCHIVE`.
  * 2.  Opens the package file using `archive_read_open_filename()`.
  * 3.  Iterates through each entry in the archive using
  *     `archive_read_next_header()`.
  * 4.  For each entry, it extracts relevant metadata such as
  *     pathname, symlink target, hardlink target, size, device IDs,
- *     user and group IDs, and mode (permissions). This metadata is
+ *     user and group IDs, and mode (permissions).  This metadata is
  *     stored in a `file` structure and added to a `files` vector.
  * 5.  For regular files, it skips reading the file data using
  *     `archive_read_data_skip()`.
  * 6.  After scanning all entries, it frees the libarchive object.
  *
- * **Pass 2: Footprint Printing**:
+ * Pass 2: Footprint Printing:
  * 1.  Sorts the `files` vector alphabetically by path.
  * 2.  Iterates through the sorted `files` vector.
  * 3.  For each `file` structure:
- *     a.  **Permissions**: Prints the file permissions in symbolic
- *         form (e.g., "rw-r--r--"). For symlinks, it always prints
+ *     a.  Permissions:
+ *         Prints the file permissions in symbolic form
+ *         (e.g., "rw-r--r--").  For symlinks, it always prints
  *         "lrwxrwxrwx" to ensure consistent footprint across
- *         filesystems. For hardlinks, it retrieves the permissions
+ *         filesystems.  For hardlinks, it retrieves the permissions
  *         from the linked file's metadata (obtained in Pass 1).
- *     b.  **User/Group**: Prints the username and group name based
- *         on the UID and GID, or the numeric UID/GID if the name
- *         cannot be resolved using `getpwuid()` and `getgrgid()`.
- *     c.  **Filename**: Prints the file path.
- *     d.  **Special File Info**: Appends special information for
- *         symlinks ("-> target"), device nodes ("(major, minor)"),
- *         and empty regular files ("(EMPTY)") to the output line.
+ *     b.  User/Group:
+ *         Prints the username and group name based on the UID and
+ *         GID, or the numeric UID/GID if the name cannot be resolved
+ *         using `getpwuid()` and `getgrgid()`.
+ *     c.  Filename:
+ *         Prints the file path.
+ *     d.  Special File Info:
+ *         Appends special information for symlinks ("-> target"),
+ *         device nodes ("(major, minor)"), and empty regular files
+ *         ("(EMPTY)") to the output line.
  *     e.  Prints a newline character to complete the footprint line
  *         for the current file.
  *
  * The output is printed to `std::cout` and is intended to provide a
- * human-readable summary of the package file's contents and
- * metadata, useful for package inspection and verification.
+ * human-readable summary of the package file's contents and metadata,
+ * useful for package inspection and verification.
  */
 void
 pkgutil::pkg_footprint(const std::string& filename)
@@ -1447,6 +1503,3 @@ pkgutil::print_version()
   version_stream << ")";
   std::cout << version_stream.str() << std::endl;
 }
-
-// vim: sw=2 ts=2 sts=2 et cc=72 tw=70
-// End of file.
