@@ -35,8 +35,10 @@ class db_lock; // Forward declaration
  */
 class pkgutil {
 public:
-  //! \typedef files_t
-  //! \brief Type definition for a set of filenames (strings).
+  /*!
+   * \typedef files_t
+   * \brief Type definition for a set of filenames (strings).
+   */
   typedef std::set<std::string> files_t;
 
   /*!
@@ -47,22 +49,30 @@ public:
    * version and the set of files it owns.
    */
   struct pkginfo_t {
-      //! \var version
-      //! \brief Package version string.
+      /*!
+       * \var version
+       * \brief Package version string.
+       */
       std::string version;
-      //! \var files
-      //! \brief Set of files belonging to the package.
+
+      /*!
+       * \var files
+       * \brief Set of files belonging to the package.
+       */
       files_t files;
   };
 
-  //! \typedef packages_t
-  //! \brief Type definition for a map of package names to pkginfo_t.
+  /*!
+   * \typedef packages_t
+   * \brief Type definition for a map of package names to pkginfo_t.
+   */
   using packages_t = std::map<std::string, pkginfo_t>;
 
 
   /*!
    * \brief Constructor for pkgutil class.
-   * \param name Name of the utility using pkgutil (e.g., "pkgadd", "pkgrm").
+   * \param name Name of the utility using pkgutil
+   *             (e.g., "pkgadd", "pkgrm").
    */
   pkgutil(const std::string& name);
 
