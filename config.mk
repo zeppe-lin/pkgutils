@@ -1,6 +1,6 @@
 # project metadata
 NAME        = pkgutils
-VERSION     = 6.2
+VERSION     = 6.3
 
 # paths
 PREFIX      = /usr
