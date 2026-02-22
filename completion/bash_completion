@@ -1,32 +1,5 @@
-# bash completion for pkgrm(8), pkgadd(8) and pkginfo(1)
+# bash completion for pkgadd(8), pkgrm(8), pkgchk(1), and pkginfo(1)
 # See COPYING for license terms and COPYRIGHT for notices.
-
-_pkgrm()
-{
-	local cur prev words cword split
-	_init_completion -s || return
-
-	case $prev in
-	--help|--version|-!(-*)[hV])
-		return
-		;;
-	--root|-r)
-		_filedir -d
-		return
-		;;
-	esac
-
-	$split && return
-
-	if [[ $cur == -* ]]; then
-		COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
-		[[ ${COMPREPLY-} == *= ]] && compopt -o nospace
-	else
-		# complete with all installed packages
-		COMPREPLY=($(compgen \
-			-W '$(pkginfo -i | cut -d\  -f1)' -- $cur))
-	fi
-} && complete -F _pkgrm pkgrm
 
 _pkgadd()
 {
@@ -57,6 +30,58 @@ _pkgadd()
 	fi
 } && complete -F _pkgadd pkgadd
 
+_pkgrm()
+{
+	local cur prev words cword split
+	_init_completion -s || return
+
+	case $prev in
+	--help|--version|-!(-*)[hV])
+		return
+		;;
+	--root|-r)
+		_filedir -d
+		return
+		;;
+	esac
+
+	$split && return
+
+	if [[ $cur == -* ]]; then
+		COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+		[[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+	else
+		# Complete with all installed packages
+		COMPREPLY=($(compgen -W '$(pkginfo -i | cut -d" " -f1)' -- $cur))
+	fi
+} && complete -F _pkgrm pkgrm
+
+_pkgchk()
+{
+	local cur prev words cword split
+	_init_completion -s || return
+
+	case $prev in
+	--help|--version|-!(-*)[hV])
+		return
+		;;
+	--root|-r)
+		_filedir -d
+		return
+		;;
+	esac
+
+	$split && return
+
+	if [[ $cur == -* ]]; then
+		COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- $cur))
+		[[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+	else
+		# Complete with all installed packages
+		COMPREPLY=($(compgen -W '$(pkginfo -i | cut -d" " -f1)' -- $cur))
+	fi
+} && complete -F _pkgchk pkgchk
+
 _pkginfo()
 {
 	local cur prev words cword split
@@ -78,9 +103,8 @@ _pkginfo()
 		if [[ $cur == ./* || $cur == /* ]]; then
 			_filedir
 		else
-			# complete with all installed packages
-			COMPREPLY=($(compgen \
-				-W '$(pkginfo -i | cut -d\  -f1)' -- $cur))
+			# Complete with all installed packages
+			COMPREPLY=($(compgen -W '$(pkginfo -i | cut -d" " -f1)' -- $cur))
 		fi
 		return
 		;;
