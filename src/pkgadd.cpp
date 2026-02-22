@@ -1,11 +1,13 @@
-//! \file  pkgadd.cpp
-//! \brief pkgadd utility implementation.
-//!
-//! The `pkgadd` utility is used to install software packages.
-//! It handles package installation, upgrades, conflict detection,
-//! and rule-based file management based on configuration files.
-//!
-//! \copyright See COPYING for license terms and COPYRIGHT for notices.
+/*!
+ * \file  pkgadd.cpp
+ * \brief pkgadd utility implementation.
+ *
+ * The `pkgadd` utility is used to install software packages.  It
+ * handles package installation, upgrades, conflict detection, and
+ * rule-based file management based on configuration files.
+ *
+ * \copyright See COPYING for license terms and COPYRIGHT for notices.
+ */
 
 #include <iostream>
 #include <fstream>
@@ -24,22 +26,26 @@
 
 using namespace std;
 
-//////////////////////////////////////////////////////////////////////
-/// --- Constants ---                                              ///
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+/// --- Constants ---                                             ///
+/////////////////////////////////////////////////////////////////////
 
-//! \def PKGADD_CONF
-//! \brief Default location for pkgadd configuration file.
+/*!
+ * \def PKGADD_CONF
+ * \brief Default location for pkgadd configuration file.
+ */
 const string PKGADD_CONF = "/etc/pkgadd.conf";
 
-//! \def PKGADD_CONF_MAXLINE
-//! \brief Default max length for configuration statement.
+/*!
+ * \def PKGADD_CONF_MAXLINE
+ * \brief Default max length for configuration statement.
+ */
 const int PKGADD_CONF_MAXLINE = 256;
 
 
-//////////////////////////////////////////////////////////////////////
-/// --- Rule structure ---                                         ///
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+/// --- Rule structure ---                                        ///
+/////////////////////////////////////////////////////////////////////
 
 /*!
  * \struct rule_t
@@ -49,27 +55,36 @@ const int PKGADD_CONF_MAXLINE = 256;
  * during package installation or upgrade based on file patterns.
  */
 struct rule_t {
-    //! \enum rule_event_t
-    //! \brief Events that trigger a rule.
-    enum rule_event_t {
-      INSTALL, //!< Rule triggered during package installation.
-      UPGRADE  //!< Rule triggered during package upgrade.
-    };
 
-    //! \var event
-    //! \brief The event that triggers the rule (INSTALL or UPGRADE).
-    rule_event_t event;
+  /*!
+   * \enum rule_event_t
+   * \brief Events that trigger a rule.
+   */
+  enum rule_event_t {
+    INSTALL, //!< Rule triggered during package installation.
+    UPGRADE  //!< Rule triggered during package upgrade.
+  };
 
-    //! \var pattern
-    //! \brief Regular expression pattern to match against file paths.
-    string pattern;
+  /*!
+   * \var event
+   * \brief The event that triggers the rule (INSTALL or UPGRADE).
+   */
+  rule_event_t event;
 
-    //! \var action
-    //! \brief Action to take when the rule applies.
-    //!
-    //!  - `true` (YES):  Perform the action (e.g., install file).
-    //!  - `false` (NO):  Do not perform the action (e.g., keep file).
-    bool action;
+  /*!
+   * \var pattern
+   * \brief Regular expression pattern to match against file paths.
+   */
+  string pattern;
+
+  /*!
+   * \var action
+   * \brief Action to take when the rule applies.
+   *
+   * - `true` (YES):  Perform the action (e.g., install file).
+   * - `false` (NO):  Do not perform the action (e.g., keep file).
+   */
+  bool action;
 };
 
 
@@ -87,8 +102,10 @@ set<string> make_keep_list(const set<string>& files,
                            const vector<rule_t>& rules);
 
 /*!
- * \brief Reads configuration rules from the pkgadd configuration file.
- * \param root Root directory for installation (used to locate config).
+ * \brief Reads configuration rules from the pkgadd configuration
+ *        file.
+ * \param root       Root directory for installation (used to locate
+ *                   config).
  * \param configFile Optional path to an alternate configuration file.
  * \return Vector of configuration rules read from the file.
  */
@@ -97,8 +114,8 @@ vector<rule_t> read_config(const string& root,
 
 /*!
  * \brief Applies install rules to filter files for installation.
- * \param name Package name.
- * \param info Package information structure containing file list.
+ * \param name  Package name.
+ * \param info  Package information structure containing file list.
  * \param rules Vector of configuration rules.
  * \return Set of files that were *not* installed (excluded by rules).
  */
@@ -129,8 +146,8 @@ void print_version();
  *
  * This function iterates through the conflicting files and applies
  * the 'UPGRADE' rules from the configuration.  If a rule matches a
- * file and its action is 'NO' (false), the file is added to the
- * keep list.
+ * file and its action is 'NO' (false), the file is added to the keep
+ * list.
  */
 set<string>
 make_keep_list(const set<string>& files,
@@ -141,8 +158,8 @@ make_keep_list(const set<string>& files,
 
   /*!
    * \brief Local lambda function to find rules for a given event.
-   * \param rules Vector of all rules.
-   * \param event Event type to search for (INSTALL or UPGRADE).
+   * \param rules       Vector of all rules.
+   * \param event       Event type to search for (INSTALL or UPGRADE).
    * \param found_rules Output vector to store found rules.
    */
   auto find_rules = [&](const vector<rule_t>& rule_list,
@@ -157,7 +174,8 @@ make_keep_list(const set<string>& files,
   };
 
   /*!
-   * \brief Local lambda function to check if a rule applies to a file.
+   * \brief Local lambda function to check if a rule applies to a
+   *        file.
    * \param rule Configuration rule.
    * \param file File path to check against the rule.
    * \return True if the rule's pattern matches the file path,
@@ -203,18 +221,17 @@ make_keep_list(const set<string>& files,
   return keep_list;
 }
 
-
 /*!
  * \brief Applies install rules to filter files for installation.
- * \param name Package name.
- * \param info Package information structure containing file list.
+ * \param name  Package name.
+ * \param info  Package information structure containing file list.
  * \param rules Vector of configuration rules.
  * \return Set of files that were *not* installed (excluded by rules).
  *
  * This function iterates through the files in the package information
  * and applies 'INSTALL' rules from the configuration.  If a rule
- * matches a file, the rule's action (YES/NO) determines if the
- * file is included in the install set or excluded (non-install set).
+ * matches a file, the rule's action (YES/NO) determines if the file
+ * is included in the install set or excluded (non-install set).
  */
 set<string>
 apply_install_rules(const string& name,
@@ -243,7 +260,8 @@ apply_install_rules(const string& name,
   };
 
   /*!
-   * \brief Local lambda function to check if a rule applies to a file.
+   * \brief Local lambda function to check if a rule applies to a
+   *        file.
    * \param rule Configuration rule.
    * \param file File path to check against the rule.
    * \return True if the rule's pattern matches the file path,
@@ -302,17 +320,18 @@ apply_install_rules(const string& name,
   return non_install_set;
 }
 
-
 /*!
- * \brief Reads configuration rules from the pkgadd configuration file.
- * \param root Root directory for installation (used to locate config).
+ * \brief Reads configuration rules from the pkgadd configuration
+ *        file.
+ * \param root       Root directory for installation (used to locate
+ *                   config).
  * \param configFile Optional path to an alternate configuration file.
  * \return Vector of configuration rules read from the file.
  *
  * Reads the configuration file line by line, parsing each non-empty,
  * non-comment line into a rule_t structure.  Each rule specifies an
- * event (INSTALL/UPGRADE), a regular expression pattern, and an action
- * (YES/NO).
+ * event (INSTALL/UPGRADE), a regular expression pattern, and an
+ * action (YES/NO).
  */
 vector<rule_t>
 read_config(const string& root, const string& configFile)
@@ -402,9 +421,9 @@ read_config(const string& root, const string& configFile)
   return rules;
 }
 
-
 /*!
- * \brief Prints the help message for pkgadd utility to standard output.
+ * \brief Prints the help message for pkgadd utility to standard
+ *        output.
  *
  * Displays usage instructions, available options, and a brief
  * description of the pkgadd utility's functionality.
@@ -426,10 +445,9 @@ Mandatory arguments to long options are mandatory for short options too.
 )";
 }
 
-
 /*!
- * \brief Prints the version information for pkgadd utility to standard
- *        output.
+ * \brief Prints the version information for pkgadd utility to
+ *        standard output.
  *
  * Retrieves the version string from the pkgutil library and displays
  * it to the user.
@@ -441,12 +459,12 @@ print_version()
   util.print_version();
 }
 
-
 /*!
  * \brief Main function for the pkgadd utility.
  * \param argc Argument count from command line.
  * \param argv Argument vector from command line.
- * \return EXIT_SUCCESS on successful execution, EXIT_FAILURE on error.
+ * \return EXIT_SUCCESS on successful execution,
+ *         EXIT_FAILURE on error.
  *
  * Parses command line arguments, performs package installation or
  * upgrade based on options and configuration rules, and handles error

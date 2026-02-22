@@ -1,11 +1,12 @@
-//! \file  pkgrm.cpp
-//! \brief pkgrm utility implementation.
-//!
-//! The `pkgrm` utility is used to remove software packages
-//! from the system. It handles package removal and related cleanup
-//! tasks.
-//!
-//! \copyright See COPYING for license terms and COPYRIGHT for notices.
+/*
+ * \file  pkgrm.cpp
+ * \brief pkgrm utility implementation.
+ *
+ * The `pkgrm` utility is used to remove software packages from the
+ * system.  It handles package removal and related cleanup tasks.
+ *
+ * \copyright See COPYING for license terms and COPYRIGHT for notices.
+ */
 
 #include <iostream>
 #include <string>
@@ -45,8 +46,8 @@ Mandatory arguments to long options are mandatory for short options too.
 /*!
  * \brief Prints the version information for pkgrm utility.
  *
- * Retrieves the version string from the pkgutil library and displays it
- * to the user via standard output.
+ * Retrieves the version string from the pkgutil library and displays
+ * it to the user via standard output.
  */
 void
 print_version()
@@ -59,10 +60,11 @@ print_version()
  * \brief Main function for the pkgrm utility.
  * \param argc Argument count from command line.
  * \param argv Argument vector from command line.
- * \return EXIT_SUCCESS on successful execution, EXIT_FAILURE on error.
+ * \return EXIT_SUCCESS on successful execution,
+ *         EXIT_FAILURE on error.
  *
- * Parses command line arguments, performs package removal, and handles
- * error conditions.
+ * Parses command line arguments, performs package removal, and
+ * handles error conditions.
  */
 int
 main(int argc, char** argv)

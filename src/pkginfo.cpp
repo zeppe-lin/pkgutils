@@ -1,11 +1,13 @@
-//! \file  pkginfo.cpp
-//! \brief pkginfo utility implementation.
-//!
-//! The `pkginfo` utility is used to display information about
-//! software packages and package files.  It can list installed
-//! packages, display package contents, and show file ownership.
-//!
-//! \copyright See COPYING for license terms and COPYRIGHT for notices.
+/*!
+ * \file  pkginfo.cpp
+ * \brief pkginfo utility implementation.
+ *
+ * The `pkginfo` utility is used to display information about software
+ * packages and package files.  It can list installed packages,
+ * display package contents, and show file ownership.
+ *
+ * \copyright See COPYING for license terms and COPYRIGHT for notices.
+ */
 
 #include <algorithm>
 #include <iostream>
@@ -58,8 +60,8 @@ Mandatory arguments to long options are mandatory for short options too.
 /*!
  * \brief Prints the version information for pkginfo utility.
  *
- * Retrieves the version string from the pkgutil library and displays it
- * to the user via standard output.
+ * Retrieves the version string from the pkgutil library and displays
+ * it to the user via standard output.
  */
 void
 print_version()
@@ -72,7 +74,8 @@ print_version()
  * \brief Main function for the pkginfo utility.
  * \param argc Argument count from command line.
  * \param argv Argument vector from command line.
- * \return EXIT_SUCCESS on successful execution, EXIT_FAILURE on error.
+ * \return EXIT_SUCCESS on successful execution,
+ *         EXIT_FAILURE on error.
  *
  * Parses command line arguments, retrieves and displays package
  * information based on the selected mode (footprint, installed
