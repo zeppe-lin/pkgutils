@@ -13,6 +13,7 @@
 #define DB_LOCK_H
 
 #include <string>
+
 #include <dirent.h>
 
 /*!
@@ -47,8 +48,10 @@ public:
   ~db_lock();
 
 private:
-  //! \var dir
-  //! \brief Directory stream for the locked database directory.
+  /*!
+   * \var dir
+   * \brief Directory stream for the locked database directory.
+   */
   DIR* dir;
 };
 

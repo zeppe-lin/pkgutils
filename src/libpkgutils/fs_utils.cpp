@@ -12,12 +12,14 @@
  */
 
 #include "fs_utils.h"
+
+#include <cstring>
+#include <fstream>
 #include <string>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <fstream>
-#include <cstring>
 #include <libgen.h>
 
 /*!
@@ -55,14 +57,14 @@ mtos(mode_t mode)
    */
   switch (mode & S_IFMT)
   {
-    case S_IFREG:  s += '-'; break; /* Regular           */
-    case S_IFDIR:  s += 'd'; break; /* Directory         */
-    case S_IFLNK:  s += 'l'; break; /* Symbolic link     */
-    case S_IFCHR:  s += 'c'; break; /* Character special */
-    case S_IFBLK:  s += 'b'; break; /* Block special     */
-    case S_IFSOCK: s += 's'; break; /* Socket            */
-    case S_IFIFO:  s += 'p'; break; /* FIFO              */
-    default:       s += '?'; break; /* Unknown           */
+    case S_IFREG:  s += '-'; break; // Regular
+    case S_IFDIR:  s += 'd'; break; // Directory
+    case S_IFLNK:  s += 'l'; break; // Symbolic link
+    case S_IFCHR:  s += 'c'; break; // Character special
+    case S_IFBLK:  s += 'b'; break; // Block special
+    case S_IFSOCK: s += 's'; break; // Socket
+    case S_IFIFO:  s += 'p'; break; // FIFO
+    default:       s += '?'; break; // Unknown
   }
 
   /*
@@ -127,9 +129,9 @@ trim_filename(const std::string& filename)
   std::string result = filename;
 
   for (std::string::size_type
-         pos  = result.find(search);
-         pos != std::string::npos;
-         pos  = result.find(search))
+       pos  = result.find(search);
+       pos != std::string::npos;
+       pos  = result.find(search))
   {
     result.replace(pos, search.size(), "/");
   }
@@ -178,7 +180,9 @@ file_empty(const std::string& filename)
   struct stat buf;
 
   if (lstat(filename.c_str(), &buf) == -1)
+  {
     return false;
+  }
 
   return (S_ISREG(buf.st_mode) && buf.st_size == 0);
 }
@@ -215,10 +219,14 @@ file_equal(const std::string& file1, const std::string& file2)
   struct stat buf1, buf2;
 
   if (lstat(file1.c_str(), &buf1) == -1)
+  {
     return false;
+  }
 
   if (lstat(file2.c_str(), &buf2) == -1)
+  {
     return false;
+  }
 
   /*
    * Regular files.
@@ -229,7 +237,9 @@ file_equal(const std::string& file1, const std::string& file2)
     std::ifstream f2(file2.c_str());
 
     if (!f1 || !f2)
+    {
       return false;
+    }
 
     while (!f1.eof())
     {
@@ -239,10 +249,12 @@ file_equal(const std::string& file1, const std::string& file2)
       f1.read(buffer1, 4096);
       f2.read(buffer2, 4096);
 
-      if (    f1.gcount() != f2.gcount()
-           || memcmp(buffer1, buffer2, static_cast<size_t>(f1.gcount()))
-           || f1.eof() != f2.eof())
+      if (  f1.gcount() != f2.gcount()
+         || memcmp(buffer1, buffer2, static_cast<size_t>(f1.gcount()))
+         || f1.eof() != f2.eof())
+      {
         return false;
+      }
     }
 
     return true;
@@ -259,10 +271,14 @@ file_equal(const std::string& file1, const std::string& file2)
     memset(symlink2, 0, MAXPATHLEN);
 
     if (readlink(file1.c_str(), symlink1, MAXPATHLEN - 1) == -1)
+    {
       return false;
+    }
 
     if (readlink(file2.c_str(), symlink2, MAXPATHLEN - 1) == -1)
+    {
       return false;
+    }
 
     return !strncmp(symlink1, symlink2, MAXPATHLEN);
   }
@@ -310,10 +326,14 @@ permissions_equal(const std::string& file1, const std::string& file2)
   struct stat buf2;
 
   if (lstat(file1.c_str(), &buf1) == -1)
+  {
     return false;
+  }
 
   if (lstat(file2.c_str(), &buf2) == -1)
+  {
     return false;
+  }
 
   return  (buf1.st_mode == buf2.st_mode)
        && (buf1.st_uid  == buf2.st_uid)
@@ -352,6 +372,7 @@ file_remove(const std::string& basedir, const std::string& filename)
   if (filename != basedir && !remove(filename.c_str()))
   {
     char* path = strdup(filename.c_str());
+
     file_remove(basedir, dirname(path));
     free(path);
   }

@@ -10,19 +10,20 @@
  * \copyright See COPYING for license terms and COPYRIGHT for notices.
  */
 
-#include "pkgutil.h"
 #include "db_lock.h"
 #include "fs_utils.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <iterator>
+#include "pkgutil.h"
+
 #include <algorithm>
-#include <vector>
-#include <cstdio>
-#include <cstring>
 #include <cerrno>
 #include <csignal>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <sstream>
+#include <vector>
 
 #include <ext/stdio_filebuf.h>
 #include <pwd.h>
@@ -39,7 +40,6 @@
 /* libarchive */
 #include <archive.h>
 #include <archive_entry.h>
-
 
 /*!
  * \def DEFAULT_BYTES_PER_BLOCK
@@ -105,7 +105,8 @@ const char* pkgutil::LDCONFIG_CONF  = "/etc/ld.so.conf";
  * \brief Path to the ldconfig utility executable.
  */
 const char* pkgutil::LDCONFIG       = "/sbin/ldconfig";
-//                                  or /usr/sbin/ldconfig, check system
+//                                  or /usr/sbin/ldconfig,
+//                                  check system
 
 //! @}
 
@@ -182,22 +183,27 @@ pkgutil::db_open(const std::string& path)
 
   int fd = open(filename.c_str(), O_RDONLY);
   if (fd == -1)
-    throw std::runtime_error(std::string("could not open ") + filename +
-                             ": " + strerror(errno));
+  {
+    throw std::runtime_error(std::string("could not open ") +
+                             filename + ": " + strerror(errno));
+  }
 
   stdio_filebuf<char> filebuf(fd, std::ios::in,
-                              static_cast<size_t>(getpagesize()));
+      static_cast<size_t>(getpagesize()));
+
   std::istream in(&filebuf);
   if (!in)
-    throw std::runtime_error(std::string("could not read ") + filename +
-                             ": input stream error");
+  {
+    throw std::runtime_error(std::string("could not read ") +
+                             filename + ": input stream error");
+  }
 
   while (!in.eof())
   {
     /*
      * Read record from database file.
      */
-    std::string     name;
+    std::string name;
     pkginfo_t info;
 
     getline(in, name);
@@ -209,16 +215,23 @@ pkgutil::db_open(const std::string& path)
       getline(in, file);
 
       if (file.empty())
-          break; /* End of record. */
+      {
+        // End of record
+        break;
+      }
 
       info.files.insert(info.files.end(), file);
     }
+
     if (!info.files.empty())
-        packages[name] = info;
+    {
+      packages[name] = info;
+    }
   }
 
 #ifndef NDEBUG
-  std::cerr << packages.size() << " packages found in database" << std::endl;
+  std::cerr << packages.size() << " packages found in database"
+            << std::endl;
 #endif
 }
 
@@ -263,30 +276,36 @@ void
 pkgutil::db_commit()
 {
   const std::string dbfilename     = root + PKG_DB;
-  const std::string dbfilename_new = dbfilename + ".incomplete_transaction";
+  const std::string dbfilename_new = dbfilename +
+                                     ".incomplete_transaction";
   const std::string dbfilename_bak = dbfilename + ".backup";
 
   /*
    * Remove failed transaction (if it exists) from previous attempt.
    */
   if (unlink(dbfilename_new.c_str()) == -1 && errno != ENOENT)
+  {
     throw std::runtime_error(std::string("could not remove ") +
                              dbfilename_new + ": " + strerror(errno));
+  }
 
   /*
    * Write new database to a temporary file first.
    */
   int fd_new = creat(dbfilename_new.c_str(), 0444);
   if (fd_new == -1)
+  {
     throw std::runtime_error(std::string("could not create ") +
                              dbfilename_new + ": " + strerror(errno));
+  }
 
   stdio_filebuf<char> filebuf_new(fd_new, std::ios::out,
-                                  static_cast<size_t>(getpagesize()));
+      static_cast<size_t>(getpagesize()));
+
   std::ostream db_new(&filebuf_new);
 
   for (packages_t::const_iterator
-           i = packages.begin(); i != packages.end(); ++i)
+       i = packages.begin(); i != packages.end(); ++i)
   {
     if (!i->second.files.empty())
     {
@@ -304,36 +323,48 @@ pkgutil::db_commit()
    * Make sure the new database was successfully written.
    */
   if (!db_new)
-    throw std::runtime_error(std::string("could not write ") + dbfilename_new);
+  {
+    throw std::runtime_error(std::string("could not write ") +
+                             dbfilename_new);
+  }
 
   /*
    * Synchronize file to disk.
    */
   if (fsync(fd_new) == -1)
+  {
     throw std::runtime_error(std::string("could not synchronize ") +
                              dbfilename_new + ": " + strerror(errno));
+  }
 
   /*
    * Relink database backup.
    */
   if (unlink(dbfilename_bak.c_str()) == -1 && errno != ENOENT)
+  {
     throw std::runtime_error(std::string("could not remove ") +
                              dbfilename_bak + ": " + strerror(errno));
+  }
 
   if (link(dbfilename.c_str(), dbfilename_bak.c_str()) == -1)
+  {
     throw std::runtime_error(std::string("could not create ") +
                              dbfilename_bak + ": " + strerror(errno));
+  }
 
   /*
    * Move new database into place, making the transaction atomic.
    */
   if (rename(dbfilename_new.c_str(), dbfilename.c_str()) == -1)
+  {
     throw std::runtime_error(std::string("could not rename ") +
-                             dbfilename_new + " to " + dbfilename + ": " +
-                             strerror(errno));
+                             dbfilename_new + " to " + dbfilename +
+                             ": " + strerror(errno));
+  }
 
 #ifndef NDEBUG
-  std::cerr << packages.size() << " packages written to database" << std::endl;
+  std::cerr << packages.size() << " packages written to database"
+            << std::endl;
 #endif
 }
 
@@ -415,7 +446,8 @@ pkgutil::db_rm_pkg(const std::string& name)
   packages.erase(name);
 
 #ifndef NDEBUG
-  std::cerr << "Removing package phase 1 (all files in package):" << std::endl;
+  std::cerr << "Removing package phase 1 (all files in package):"
+            << std::endl;
   std::copy(files.begin(), files.end(),
             std::ostream_iterator<std::string>(std::cerr, "\n"));
   std::cerr << std::endl;
@@ -426,10 +458,10 @@ pkgutil::db_rm_pkg(const std::string& name)
    * packages.
    */
   for (packages_t::const_iterator
-           i = packages.begin(); i != packages.end(); ++i)
+       i = packages.begin(); i != packages.end(); ++i)
   {
     for (std::set<std::string>::const_iterator
-             j = i->second.files.begin(); j != i->second.files.end(); ++j)
+         j = i->second.files.begin(); j != i->second.files.end(); ++j)
     {
       files.erase(*j);
     }
@@ -450,14 +482,16 @@ pkgutil::db_rm_pkg(const std::string& name)
    * directories).
    */
   for (std::set<std::string>::const_reverse_iterator
-           i = files.rbegin(); i != files.rend(); ++i)
+       i = files.rbegin(); i != files.rend(); ++i)
   {
     const std::string filename = root + *i;
+
     if (file_exists(filename) && remove(filename.c_str()) == -1)
     {
       const char* msg = strerror(errno);
-      std::cerr << utilname << ": could not remove " << filename << ": "
-                << msg << std::endl;
+
+      std::cerr << utilname << ": could not remove " << filename
+                << ": " << msg << std::endl;
     }
   }
 }
@@ -496,13 +530,16 @@ pkgutil::db_rm_pkg(const std::string& name)
  *       other specific files during package removal.
  */
 void
-pkgutil::db_rm_pkg(const std::string& name, const std::set<std::string>& keep_list)
+pkgutil::db_rm_pkg(const std::string& name,
+                   const std::set<std::string>& keep_list)
 {
   std::set<std::string> files = packages[name].files;
+
   packages.erase(name);
 
 #ifndef NDEBUG
-  std::cerr << "Removing package phase 1 (all files in package):" << std::endl;
+  std::cerr << "Removing package phase 1 (all files in package):"
+            << std::endl;
   std::copy(files.begin(), files.end(),
             std::ostream_iterator<std::string>(std::cerr, "\n"));
   std::cerr << std::endl;
@@ -512,7 +549,7 @@ pkgutil::db_rm_pkg(const std::string& name, const std::set<std::string>& keep_li
    * Don't delete files found in the keep list.
    */
   for (std::set<std::string>::const_iterator
-           i = keep_list.begin(); i != keep_list.end(); ++i)
+       i = keep_list.begin(); i != keep_list.end(); ++i)
   {
     files.erase(*i);
   }
@@ -531,10 +568,10 @@ pkgutil::db_rm_pkg(const std::string& name, const std::set<std::string>& keep_li
    * packages.
    */
   for (packages_t::const_iterator
-           i = packages.begin(); i != packages.end(); ++i)
+       i = packages.begin(); i != packages.end(); ++i)
   {
     for (std::set<std::string>::const_iterator
-             j = i->second.files.begin(); j != i->second.files.end(); ++j)
+         j = i->second.files.begin(); j != i->second.files.end(); ++j)
     {
       files.erase(*j);
     }
@@ -555,17 +592,22 @@ pkgutil::db_rm_pkg(const std::string& name, const std::set<std::string>& keep_li
    * directories).
    */
   for (std::set<std::string>::const_reverse_iterator
-           i = files.rbegin(); i != files.rend(); ++i)
+       i = files.rbegin(); i != files.rend(); ++i)
   {
     const std::string filename = root + *i;
+
     if (file_exists(filename) && remove(filename.c_str()) == -1)
     {
       if (errno == ENOTEMPTY)
-        continue; // Ignore ENOTEMPTY for directory removal
+      {
+        // Ignore ENOTEMPTY for directory removal
+        continue;
+      }
 
       const char* msg = strerror(errno);
-      std::cerr << utilname << ": could not remove " << filename << ": "
-                << msg << std::endl;
+
+      std::cerr << utilname << ": could not remove " << filename
+                << ": " << msg << std::endl;
     }
   }
 }
@@ -607,16 +649,17 @@ pkgutil::db_rm_pkg(const std::string& name, const std::set<std::string>& keep_li
  *       correct directory removal.
  */
 void
-pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& keep_list)
+pkgutil::db_rm_files(std::set<std::string> files,
+                     const std::set<std::string>& keep_list)
 {
   /*
    * Remove all references to these files from database.
    */
   for (packages_t::iterator
-           i = packages.begin(); i != packages.end(); ++i)
+       i = packages.begin(); i != packages.end(); ++i)
   {
     for (std::set<std::string>::const_iterator
-             j = files.begin(); j != files.end(); ++j)
+         j = files.begin(); j != files.end(); ++j)
     {
       i->second.files.erase(*j);
     }
@@ -625,7 +668,9 @@ pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& k
 #ifndef NDEBUG
   std::cerr << "Removing files:" << std::endl;
   for (const auto& file : files)
+  {
     std::cerr << file << std::endl;
+  }
   std::cerr << std::endl;
 #endif
 
@@ -633,7 +678,7 @@ pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& k
    * Don't delete files found in the keep list.
    */
   for (std::set<std::string>::const_iterator
-           i = keep_list.begin(); i != keep_list.end(); ++i)
+       i = keep_list.begin(); i != keep_list.end(); ++i)
   {
     files.erase(*i);
   }
@@ -644,17 +689,22 @@ pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& k
    * directories).
    */
   for (std::set<std::string>::const_reverse_iterator
-           i = files.rbegin(); i != files.rend(); ++i)
+       i = files.rbegin(); i != files.rend(); ++i)
   {
     const std::string filename = root + *i;
+
     if (file_exists(filename) && remove(filename.c_str()) == -1)
     {
       if (errno == ENOTEMPTY)
-        continue; // Ignore ENOTEMPTY for directory removal
+      {
+        // Ignore ENOTEMPTY for directory removal
+        continue;
+      }
 
       const char* msg = strerror(errno);
-      std::cerr << utilname << ": could not remove " << filename << ": "
-                << msg << std::endl;
+
+      std::cerr << utilname << ": could not remove " << filename
+                << ": " << msg << std::endl;
     }
   }
 }
@@ -704,7 +754,8 @@ pkgutil::db_rm_files(std::set<std::string> files, const std::set<std::string>& k
  * package installation.
  */
 std::set<std::string>
-pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  info)
+pkgutil::db_find_conflicts(const std::string& name,
+                           const pkgutil::pkginfo_t& info)
 {
   std::set<std::string> files;
 
@@ -712,18 +763,21 @@ pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  i
    * Phase 1: Find conflicting files in database.
    */
   for (packages_t::const_iterator
-           i = packages.begin(); i != packages.end(); ++i)
+       i = packages.begin(); i != packages.end(); ++i)
   {
-    if (i->first != name) // Don't compare package with itself (upgrade case)
+    // Do not compare package with itself (upgrade case)
+    if (i->first != name)
     {
       std::set_intersection(info.files.begin(), info.files.end(),
-                            i->second.files.begin(), i->second.files.end(),
+                            i->second.files.begin(),
+                            i->second.files.end(),
                             std::inserter(files, files.end()));
     }
   }
 
 #ifndef NDEBUG
-  std::cerr << "Conflicts phase 1 (conflicts in database):" << std::endl;
+  std::cerr << "Conflicts phase 1 (conflicts in database):"
+            << std::endl;
   std::copy(files.begin(), files.end(),
             std::ostream_iterator<std::string>(std::cerr, "\n"));
   std::cerr << std::endl;
@@ -734,16 +788,19 @@ pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  i
    * exist in filesystem, but not in database conflicts yet.
    */
   for (std::set<std::string>::iterator
-           i = info.files.begin(); i != info.files.end(); ++i)
+       i = info.files.begin(); i != info.files.end(); ++i)
   {
     const std::string filename = root + *i;
 
     if (file_exists(filename) && files.find(*i) == files.end())
+    {
       files.insert(files.end(), *i);
+    }
   }
 
 #ifndef NDEBUG
-  std::cerr << "Conflicts phase 2 (conflicts in filesystem added):" << std::endl;
+  std::cerr << "Conflicts phase 2 (conflicts in filesystem added):"
+            << std::endl;
   std::copy(files.begin(), files.end(),
             std::ostream_iterator<std::string>(std::cerr, "\n"));
   std::cerr << std::endl;
@@ -753,16 +810,23 @@ pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  i
    * Phase 3: Exclude directories from conflict list.  We are only
    * interested in file conflicts, not directory conflicts.
    */
-  std::set<std::string> tmp = files; // Create a copy for iteration
+
+  // Create a copy for iteration
+  std::set<std::string> tmp = files;
+
   for (std::set<std::string>::const_iterator
-           i = tmp.begin(); i != tmp.end(); ++i)
+       i = tmp.begin(); i != tmp.end(); ++i)
   {
-    if ((*i)[i->length() - 1] == '/') // Check if it ends with '/' - directory
+    // Check if it ends with '/' - directory
+    if ((*i)[i->length() - 1] == '/')
+    {
       files.erase(*i);
+    }
   }
 
 #ifndef NDEBUG
-  std::cerr << "Conflicts phase 3 (directories excluded):" << std::endl;
+  std::cerr << "Conflicts phase 3 (directories excluded):"
+            << std::endl;
   std::copy(files.begin(), files.end(),
             std::ostream_iterator<std::string>(std::cerr, "\n"));
   std::cerr << std::endl;
@@ -775,11 +839,12 @@ pkgutil::db_find_conflicts(const std::string& name, const pkgutil::pkginfo_t&  i
   if (packages.find(name) != packages.end())
   {
     for (std::set<std::string>::const_iterator
-             i  = packages[name].files.begin();
-             i != packages[name].files.end();
-             ++i)
+         i  = packages[name].files.begin();
+         i != packages[name].files.end();
+         ++i)
     {
-      files.erase(*i); // Remove files already owned by package being upgraded
+      // Remove files already owned by package being upgraded
+      files.erase(*i);
     }
 
 #ifndef NDEBUG
@@ -858,10 +923,18 @@ pkgutil::pkg_open(const std::string& filename)
   /*
    * Extract name and version from filename based on delimiters.
    */
-  std::string basename(filename, filename.rfind('/') + 1); // Extract basename
-  std::string name(basename, 0, basename.find(VERSION_DELIM)); // Name up to VERSION_DELIM
-  std::string version(basename, 0, basename.rfind(PKG_EXT)); // Version up to PKG_EXT
-  version.erase(0, // Erase name part from version, keep only version string
+
+  // Extract basename
+  std::string basename(filename, filename.rfind('/') + 1);
+
+  // Name up to VERSION_DELIM
+  std::string name(basename, 0, basename.find(VERSION_DELIM));
+
+  // Version up to PKG_EXT
+  std::string version(basename, 0, basename.rfind(PKG_EXT));
+
+  // Erase name part from version, keep only version string
+  version.erase(0,
                 version.find(VERSION_DELIM) == std::string::npos
                     ? std::string::npos
                     : version.find(VERSION_DELIM) + 1);
@@ -869,8 +942,9 @@ pkgutil::pkg_open(const std::string& filename)
   // Error if name or version is empty after parsing
   if (name.empty() || version.empty())
   {
-    throw std::runtime_error(std::string("could not determine name and/or version of ") +
-                             basename + ": Invalid package name");
+    throw std::runtime_error(
+        std::string("could not determine name and/or version of ") +
+        basename + ": Invalid package name");
   }
 
   result.first = name;
@@ -880,46 +954,55 @@ pkgutil::pkg_open(const std::string& filename)
   INIT_ARCHIVE(archive);        // Initialize archive for reading
 
   // Open archive file with libarchive
-  if (archive_read_open_filename(archive,
-                                 filename.c_str(),
-                                 DEFAULT_BYTES_PER_BLOCK)
-      != ARCHIVE_OK)
+  if (archive_read_open_filename(archive, filename.c_str(),
+        DEFAULT_BYTES_PER_BLOCK) != ARCHIVE_OK)
   {
-    throw std::runtime_error(std::string("could not open ") + filename +
-                             ": " + archive_error_string(archive));
+    throw std::runtime_error(std::string("could not open ") +
+        filename + ": " + archive_error_string(archive));
   }
 
   // Iterate through archive entries (headers)
-  for (i = 0;
-       archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-       ++i)
+  for (i = 0; archive_read_next_header(archive, &entry) == ARCHIVE_OK;
+      ++i)
   {
+    // Add file path to files set
     result.second.files.insert(result.second.files.end(),
-                                archive_entry_pathname(entry)); // Add file path to files set
+        archive_entry_pathname(entry));
 
-    mode_t mode = archive_entry_mode(entry); // Get file mode from entry
+    // Get file mode from entry
+    mode_t mode = archive_entry_mode(entry);
 
     // Skip data reading for regular files
-    if (   S_ISREG(mode)
-        && archive_read_data_skip(archive) != ARCHIVE_OK)
+    if (S_ISREG(mode) &&
+        archive_read_data_skip(archive) != ARCHIVE_OK)
     {
-      throw std::runtime_error(std::string("could not read ") + filename +
-                               ": " + archive_error_string(archive));
+      throw std::runtime_error(std::string("could not read ") +
+          filename + ": " + archive_error_string(archive));
     }
   }
 
-  // Check if any entries were processed. If not, it might be an empty archive
+  // Check if any entries were processed.  If not, it might be an
+  // empty archive
   if (i == 0)
   {
     if (archive_errno(archive) == 0)
-      throw std::runtime_error("empty package"); // Empty archive
+    {
+      // Empty archive
+      throw std::runtime_error("empty package");
+    }
     else
-      throw std::runtime_error(std::string("could not read ") + filename); // Other read error
+    {
+      // Other read error
+      throw std::runtime_error(std::string("could not read ") +
+                               filename);
+    }
   }
 
-  archive_read_free(archive); // Free archive object
+  // Free archive object
+  archive_read_free(archive);
 
-  return result; // Return package name and info
+  // Return package name and info
+  return result;
 }
 
 /*!
@@ -1029,81 +1112,93 @@ pkgutil::pkg_install(const std::string& filename,
   INIT_ARCHIVE(archive);        // Initialize archive for reading
 
   // Open archive file with libarchive
-  if (archive_read_open_filename(archive,
-                                 filename.c_str(),
-                                 DEFAULT_BYTES_PER_BLOCK)
-      != ARCHIVE_OK)
+  if (archive_read_open_filename(archive, filename.c_str(),
+        DEFAULT_BYTES_PER_BLOCK) != ARCHIVE_OK)
   {
-    throw std::runtime_error(std::string("could not open ") + filename +
-                             ": " + archive_error_string(archive));
+    throw std::runtime_error(std::string("could not open ") +
+        filename + ": " + archive_error_string(archive));
   }
 
-  chdir(root.c_str()); // Change directory to root for extraction
-  absroot = getcwd(buf, sizeof(buf)); // Get absolute root path
+  // Change directory to root for extraction
+  chdir(root.c_str());
+
+  // Get absolute root path
+  absroot = getcwd(buf, sizeof(buf));
 
   // Iterate through archive entries for extraction
-  for (i = 0;
-       archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-       ++i)
+  for (i = 0; archive_read_next_header(archive, &entry) == ARCHIVE_OK;
+      ++i)
   {
-    std::string archive_filename = archive_entry_pathname(entry); // Get entry path
+    // Get entry path
+    std::string archive_filename = archive_entry_pathname(entry);
 
     // Construct path to rejected directory
-    std::string reject_dir =
-        trim_filename(absroot + std::string("/") + std::string(PKG_REJECTED));
+    std::string reject_dir = trim_filename(absroot +
+        std::string("/") + std::string(PKG_REJECTED));
 
     // Construct original filename (target install path)
-    std::string original_filename =
-        trim_filename(absroot + std::string("/") + archive_filename);
+    std::string original_filename = trim_filename(absroot +
+        std::string("/") + archive_filename);
 
-    std::string real_filename = original_filename; // Initially real == original
+    // Initially real == original
+    std::string real_filename = original_filename;
 
     /*
-     * Check if file is filtered out via INSTALL file (non_install_list).
+     * Check if file is filtered out via INSTALL file
+     * (non_install_list).
      */
     if (non_install_list.find(archive_filename)
         != non_install_list.end())
     {
       mode_t mode;
 
-      std::cout << utilname << ": ignoring " << archive_filename << std::endl;
+      std::cout << utilname << ": ignoring " << archive_filename
+                << std::endl;
 
       mode = archive_entry_mode(entry);
 
-      if (S_ISREG(mode)) // Skip data for regular files
-          archive_read_data_skip(archive);
+      if (S_ISREG(mode))
+      {
+        // Skip data for regular files
+        archive_read_data_skip(archive);
+      }
 
-      continue; // Skip to next archive entry
+      // Skip to next archive entry
+      continue;
     }
 
     /*
      * Check if file should be rejected (kept, not overwritten).
      */
-    if (   file_exists(real_filename)
-        && keep_list.find(archive_filename) != keep_list.end())
+    if (file_exists(real_filename) && keep_list.find(archive_filename)
+        != keep_list.end())
     {
       // Construct path to rejected file
-      real_filename =
-          trim_filename(reject_dir + std::string("/") + archive_filename);
+      real_filename = trim_filename(reject_dir + std::string("/") +
+          archive_filename);
     }
 
-    // Set the actual pathname for extraction (could be original or rejected path)
+    // Set the actual pathname for extraction (could be original or
+    // rejected path)
     archive_entry_set_pathname(entry,
-                               const_cast<char*>(real_filename.c_str()));
+        const_cast<char*>(real_filename.c_str()));
 
     /*
-     * Extract file with specified flags (permissions, ownership, etc.).
+     * Extract file with specified flags (permissions, ownership,
+     * etc.).
      */
     auto flags = ARCHIVE_EXTRACT_OWNER | ARCHIVE_EXTRACT_PERM
                | ARCHIVE_EXTRACT_TIME  | ARCHIVE_EXTRACT_UNLINK;
 
 #ifdef ENABLE_EXTRACT_ACL
-    flags |= ARCHIVE_EXTRACT_ACL; // Enable ACL extraction if compiled with ACL support
-#endif
-#ifdef ENABLE_EXTRACT_XATTR
-    flags |= ARCHIVE_EXTRACT_XATTR; // Enable XATTR extraction if compiled with XATTR support
+    // Enable ACL extraction if compiled with ACL support
+    flags |= ARCHIVE_EXTRACT_ACL;
 #endif
 
+#ifdef ENABLE_EXTRACT_XATTR
+    // Enable XATTR extraction if compiled with XATTR support
+    flags |= ARCHIVE_EXTRACT_XATTR;
+#endif
 
     if (archive_read_extract(archive, entry, flags) != ARCHIVE_OK)
     {
@@ -1112,14 +1207,17 @@ pkgutil::pkg_install(const std::string& filename,
        * unless this is not an upgrade - then we abort. */
       const char* msg = archive_error_string(archive);
       std::cerr << utilname << ": could not install " +
-                       archive_filename << ": " << msg << std::endl;
+        archive_filename << ": " << msg << std::endl;
 
-      if (!upgrade) // Abort installation if not upgrade
+      if (!upgrade)
       {
+        // Abort installation if not upgrade
         throw std::runtime_error(std::string("extract error: ") +
-                                  archive_filename + ": " + msg);
+            archive_filename + ": " + msg);
       }
-      continue; // Continue to next archive entry in upgrade case
+
+      // Continue to next archive entry in upgrade case
+      continue;
     }
 
     /*
@@ -1130,27 +1228,33 @@ pkgutil::pkg_install(const std::string& filename,
       bool remove_file = false;
       mode_t mode = archive_entry_mode(entry);
 
-      /* directory case */
       if (S_ISDIR(mode))
       {
+        // directory case
         remove_file = permissions_equal(real_filename,
                                         original_filename);
       }
-      /* other files case */
       else
       {
+        // other files case
         remove_file =
                 permissions_equal(real_filename, original_filename)
              && (   file_empty(real_filename)
                  || file_equal(real_filename, original_filename));
       }
 
-      /* remove rejected file if conditions met or signal existence */
+      // Remove rejected file if conditions met or signal existence
       if (remove_file)
-        file_remove(reject_dir, real_filename); // Remove rejected file
+      {
+        // Remove rejected file
+        file_remove(reject_dir, real_filename);
+      }
       else
+      {
+        // Signal rejection
         std::cout << utilname << ": rejecting " << archive_filename
-                  << ", keeping existing version" << std::endl; // Signal rejection
+                  << ", keeping existing version" << std::endl;
+      }
     }
   }
 
@@ -1158,12 +1262,20 @@ pkgutil::pkg_install(const std::string& filename,
   if (i == 0)
   {
     if (archive_errno(archive) == 0)
-      throw std::runtime_error("empty package"); // No entries in archive
+    {
+      // No entries in archive
+      throw std::runtime_error("empty package");
+    }
     else
-      throw std::runtime_error(std::string("could not read ") + filename); // Archive read error
+    {
+      // Archive read error
+      throw std::runtime_error(std::string("could not read ") +
+                               filename);
+    }
   }
 
-  archive_read_free(archive); // Free archive object
+  // Free archive object
+  archive_read_free(archive);
 }
 
 /*!
@@ -1211,26 +1323,40 @@ pkgutil::ldconfig()
    */
   if (file_exists(root + LDCONFIG_CONF))
   {
-    pid_t pid = fork(); // Fork process to run ldconfig
+    // Fork process to run ldconfig
+    pid_t pid = fork();
 
     if (pid == -1)
-      throw std::runtime_error(std::string("fork() failed: ") + strerror(errno));
+    {
+      throw std::runtime_error(std::string("fork() failed: ") +
+                               strerror(errno));
+    }
 
     if (pid == 0)
     {
       // Child process: execute ldconfig
+
+      // Execute ldconfig with root path
       execl(LDCONFIG, LDCONFIG, "-r", root.c_str(),
-            static_cast<char *>(0)); // Execute ldconfig with root path
+            static_cast<char *>(0));
+
       const char* msg = strerror(errno);
-      std::cerr << utilname << ": could not execute " << LDCONFIG << ": "
-                << msg << std::endl;
-      exit(EXIT_FAILURE); // Exit child process on execl failure
+
+      std::cerr << utilname << ": could not execute " << LDCONFIG
+                << ": " << msg << std::endl;
+
+      // Exit child process on execl failure
+      exit(EXIT_FAILURE);
     }
     else
     {
       // Parent process: wait for child
+
       if (waitpid(pid, 0, 0) == -1)
-        throw std::runtime_error(std::string("waitpid() failed: ") + strerror(errno));
+      {
+        throw std::runtime_error(std::string("waitpid() failed: ") +
+                                 strerror(errno));
+      }
     }
   }
 }
@@ -1329,19 +1455,16 @@ pkgutil::pkg_footprint(const std::string& filename)
   INIT_ARCHIVE(archive);        // Initialize archive for reading
 
   // Open archive file with libarchive
-  if (archive_read_open_filename(archive,
-                                 filename.c_str(),
-                                 DEFAULT_BYTES_PER_BLOCK)
-      != ARCHIVE_OK)
+  if (archive_read_open_filename(archive, filename.c_str(),
+        DEFAULT_BYTES_PER_BLOCK) != ARCHIVE_OK)
   {
-    throw std::runtime_error(std::string("could not open ") + filename +
-                             ": " + archive_error_string(archive));
+    throw std::runtime_error(std::string("could not open ") +
+        filename + ": " + archive_error_string(archive));
   }
 
   // Iterate through archive entries (headers) - Pass 1
-  for (i = 0;
-       archive_read_next_header(archive, &entry) == ARCHIVE_OK;
-       ++i)
+  for (i = 0; archive_read_next_header(archive, &entry) == ARCHIVE_OK;
+      ++i)
   {
     struct file file; // File info struct for current entry
     const char* s;
@@ -1355,18 +1478,29 @@ pkgutil::pkg_footprint(const std::string& filename)
     if ((s = archive_entry_hardlink(entry)))
       file.hard = s; // Get hardlink target
 
-    file.size = archive_entry_size(entry);   // Get size
-    file.rdev = archive_entry_rdev(entry);   // Get device ID
-    file.uid  = static_cast<uid_t>(archive_entry_uid(entry)); // Get UID
-    file.gid  = static_cast<gid_t>(archive_entry_gid(entry)); // Get GID
-    file.mode = archive_entry_mode(entry);   // Get mode
+    // Get size
+    file.size = archive_entry_size(entry);
 
-    files.push_back(file); // Add file info to vector
+    // Get device ID
+    file.rdev = archive_entry_rdev(entry);
 
-    if (S_ISREG(file.mode) && archive_read_data_skip(archive)) // Skip data for regular files
+    // Get UID
+    file.uid  = static_cast<uid_t>(archive_entry_uid(entry));
+
+    // Get GID
+    file.gid  = static_cast<gid_t>(archive_entry_gid(entry));
+
+    // Get mode
+    file.mode = archive_entry_mode(entry);
+
+    // Add file info to vector
+    files.push_back(file);
+
+    // Skip data for regular files
+    if (S_ISREG(file.mode) && archive_read_data_skip(archive))
     {
-      throw std::runtime_error(std::string("could not read ") + filename +
-                               ": " + archive_error_string(archive));
+      throw std::runtime_error(std::string("could not read ") +
+          filename + ": " + archive_error_string(archive));
     }
   }
 
@@ -1374,40 +1508,57 @@ pkgutil::pkg_footprint(const std::string& filename)
   if (i == 0)
   {
     if (archive_errno(archive) == 0)
-      throw std::runtime_error("empty package"); // Empty archive
+    {
+      // Empty archive
+      throw std::runtime_error("empty package");
+    }
     else
-      throw std::runtime_error(std::string("could not read ") + filename); // Read error
+    {
+      // Read error
+      throw std::runtime_error(std::string("could not read ") +
+          filename);
+    }
   }
 
-  archive_read_free(archive); // Free archive object after pass 1
+  // Free archive object after pass 1
+  archive_read_free(archive);
 
-  std::sort(files.begin(), files.end()); // Sort files by path for consistent output
+  // Sort files by path for consistent output
+  std::sort(files.begin(), files.end());
 
   /*
    * Pass 2: Print footprint using collected metadata.
    */
   for (i = 0; i < files.size(); ++i)
   {
-    struct file& file = files[i]; // Get file info
+    // Get file info
+    struct file& file = files[i];
 
     /*
      * Access permissions.
      */
     if (S_ISLNK(file.mode))
     {
-      /* Access permissions on symlinks can vary. Force consistent output. */
-      std::cout << "lrwxrwxrwx"; // Consistent symlink permissions
+      // Access permissions on symlinks can vary.
+      // Force consistent output.
+      std::cout << "lrwxrwxrwx";
     }
     else
     {
       if (file.hard.length())
       {
         // For hardlinks, get mode from the linked file's info
-        auto it = std::lower_bound(files.begin(), files.end(), file.hard);
-        std::cout << mtos(it->mode); // Convert mode to string
+        auto it = std::lower_bound(files.begin(), files.end(),
+                                   file.hard);
+
+        // Convert mode to string
+        std::cout << mtos(it->mode);
       }
       else
-        std::cout << mtos(file.mode); // Convert mode to string
+      {
+        // Convert mode to string
+        std::cout << mtos(file.mode);
+      }
     }
 
     std::cout << '\t'; // Separator
@@ -1415,49 +1566,73 @@ pkgutil::pkg_footprint(const std::string& filename)
     /*
      * User.
      */
-    struct passwd* pw = getpwuid(file.uid); // Get user name from UID
+
+    // Get user name from UID
+    struct passwd* pw = getpwuid(file.uid);
     if (pw)
-      std::cout << pw->pw_name; // Print user name
+    {
+      // Print user name
+      std::cout << pw->pw_name;
+    }
     else
-      std::cout << file.uid;    // Print UID if name not found
+    {
+      // Print UID if name not found
+      std::cout << file.uid;
+    }
 
     std::cout << '/'; // Separator
 
     /*
      * Group.
      */
-    struct group* gr = getgrgid(file.gid); // Get group name from GID
+
+    // Get group name from GID
+    struct group* gr = getgrgid(file.gid);
     if (gr)
-      std::cout << gr->gr_name; // Print group name
+    {
+      // Print group name
+      std::cout << gr->gr_name;
+    }
     else
-      std::cout << file.gid;    // Print GID if name not found
+    {
+      // Print GID if name not found
+      std::cout << file.gid;
+    }
 
     /*
      * Filename.
      */
-    std::cout << '\t' << file.path; // Print file path
+
+    // Print file path
+    std::cout << '\t' << file.path;
 
     /*
-     * Special cases (symlinks, devices, empty files) in footprint output.
+     * Special cases (symlinks, devices, empty files) in footprint
+     * output.
      */
     if (S_ISLNK(file.mode))
     {
-      /* Symlink target. */
-      std::cout << " -> " << file.soft; // Print symlink target
+      // If symlink - print symlink target
+      std::cout << " -> " << file.soft;
     }
     else if (S_ISCHR(file.mode) || S_ISBLK(file.mode))
     {
-      /* Device nodes (character or block devices). */
-      std::cout << " (" << major(file.rdev) << ", " << minor(file.rdev)
-                << ")"; // Print major and minor device numbers
+      // If Device nodes (character or block devices) - print major
+      // and minor device numbers
+      std::cout << " ("
+                << major(file.rdev)
+                << ", "
+                << minor(file.rdev)
+                << ")";
     }
     else if (S_ISREG(file.mode) && file.size == 0)
     {
-      /* Empty regular file. */
-      std::cout << " (EMPTY)"; // Indicate empty regular file
+      // If empty regular file - indicate
+      std::cout << " (EMPTY)";
     }
 
-    std::cout << '\n'; // Newline for next file footprint entry
+    // Newline for next file footprint entry
+    std::cout << '\n';
   }
 }
 

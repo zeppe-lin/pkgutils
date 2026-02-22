@@ -13,11 +13,11 @@
 #ifndef PKGUTIL_H
 #define PKGUTIL_H
 
-#include <string>
-#include <set>
-#include <vector>
-#include <utility> // For std::pair
 #include <map>
+#include <set>
+#include <string>
+#include <utility> // For std::pair
+#include <vector>
 
 class db_lock; // Forward declaration
 

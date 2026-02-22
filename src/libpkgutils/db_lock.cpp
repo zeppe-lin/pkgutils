@@ -10,7 +10,7 @@
  */
 #include "db_lock.h"
 #include "pkgutil.h"  // pkgutil::PKG_DIR
-                      //
+
 #include <stdexcept>  // For std::runtime_error
 #include <string>
 #include <dirent.h>
@@ -56,31 +56,35 @@
 db_lock::db_lock(const std::string& root, bool exclusive)
     : dir(nullptr)
 {
-  const std::string dirname =
-      trim_filename(root + std::string("/") + pkgutil::PKG_DIR);
+  const std::string dirname = trim_filename(root + std::string("/") +
+                                            pkgutil::PKG_DIR);
 
   if (!(dir = opendir(dirname.c_str())))
   {
-    throw std::runtime_error(std::string("could not read directory ") +
-                             dirname + ": " + strerror(errno));
+    throw std::runtime_error(
+        std::string("could not read directory ") + dirname + ": " +
+        strerror(errno));
   }
 
   if (flock(dirfd(dir),
-            (exclusive ? LOCK_EX : LOCK_SH) | LOCK_NB) == -1)
+        (exclusive ? LOCK_EX : LOCK_SH) | LOCK_NB) == -1)
   {
     if (errno == EWOULDBLOCK)
     {
       closedir(dir);
       dir = nullptr;
+
       throw std::runtime_error(
-              "package database is currently locked by another process");
+          "package database is currently locked by another process");
     }
     else
     {
       closedir(dir);
       dir = nullptr;
-      throw std::runtime_error(std::string("could not lock directory ") +
-                               dirname + ": " + strerror(errno));
+
+      throw std::runtime_error(
+          std::string("could not lock directory ") + dirname + ": " +
+          strerror(errno));
     }
   }
 }

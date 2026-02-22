@@ -14,14 +14,14 @@
 #ifndef FS_UTILS_H
 #define FS_UTILS_H
 
+#include <fstream>
+#include <string>
+
 #include <limits.h>
 #include <sys/param.h>
-
-#include <string>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <fstream>
 
 //! \def DEFAULT_BYTES_PER_BLOCK
 //! \brief Defines the default block size for archive operations.
