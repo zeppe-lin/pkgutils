@@ -2,8 +2,9 @@ OVERVIEW
 ========
 
 `pkgutils` is a collection of utilities such as `pkgadd(1)`,
-`pkgrm(8)`, and `pkginfo(1)` for managing software packages:
-installing, removing, and retrieving basic information.
+`pkgrm(8)`, `pkginfo(1)`, and `pkgchk(1)` for managing software
+packages: installing, removing, retrieving basic information, and
+checking package integrity.
 
 This distribution is a fork of CRUX `pkgutils` at commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
@@ -15,6 +16,7 @@ This distribution is a fork of CRUX `pkgutils` at commit 9ca0da6
   * Support for `zstd` packages
   * Vim syntax highlighting for `pkgadd.conf`
   * Optional support for preserving ACLs and xattrs in `pkgadd(8)`
+  * New utility `pkgchk(1)` for integrity checks
 
 See the git log for full history.
 
