@@ -1,0 +1,99 @@
+PKGCHK(1)
+
+# NAME
+
+pkgchk - check package integrity
+
+# SYNOPSIS
+
+*pkgchk* [*-Vh*] [*-r* _root-dir_] [*-v*] {*-l* | *-d* | *-a*} \
+       [_package-name_ ...]
+
+# DESCRIPTION
+
+The *pkgchk* utility verifies the integrity of installed packages.
+It compares the package database against the filesystem to detect
+problems such as broken symlinks, ownership mismatches, and
+disappeared files.
+
+If one or more package names are specified, *pkgchk* checks only those
+packages.
+If no package names given, all installed packages are checked.
+
+The options are as follows:
+
+*-r* _root-dir_, *--root* _root-dir_
+	Use an alternate root directory.
+	All database and filesystem lookups are performed relative to
+	this directory.
+
+*-l*, *--links*
+	Check symlinks owned by the package(s).
+	Reports broken links.
+	With increased verbosity, also reports ownership awareness
+	(whether the target belongs to another package).
+
+*-d*, *--disappeared*
+	Check for disappeared files.
+	Reports missing files from the filesystem.
+	With increased verbosity, shows which packages still claim
+	ownership.
+
+*-a*, *--audit*
+	Run both symlink and disappeared file checks in one pass.
+
+*-v*
+	Increase verbosity.
+	Repeatable.
+	One *-v* shows ownership awareness and claiming packages.
+	Two *-v* flags may be used for extended detail
+	(reserved for the future, has no effect now).
+
+*-V*, *--version*
+	Print version and exit.
+
+*-h*, *--help*
+	Print usage and exit.
+
+# FILES
+
+_/var/lib/pkg/db_
+	Package database.
+
+# EXIT STATUS
+
+*0*
+	Successful completion.
+*>0*
+	An error occurred.
+
+# EXAMPLES
+
+Check symlinks in packages "gcc" and "glibc":
+```
+pkgchk -l gcc glibc
+```
+
+Check disappeared files for all installed packages:
+```
+pkgchk -d
+```
+
+Run full audit for all packages under an alternate root:
+```
+pkgchk -av -r /mnt
+```
+
+# SEE ALSO
+
+*pkginfo*(1),
+*pkgadd*(8),
+*pkgrm*(8),
+*packages*(7)
+
+# NOTES
+
+The *pkgchk*(1) utility reads only information from the package
+database maintained by *pkgadd*(8)/*pkgrm*(8).
+
+; vim: ft=scdoc cc=72 tw=70
