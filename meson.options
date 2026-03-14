@@ -1,0 +1,10 @@
+option('link_mode',
+  type : 'combo',
+  choices : ['shared', 'static'],
+  value : 'shared',
+  description : 'How pkgutils links against libpkgcore')
+
+option('build_man',
+  type : 'boolean',
+  value : true,
+  description : 'Build and install manual pages')
