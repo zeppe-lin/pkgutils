@@ -27,6 +27,8 @@
 
 #include <libpkgcore/pkgcore.h>
 
+#include "pkgutils-config.h"
+
 // Forward declarations
 void check_links(pkgutil&, const std::string&, const std::string&, int);
 void check_disappeared(pkgutil&, const std::string&, const std::string&, int);
@@ -319,7 +321,7 @@ void
 print_version()
 {
   pkgutil util("pkgchk");
-  std::cout << "pkgchk (pkgutils) " << VERSION << std::endl;
+  std::cout << "pkgchk (pkgutils) " << PKGUTILS_VERSION << std::endl;
   util.print_version();
 }
 

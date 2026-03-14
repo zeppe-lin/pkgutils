@@ -24,6 +24,8 @@
 
 #include <libpkgcore/pkgcore.h>
 
+#include "pkgutils-config.h"
+
 using namespace std;
 
 /////////////////////////////////////////////////////////////////////
@@ -456,7 +458,7 @@ void
 print_version()
 {
   pkgutil util("pkgadd");
-  cout << "pkgadd (pkgutils) " << VERSION << endl;
+  cout << "pkgadd (pkgutils) " << PKGUTILS_VERSION << endl;
   util.print_version();
 }
 

@@ -16,6 +16,8 @@
 
 #include <libpkgcore/pkgcore.h>
 
+#include "pkgutils-config.h"
+
 using namespace std;
 
 // Forward declarations
@@ -53,7 +55,7 @@ void
 print_version()
 {
   pkgutil util("pkgrm");
-  cout << "pkgrm (pkgutils) " << VERSION << endl;
+  cout << "pkgrm (pkgutils) " << PKGUTILS_VERSION << endl;
   util.print_version();
 }
 
