@@ -4,9 +4,13 @@ on:
   push:
     branches: [ "master" ]
     paths: &paths
-      - "Makefile"
-      - "config.mk"
+      - "meson.build"
+      - "meson.options"
+      - "meson_options.txt"
       - "src/**"
+      - "man/**"
+      - "completion/**"
+      - "vim/**"
       - ".github/**"
 
   pull_request:
@@ -14,37 +18,78 @@ on:
     paths: *paths
 
 jobs:
-  build-man:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - name: glibc
+            container: ""
+            install: |
+              sudo apt-get update
+              sudo apt-get install -y \
+                meson ninja-build pkg-config g++ \
+                libarchive-dev libacl1-dev attr scdoc
+          - name: musl
+            container: "alpine:latest"
+            install: |
+              apk add --no-cache \
+                build-base meson ninja pkgconf \
+                libarchive-dev acl-dev attr-dev scdoc
+        cfg:
+          - name: shared
+            link_mode: shared
+          - name: static
+            link_mode: static
+
+    name: ${{ matrix.env.name }} / ${{ matrix.cfg.name }}
+    container: ${{ matrix.env.container != '' && matrix.env.container || null }}
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Install scdoc
-        run: sudo apt-get install -y scdoc
-
-      - name: Generate man pages
-        run: make -C man
-
-  build-glibc:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+      - name: Checkout libpkgcore
+        uses: actions/checkout@v4
+        with:
+          repository: zeppe-lin/libpkgcore
+          path: libpkgcore
 
       - name: Install build dependencies
-        run: sudo apt-get install -y libarchive-dev nettle-dev libacl1-dev
+        run: ${{ matrix.env.install }}
 
-      - name: Build (glibc)
-        run: make -C src
+      - name: Build and stage libpkgcore
+        run: |
+          meson setup build-libpkgcore libpkgcore \
+            --buildtype=plain \
+            --wrap-mode=nodownload \
+            --prefix=/usr \
+            -Db_lto=false \
+            -Db_pie=true \
+            -Dextract_acl=false \
+            -Dextract_xattr=true
+          meson compile -C build-libpkgcore -v
+          DESTDIR="$PWD/stage-libpkgcore" meson install -C build-libpkgcore
 
-  build-musl:
-    runs-on: ubuntu-latest
-    container: alpine:latest
-    steps:
-      - uses: actions/checkout@v3
+      - name: Configure pkgutils
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/stage-libpkgcore/usr/lib/pkgconfig
+        run: |
+          meson setup build \
+            --buildtype=plain \
+            --wrap-mode=nodownload \
+            --prefix=/usr \
+            -Db_lto=false \
+            -Db_pie=true \
+            -Dlink_mode=${{ matrix.cfg.link_mode }}
 
-      - name: Install build dependencies
-        run: apk add build-base g++ make libarchive-dev acl-dev
+      - name: Compile pkgutils
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/stage-libpkgcore/usr/lib/pkgconfig
+        run: meson compile -C build -v
 
-      - name: Build (musl)
-        run: make -C src
-
+      - name: Install pkgutils to staging
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/stage-libpkgcore/usr/lib/pkgconfig
+        run: |
+          DESTDIR="$PWD/stage-pkgutils" meson install -C build
