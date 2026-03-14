@@ -66,8 +66,9 @@ Mandatory arguments to long options are mandatory for short options too.
 void
 print_version()
 {
-    pkgutil util("pkginfo");
-    util.print_version();
+  pkgutil util("pkginfo");
+  cout << "pkginfo (pkgutils) " << VERSION << endl;
+  util.print_version();
 }
 
 /*!

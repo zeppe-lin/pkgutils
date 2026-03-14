@@ -53,6 +53,7 @@ void
 print_version()
 {
   pkgutil util("pkgrm");
+  cout << "pkgrm (pkgutils) " << VERSION << endl;
   util.print_version();
 }
 

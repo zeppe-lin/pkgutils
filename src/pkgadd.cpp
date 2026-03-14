@@ -456,6 +456,7 @@ void
 print_version()
 {
   pkgutil util("pkgadd");
+  cout << "pkgadd (pkgutils) " << VERSION << endl;
   util.print_version();
 }
 

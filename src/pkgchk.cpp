@@ -319,6 +319,7 @@ void
 print_version()
 {
   pkgutil util("pkgchk");
+  std::cout << "pkgchk (pkgutils) " << VERSION << std::endl;
   util.print_version();
 }
 
