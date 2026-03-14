@@ -22,7 +22,7 @@
 #include <getopt.h>
 #include <regex.h>
 
-#include "libpkgutils.h" // Include the library header
+#include <libpkgcore/pkgcore.h>
 
 using namespace std;
 

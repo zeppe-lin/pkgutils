@@ -25,7 +25,7 @@
 #include <cstring>
 #include <regex.h>
 
-#include "libpkgutils.h" // Include the library header
+#include <libpkgcore/pkgcore.h>
 
 // Forward declarations
 void check_links(pkgutil&, const std::string&, const std::string&, int);
