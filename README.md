@@ -36,7 +36,7 @@ Build-time
   * `scdoc(1)` to generate manual pages
   * `pkg-config(1)` (optional, for static linking)
 
-Also see [rejmerge][https://github.com/zeppe-lin/rejmerge], a utility
+Also see [rejmerge](https://github.com/zeppe-lin/rejmerge), a utility
 for merging files rejected by `pkgadd(8)` during package upgrades.
 
 ---
