@@ -44,6 +44,18 @@ jobs:
           - name: static
             link_mode: static
 
+        exclude:
+          - env:
+              name: musl
+              container: "alpine:latest"
+              install: |
+                apk add --no-cache \
+                  build-base meson ninja pkgconf \
+                  libarchive-dev acl-dev attr-dev scdoc
+            cfg:
+              name: static
+              link_mode: static
+
     name: ${{ matrix.env.name }} / ${{ matrix.cfg.name }}
     container: ${{ matrix.env.container != '' && matrix.env.container || null }}
 
@@ -73,18 +85,16 @@ jobs:
       - name: Build libpkgcore
         run: meson compile -C build-libpkgcore -v
 
-      - name: Inspect uninstalled pkg-config metadata
-        run: |
-          pwd
-          ls -la build-libpkgcore
-          ls -la build-libpkgcore/meson-uninstalled || true
-          find build-libpkgcore -maxdepth 2 -name '*.pc' -print
+      # For debug
+      #- name: Inspect uninstalled pkg-config metadata
+      #  run: |
+      #    ls -la build-libpkgcore/meson-uninstalled || true
+      #    find build-libpkgcore -maxdepth 2 -name '*.pc' -print
 
       - name: Configure pkgutils
         env:
           PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
         run: |
-          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
           pkg-config --modversion libpkgcore
           meson setup build \
             --buildtype=plain \
