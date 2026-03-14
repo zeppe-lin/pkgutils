@@ -73,20 +73,34 @@ jobs:
       - name: Build libpkgcore
         run: meson compile -C build-libpkgcore -v
 
-      - name: Configure pkgutils
+      - name: Inspect uninstalled pkg-config metadata
         run: |
+          pwd
+          ls -la build-libpkgcore
+          ls -la build-libpkgcore/meson-uninstalled || true
+          find build-libpkgcore -maxdepth 2 -name '*.pc' -print
+
+      - name: Configure pkgutils
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
+        run: |
+          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+          pkg-config --modversion libpkgcore
           meson setup build \
             --buildtype=plain \
             --wrap-mode=nodownload \
             --prefix=/usr \
             -Db_lto=false \
             -Db_pie=true \
-            -Dlink_mode=${{ matrix.cfg.link_mode }} \
-            -Dpkg_config_path=${{ github.workspace }}/build-libpkgcore/meson-uninstalled
+            -Dlink_mode=${{ matrix.cfg.link_mode }}
 
       - name: Build pkgutils
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
         run: meson compile -C build -v
 
       - name: Install pkgutils to staging
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
         run: |
           DESTDIR="$PWD/stage" meson install -C build
