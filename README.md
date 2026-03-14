@@ -1,14 +1,17 @@
 OVERVIEW
 ========
 
-`pkgutils` is a collection of utilities such as `pkgadd(1)`,
-`pkgrm(8)`, `pkginfo(1)`, and `pkgchk(1)` for managing software
-packages: installing, removing, retrieving basic information, and
-checking package integrity.
+`pkgutils` is a collection of utilities for working with software
+packages:
+
+- `pkgadd(8)` - install packages
+- `pkgrm(8)` - remove packages
+- `pkginfo(1)` - show package information
+- `pkgchk(1)` - check package integrity
 
 This distribution is a fork of CRUX `pkgutils` at commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
-  * Code organized into a library (`libpkgutils`) and utilities
+  * Code organized into a library [libpkgcore][1] and utilities
   * GNU-style options, help, and usage output
   * Improved adherence to GNU Coding Standards
   * Manual pages in `scdoc(5)` format
@@ -31,34 +34,71 @@ REQUIREMENTS
 Build-time
 ----------
   * C++11 compiler (GCC 4.8.1+, Clang 3.3+)
-  * POSIX `sh(1p)`, `make(1p)`, and "mandatory utilities"
-  * `libarchive(3)` to unpack archive files
+  * Meson
+  * Ninja
+  * `pkg-config(1)`
+  * [libpkgcore][1]
   * `scdoc(1)` to generate manual pages
-  * `pkg-config(1)` (optional, for static linking)
 
-Also see [rejmerge](https://github.com/zeppe-lin/rejmerge), a utility
-for merging files rejected by `pkgadd(8)` during package upgrades.
+Also see [rejmerge][2], a utility for merging files rejected by
+`pkgadd(8)` during package upgrades.
 
 ---
 
 INSTALLATION
 ============
 
-To build and install:
+General
+-------
 
 ```sh
-make
-make install   # as root
+# Configure
+meson setup build
+
+# Compile
+meson compile -C build
+
+# Install
+meson install -C build
 ```
 
-For static linking, ensure `pkg-config(1)` is available and run:
+Link Mode
+---------
+
+`pkgutils` can be built against shared or static [libpkgcore][1].
+
+Shared:
 
 ```sh
-make LDFLAGS="-static $(pkg-config --static --libs libarchive)"
+meson setup build -Dlink_mode=shared
+meson compile -C build
 ```
 
-Configuration parameters are defined in `config.mk`.  
-Default file paths and settings are specified in `src/pathnames.h`.
+Static:
+
+```sh
+meson setup build -Dlink_mode=static
+meson compile -C build
+```
+
+For generic static packaging, keep LTO disabled unless the whole
+toolchain is prepared for static LTO archives.
+
+External libpkgcore
+-------------------
+
+If [libpkgcore][1] is installed in a non-standard prefix, point
+`pkg-config(1)` to its metadata before configuring the build:
+
+```sh
+PKG_CONFIG_PATH=/path/to/lib/pkgconfig meson setup build
+```
+
+For example, when using a staged install:
+
+```sh
+PKG_CONFIG_PATH=$PWD/stage/usr/lib/pkgconfig meson setup build
+```
 
 ---
 
@@ -77,3 +117,6 @@ LICENSE
 [GNU General Public License v2 or later](https://gnu.org/licenses/gpl.html).
 
 See `COPYING` for license terms and `COPYRIGHT` for notices.
+
+[1]: https://github.com/zeppe-lin/libpkgcore
+[2]: https://github.com/zeppe-lin/rejmerge
