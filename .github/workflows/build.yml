@@ -37,6 +37,7 @@ jobs:
               apk add --no-cache \
                 build-base meson ninja pkgconf \
                 libarchive-dev acl-dev attr-dev scdoc
+
         cfg:
           - name: shared
             link_mode: shared
@@ -58,7 +59,7 @@ jobs:
       - name: Install build dependencies
         run: ${{ matrix.env.install }}
 
-      - name: Build and stage libpkgcore
+      - name: Configure libpkgcore
         run: |
           meson setup build-libpkgcore libpkgcore \
             --buildtype=plain \
@@ -68,12 +69,11 @@ jobs:
             -Db_pie=true \
             -Dextract_acl=false \
             -Dextract_xattr=true
-          meson compile -C build-libpkgcore -v
-          DESTDIR="$PWD/stage-libpkgcore" meson install -C build-libpkgcore
+
+      - name: Build libpkgcore
+        run: meson compile -C build-libpkgcore -v
 
       - name: Configure pkgutils
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/stage-libpkgcore/usr/lib/pkgconfig
         run: |
           meson setup build \
             --buildtype=plain \
@@ -81,15 +81,12 @@ jobs:
             --prefix=/usr \
             -Db_lto=false \
             -Db_pie=true \
-            -Dlink_mode=${{ matrix.cfg.link_mode }}
+            -Dlink_mode=${{ matrix.cfg.link_mode }} \
+            -Dpkg_config_path=${{ github.workspace }}/build-libpkgcore/meson-uninstalled
 
-      - name: Compile pkgutils
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/stage-libpkgcore/usr/lib/pkgconfig
+      - name: Build pkgutils
         run: meson compile -C build -v
 
       - name: Install pkgutils to staging
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/stage-libpkgcore/usr/lib/pkgconfig
         run: |
-          DESTDIR="$PWD/stage-pkgutils" meson install -C build
+          DESTDIR="$PWD/stage" meson install -C build
