@@ -1,4 +1,0 @@
-db_lock.o
-fs_utils.o
-pkgutil.o
-libpkgutils.a
