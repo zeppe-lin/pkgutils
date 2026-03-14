@@ -84,22 +84,6 @@ meson compile -C build
 For generic static packaging, keep LTO disabled unless the whole
 toolchain is prepared for static LTO archives.
 
-External libpkgcore
--------------------
-
-If [libpkgcore][1] is installed in a non-standard prefix, point
-`pkg-config(1)` to its metadata before configuring the build:
-
-```sh
-PKG_CONFIG_PATH=/path/to/lib/pkgconfig meson setup build
-```
-
-For example, when using a staged install:
-
-```sh
-PKG_CONFIG_PATH=$PWD/stage/usr/lib/pkgconfig meson setup build
-```
-
 ---
 
 DOCUMENTATION
