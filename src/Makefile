@@ -9,29 +9,22 @@ OBJS = pkgutil.o pkgadd.o pkgrm.o pkgchk.o pkginfo.o
 BIN1 = pkgchk pkginfo
 BIN8 = pkgadd pkgrm
 
-LIB_DIR      = ./libpkgutils
-LIB_TARGET   = $(LIB_DIR)/libpkgutils.a
-LIB_CPPFLAGS = -I$(LIB_DIR)
-
 all: $(BIN1) $(BIN8)
 
 .cpp.o:
-	$(CXX) -c $< $(LIB_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	$(CXX) -c $< $(CPPFLAGS) $(CXXFLAGS)
 
-$(LIB_TARGET):
-	cd $(LIB_DIR) && $(MAKE)
+pkgadd: pkgadd.o
+	$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
-pkgadd: pkgadd.o $(LIB_TARGET)
-	$(CXX) $^ $(LDFLAGS) -o $@
+pkgrm: pkgrm.o
+	$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
-pkgrm: pkgrm.o $(LIB_TARGET)
-	$(CXX) $^ $(LDFLAGS) -o $@
+pkginfo: pkginfo.o
+	$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
-pkginfo: pkginfo.o $(LIB_TARGET)
-	$(CXX) $^ $(LDFLAGS) -o $@
-
-pkgchk: pkgchk.o $(LIB_TARGET)
-	$(CXX) $^ $(LDFLAGS) -o $@
+pkgchk: pkgchk.o
+	$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
@@ -47,6 +40,5 @@ uninstall:
 
 clean:
 	rm -f $(OBJS) $(BIN1) $(BIN8)
-	cd $(LIB_DIR) && $(MAKE) clean
 
 .PHONY: all install uninstall clean
