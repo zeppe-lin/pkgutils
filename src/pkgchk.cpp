@@ -37,6 +37,40 @@ void print_help();
 void print_version();
 
 /////////////////////////////////////////////////////////////////////
+/// --- Helpers ---                                               ///
+/////////////////////////////////////////////////////////////////////
+
+/*!
+ * \brief Joins a set of package owner names into a comma-separated
+ *        string.
+ * \param owners Set of package names.
+ * \return Comma-separated string of owners.
+ *
+ * Used to present ownership awareness in warnings.  If the set is
+ * empty, returns "none".
+ */
+static std::string
+join_owners(const std::set<std::string>& owners)
+{
+  if (owners.empty())
+    return "none";
+
+  std::string out;
+  bool first = true;
+
+  for (const auto& owner : owners)
+  {
+    if (!first)
+      out += ",";
+
+    out += owner;
+    first = false;
+  }
+
+  return out;
+}
+
+/////////////////////////////////////////////////////////////////////
 /// --- CLI ---                                                   ///
 /////////////////////////////////////////////////////////////////////
 
@@ -198,31 +232,59 @@ main(int argc, char** argv)
   {
     try
     {
-      if (opts.check_links)
-        std::cout << "Symlink check for " << pkgname << "...\n";
-      if (opts.check_disappeared)
-        std::cout << "Disappeared file check for " << pkgname << "...\n";
-
       const auto issues = aud.audit_package(pkgname, opts);
-      for (const auto& issue : issues)
-      {
-        const char* sev =
-          (issue.level == pkgaudit::severity::error) ? "ERROR" : "WARNING";
-        std::cout << sev << ": " << issue.message << "\n";
 
-        if (issue.kind == pkgaudit::issue_kind::disappeared_file &&
-            !issue.immediate_owners.empty())
+      if (opts.check_links)
+      {
+        std::cout << "Symlink check for " << pkgname << " ...\n";
+
+        for (const auto& issue : issues)
         {
-          bool first = true;
-          std::cout << "  Claimed by: ";
-          for (const auto& owner : issue.immediate_owners)
+          if (issue.kind != pkgaudit::issue_kind::broken_symlink &&
+              issue.kind != pkgaudit::issue_kind::foreign_symlink_target)
+            continue;
+
+          if (issue.kind == pkgaudit::issue_kind::broken_symlink)
           {
-            if (!first)
-              std::cout << ",";
-            std::cout << owner;
-            first = false;
+            std::cout << "ERROR: " << issue.path
+                      << " -> " << issue.target
+                      << " (broken)\n";
+            continue;
           }
-          std::cout << "\n";
+
+          if (issue.kind == pkgaudit::issue_kind::foreign_symlink_target)
+          {
+            if (opts.verbosity > 0)
+            {
+              std::cout << "WARNING: " << issue.path
+                        << " -> " << issue.target
+                        << " (points to " << join_owners(issue.immediate_owners)
+                        << ", resolves into " << join_owners(issue.resolved_owners)
+                        << ")\n";
+            } else {
+              std::cout << "WARNING: " << issue.path
+                        << " -> " << issue.target << "\n";
+            }
+          }
+        }
+      }
+
+      if (opts.check_disappeared)
+      {
+        std::cout << "Disappeared file check for " << pkgname << " ...\n";
+
+        for (const auto& issue : issues)
+        {
+          if (issue.kind != pkgaudit::issue_kind::disappeared_file)
+            continue;
+
+          std::cout << "ERROR: disappeared file " << issue.path << "\n";
+
+          if (opts.verbosity > 0 && !issue.immediate_owners.empty())
+          {
+            std::cout << "  Claimed by: " <<
+              join_owners(issue.immediate_owners) << "\n";
+          }
         }
       }
     }
@@ -231,5 +293,6 @@ main(int argc, char** argv)
       std::cerr << "pkgchk: " << e.what() << "\n";
     }
   }
+
   return EXIT_SUCCESS;
 }
