@@ -1,4 +1,4 @@
-common_deps = [pkgcore_dep]
+common_deps = [libpkgcore_dep, libpkgaudit_dep]
 common_includes = [config_inc]
 
 common_link_args = []

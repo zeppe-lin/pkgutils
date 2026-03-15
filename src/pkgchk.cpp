@@ -27,259 +27,14 @@
 
 #include <libpkgcore/pkgcore.h>
 
+#include <libpkgaudit/auditor.h>
+#include <libpkgaudit/probe.h>
+
 #include "pkgutils-config.h"
 
 // Forward declarations
-void check_links(pkgutil&, const std::string&, const std::string&, int);
-void check_disappeared(pkgutil&, const std::string&, const std::string&, int);
 void print_help();
 void print_version();
-
-/////////////////////////////////////////////////////////////////////
-/// --- Helpers ---                                               ///
-/////////////////////////////////////////////////////////////////////
-
-/*!
- * \brief Joins a set of package owner names into a comma-separated
- *        string.
- * \param owners Set of package names.
- * \return Comma-separated string of owners.
- *
- * Used to present ownership awareness in warnings.  If the set is
- * empty, returns "none".
- */
-static std::string
-join_owners(const std::set<std::string>& owners)
-{
-  if (owners.empty())
-    return "none";
-
-  std::string out;
-
-  for (auto it = owners.begin(); it != owners.end(); ++it)
-  {
-    if (it != owners.begin())
-      out += ",";
-
-    out += *it;
-  }
-
-  return out;
-}
-
-/*!
- * \brief Escape regex metacharacters in a filesystem path.
- * \param path Path string to escape.
- * \return Escaped regex string.
- *
- * Ensures that literal paths can be safely compiled into regexes for
- * ownership lookup.
- */
-static std::string
-escape_regex(const std::string& path)
-{
-  std::string out;
-
-  for (char c : path)
-  {
-    if (strchr(".[]*^$()+?{|}", c))
-      out.push_back('\\');
-
-    out.push_back(c);
-  }
-
-  return out;
-}
-
-/*!
- * \brief Find packages that own files matching a regex pattern.
- * \param util    pkgutil instance with open database.
- * \param pattern Regex pattern to match against file paths.
- * \return Set of package names owning matching files.
- *
- * Iterates over the package database and collects all packages whose
- * file list matches the given regex.
- */
-static std::set<std::string>
-find_owners(pkgutil& util, const std::string& pattern)
-{
-  std::set<std::string> owners;
-  regex_t preg;
-
-  if (regcomp(&preg, pattern.c_str(), REG_EXTENDED | REG_NOSUB))
-    return owners;
-
-  for (const auto& pkgpair : util.getPackages())
-  {
-    for (const auto& file : pkgpair.second.files)
-    {
-      std::string full = "/" + file;
-
-      if (!regexec(&preg, full.c_str(), 0, 0, 0))
-        owners.insert(pkgpair.first);
-    }
-  }
-
-  regfree(&preg);
-
-  return owners;
-}
-
-/////////////////////////////////////////////////////////////////////
-/// --- Symlink check ---                                         ///
-/////////////////////////////////////////////////////////////////////
-
-/*!
- * \brief Check symlink integrity for a package.
- * \param util      pkgutil instance with open database.
- * \param pkgname   Package name to check.
- * \param root      Root directory prefix for filesystem checks.
- * \param verbosity Verbosity level (0 = errors only, >0 = warnings).
- *
- * Reports broken symlinks as errors.  At verbosity > 0, also reports
- * ownership awareness: whether the symlink target belongs to another
- * package.  At verbosity > 1, prints detailed owner lists.
- */
-void
-check_links(pkgutil& util, const std::string& pkgname,
-            const std::string& root, int verbosity)
-{
-  auto pkgs = util.getPackages();
-  auto it = pkgs.find(pkgname);
-  if (it == pkgs.end())
-  {
-    std::cerr << "pkgchk: package not found: " << pkgname << "\n";
-    return;
-  }
-
-  std::cout << "Symlink check for " << pkgname << "...\n";
-
-  for (const auto& path : it->second.files)
-  {
-    std::string full = root + "/" + path;
-    struct stat st;
-
-    if (lstat(full.c_str(), &st) == -1)
-      continue;
-
-    if (!S_ISLNK(st.st_mode))
-      continue;
-
-    char buf[PATH_MAX];
-    ssize_t len = readlink(full.c_str(), buf, sizeof(buf)-1);
-    if (len == -1)
-      continue;
-    buf[len] = '\0';
-    std::string target(buf);
-
-    std::string immediate;
-    if (target[0] == '/')
-    {
-      immediate = root + target;
-    }
-    else
-    {
-      char* dup = strdup(full.c_str());
-      immediate = std::string(dirname(dup)) + "/" + target;
-      free(dup);
-    }
-    immediate = trim_filename(immediate);
-
-    if (!file_exists(immediate))
-    {
-      std::cout << "ERROR: " << full << " -> " << target << " (broken)\n";
-      continue;
-    }
-
-    // Strip root before ownership lookup
-    auto strip_root = [&](const std::string& p) -> std::string {
-      if (!root.empty() && p.rfind(root, 0) == 0)
-        return p.substr(root.size());
-      return p;
-    };
-
-    std::string relImmediate = strip_root(immediate);
-    auto immOwners = find_owners(util, escape_regex(relImmediate));
-
-    char* resolvedPath = realpath(immediate.c_str(), nullptr);
-    std::string resolved = resolvedPath ? resolvedPath : immediate;
-    free(resolvedPath);
-
-    std::string relResolved = strip_root(resolved);
-    auto finOwners = find_owners(util, escape_regex(relResolved));
-
-    if (immOwners.count(pkgname) || finOwners.count(pkgname))
-      continue;
-
-    if (verbosity > 0)
-    {
-      std::cout << "WARNING: " << full << " -> " << target
-                << " (points to " << join_owners(immOwners)
-                << ", resolves into " << join_owners(finOwners) << ")\n";
-    }
-    else
-    {
-      std::cout << "WARNING: " << full << " -> " << target << "\n";
-    }
-  }
-}
-
-/////////////////////////////////////////////////////////////////////
-/// --- Disappeared file check ---                                ///
-/////////////////////////////////////////////////////////////////////
-
-/*!
- * \brief Check for disappeared files in a package.
- * \param util      pkgutil instance with open database.
- * \param pkgname   Package name to check.
- * \param root      Root directory prefix for filesystem checks.
- * \param verbosity Verbosity level
- *                  (0 = errors only, >0 = ownership info).
- *
- * Reports files listed in the package database that no longer exist
- * under the filesystem.  At verbosity > 0, also reports which
- * packages still claim ownership of the missing file.
- */
-void
-check_disappeared(pkgutil& util, const std::string& pkgname,
-                  const std::string& root, int verbosity)
-{
-  auto pkgs = util.getPackages();
-  auto it = pkgs.find(pkgname);
-  if (it == pkgs.end())
-  {
-    std::cerr << "pkgchk: package not found: " << pkgname << "\n";
-    return;
-  }
-
-  std::cout << "Disappeared file check for " << pkgname << "...\n";
-
-  for (const auto& path : it->second.files)
-  {
-    std::string full = root + "/" + path;
-
-    if (file_exists(full))
-      continue;
-
-    std::cout << "ERROR: disappeared file " << full << "\n";
-
-    if (verbosity > 0)
-    {
-      std::set<std::string> owners;
-      for (const auto& pkgpair : pkgs)
-      {
-        if (pkgpair.second.files.count(path))
-        {
-          owners.insert(pkgpair.first);
-        }
-      }
-      if (!owners.empty())
-      {
-        std::cout << "  Claimed by: " << join_owners(owners) << "\n";
-      }
-    }
-  }
-}
 
 /////////////////////////////////////////////////////////////////////
 /// --- CLI ---                                                   ///
@@ -396,6 +151,7 @@ main(int argc, char** argv)
 
   // --- Open Database ---
   pkgutil util("pkgchk");
+
   try
   {
     db_lock lock(o_root, false);
@@ -415,7 +171,7 @@ main(int argc, char** argv)
       pkgnames.push_back(pkgpair.first);
     }
   }
-
+#if 0
   // --- Run checks for each package ---
   for (const auto& pkgname : pkgnames)
   {
@@ -428,6 +184,52 @@ main(int argc, char** argv)
       check_disappeared(util, pkgname, o_root, o_verbose);
     }
   }
+#endif
+  pkgaudit::options opts;
+  opts.root = o_root;
+  opts.check_links = o_links || o_audit;
+  opts.check_disappeared = o_find || o_audit;
+  opts.verbosity = o_verbose;
 
+  auto engine = pkgaudit::make_serial_probe_engine();
+  pkgaudit::auditor aud(util, *engine);
+
+  for (const auto& pkgname : pkgnames)
+  {
+    try
+    {
+      if (opts.check_links)
+        std::cout << "Symlink check for " << pkgname << "...\n";
+      if (opts.check_disappeared)
+        std::cout << "Disappeared file check for " << pkgname << "...\n";
+
+      const auto issues = aud.audit_package(pkgname, opts);
+      for (const auto& issue : issues)
+      {
+        const char* sev =
+          (issue.level == pkgaudit::severity::error) ? "ERROR" : "WARNING";
+        std::cout << sev << ": " << issue.message << "\n";
+
+        if (issue.kind == pkgaudit::issue_kind::disappeared_file &&
+            !issue.immediate_owners.empty())
+        {
+          bool first = true;
+          std::cout << "  Claimed by: ";
+          for (const auto& owner : issue.immediate_owners)
+          {
+            if (!first)
+              std::cout << ",";
+            std::cout << owner;
+            first = false;
+          }
+          std::cout << "\n";
+        }
+      }
+    }
+    catch (const std::runtime_error& e)
+    {
+      std::cerr << "pkgchk: " << e.what() << "\n";
+    }
+  }
   return EXIT_SUCCESS;
 }
