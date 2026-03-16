@@ -205,20 +205,7 @@ main(int argc, char** argv)
       pkgnames.push_back(pkgpair.first);
     }
   }
-#if 0
-  // --- Run checks for each package ---
-  for (const auto& pkgname : pkgnames)
-  {
-    if (o_links || o_audit)
-    {
-      check_links(util, pkgname, o_root, o_verbose);
-    }
-    if (o_find || o_audit)
-    {
-      check_disappeared(util, pkgname, o_root, o_verbose);
-    }
-  }
-#endif
+
   pkgaudit::options opts;
   opts.root = o_root;
   opts.check_links = o_links || o_audit;
