@@ -38,9 +38,10 @@ Build-time
   * Ninja
   * `pkg-config(1)`
   * [libpkgcore][1]
+  * [libpkgaudit][2]
   * `scdoc(1)` to generate manual pages
 
-Also see [rejmerge][2], a utility for merging files rejected by
+Also see [rejmerge][3], a utility for merging files rejected by
 `pkgadd(8)` during package upgrades.
 
 ---
@@ -65,7 +66,8 @@ meson install -C build
 Link Mode
 ---------
 
-`pkgutils` can be built against shared or static [libpkgcore][1].
+`pkgutils` can be built against shared or static [libpkgcore][1], and
+[libpkgaudit][2].
 
 Shared:
 
@@ -103,4 +105,5 @@ LICENSE
 See `COPYING` for license terms and `COPYRIGHT` for notices.
 
 [1]: https://github.com/zeppe-lin/libpkgcore
-[2]: https://github.com/zeppe-lin/rejmerge
+[2]: https://github.com/zeppe-lin/libpkgaudit
+[3]: https://github.com/zeppe-lin/rejmerge
