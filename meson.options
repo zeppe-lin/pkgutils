@@ -2,7 +2,7 @@ option('link_mode',
   type : 'combo',
   choices : ['shared', 'static'],
   value : 'shared',
-  description : 'How pkgutils links against libpkgcore')
+  description : 'How pkgutils links against libpkgcore/libpkgaudit')
 
 option('build_man',
   type : 'boolean',
