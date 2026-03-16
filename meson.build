@@ -1,9 +1,9 @@
 project(
   'pkgutils',
   'cpp',
-  version : '6.3',
-  meson_version : '>=1.2.0',
-  default_options : [
+  version: '6.3',
+  meson_version: '>=1.2.0',
+  default_options: [
     'cpp_std=c++11',
     'warning_level=3',
     'b_ndebug=if-release',
@@ -15,8 +15,8 @@ conf = configuration_data()
 conf.set_quoted('PKGUTILS_VERSION', meson.project_version())
 
 configure_file(
-  output : 'pkgutils-config.h',
-  configuration : conf,
+  output: 'pkgutils-config.h',
+  configuration: conf,
 )
 
 libpkgcore_static = get_option('link_mode') == 'static'
