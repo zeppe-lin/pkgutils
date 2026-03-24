@@ -1,4 +1,4 @@
 vimfilesdir = get_option('datadir') / 'vim' / 'vimfiles'
 
-install_data('ftdetect/pkgaddconf.vim', install_dir: vimfilesdir / 'ftdetect')
-install_data('syntax/pkgaddconf.vim',   install_dir: vimfilesdir / 'syntax')
+install_data('ftdetect.vim', install_dir: vimfilesdir / 'ftdetect', rename: 'pkgaddconf.vim')
+install_data('syntax.vim',   install_dir: vimfilesdir / 'syntax',   rename: 'pkgaddconf.vim')
