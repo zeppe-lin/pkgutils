@@ -3,11 +3,10 @@ OVERVIEW
 
 `pkgutils` is a collection of utilities for working with software
 packages:
-
-- `pkgadd(8)` - install packages
-- `pkgrm(8)` - remove packages
-- `pkginfo(1)` - show package information
-- `pkgchk(1)` - check package integrity
+  * `pkgadd(8)`  - install package
+  * `pkgrm(8)`   - remove package
+  * `pkginfo(1)` - show package information
+  * `pkgchk(1)`  - check package integrity
 
 This distribution is a fork of CRUX `pkgutils` at commit 9ca0da6
 (Sat Nov 17 2018) with the following differences:
@@ -16,9 +15,7 @@ This distribution is a fork of CRUX `pkgutils` at commit 9ca0da6
   * Improved adherence to GNU Coding Standards
   * Manual pages in `scdoc(5)` format
   * Split `pkgadd(8)` manual into `pkgadd(8)` and `pkgadd.conf(5)`
-  * Support for `zstd` packages
   * Vim syntax highlighting for `pkgadd.conf`
-  * Optional support for preserving ACLs and xattrs in `pkgadd(8)`
   * New utility `pkgchk(1)` for integrity checks
 
 See the git log for full history.
@@ -72,14 +69,14 @@ Link Mode
 Shared:
 
 ```sh
-meson setup build -Dlink_mode=shared
+meson setup build -D link_mode=shared
 meson compile -C build
 ```
 
 Static:
 
 ```sh
-meson setup build -Dlink_mode=static
+meson setup build -D link_mode=static
 meson compile -C build
 ```
 
@@ -100,10 +97,11 @@ LICENSE
 =======
 
 `pkgutils` is licensed under the
-[GNU General Public License v2 or later](https://gnu.org/licenses/gpl.html).
+[GNU General Public License v2 or later][4].
 
 See `COPYING` for license terms and `COPYRIGHT` for notices.
 
 [1]: https://github.com/zeppe-lin/libpkgcore
 [2]: https://github.com/zeppe-lin/libpkgaudit
 [3]: https://github.com/zeppe-lin/rejmerge
+[4]: https://gnu.org/licenses/gpl.html
