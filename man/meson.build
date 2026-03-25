@@ -13,6 +13,7 @@ if get_option('build_man')
         input: page + '.' + section + '.scdoc',
         output: page + '.' + section,
         command: [scdoc],
+        feed: true,
         capture: true,
         install: true,
         install_dir: get_option('mandir') / ('man' + section),
