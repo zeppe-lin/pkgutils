@@ -69,6 +69,12 @@ jobs:
           repository: zeppe-lin/libpkgcore
           path: libpkgcore
 
+      - name: Checkout libpkgaudit
+        uses: actions/checkout@v4
+        with:
+          repository: zeppe-lin/libpkgaudit
+          path: libpkgaudit
+
       - name: Install build dependencies
         run: ${{ matrix.env.install }}
 
@@ -86,6 +92,18 @@ jobs:
       - name: Build libpkgcore
         run: meson compile -C build-libpkgcore -v
 
+      - name: Configure libpkgaudit
+        run: |
+          meson setup build-libpkgaudit libpkgaudit \
+            --buildtype=plain \
+            --wrap-mode=nodownload \
+            --prefix=/usr \
+            -D b_lto=false \
+            -D b_pie=true
+
+      - name: Build libpkgaudit
+        run: meson compile -C build-libpkgaudit -v
+
       # For debug
       #- name: Inspect uninstalled pkg-config metadata
       #  run: |
@@ -94,7 +112,8 @@ jobs:
 
       - name: Configure pkgutils
         env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled
+
         run: |
           pkg-config --modversion libpkgcore
           meson setup build \
@@ -107,11 +126,13 @@ jobs:
 
       - name: Build pkgutils
         env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled
+
         run: meson compile -C build -v
 
       - name: Install pkgutils to staging
         env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled
+
         run: |
           DESTDIR="$PWD/stage" meson install -C build
