@@ -93,6 +93,8 @@ jobs:
         run: meson compile -C build-libpkgcore -v
 
       - name: Configure libpkgaudit
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
         run: |
           meson setup build-libpkgaudit libpkgaudit \
             --buildtype=plain \
@@ -102,6 +104,8 @@ jobs:
             -D b_pie=true
 
       - name: Build libpkgaudit
+        env:
+          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
         run: meson compile -C build-libpkgaudit -v
 
       # For debug
