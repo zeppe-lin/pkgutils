@@ -36,7 +36,8 @@ jobs:
             install: |
               apk add --no-cache \
                 build-base meson ninja pkgconf \
-                libarchive-dev acl-dev attr-dev scdoc
+                libarchive-dev acl-dev attr-dev scdoc \
+                libarchive-static acl-static attr-static
 
         cfg:
           - name: shared
@@ -44,17 +45,17 @@ jobs:
           - name: static
             link_mode: static
 
-        exclude:
-          - env:
-              name: musl
-              container: "alpine:latest"
-              install: |
-                apk add --no-cache \
-                  build-base meson ninja pkgconf \
-                  libarchive-dev acl-dev attr-dev scdoc
-            cfg:
-              name: static
-              link_mode: static
+#       exclude:
+#         - env:
+#             name: musl
+#             container: "alpine:latest"
+#             install: |
+#               apk add --no-cache \
+#                 build-base meson ninja pkgconf \
+#                 libarchive-dev acl-dev attr-dev scdoc
+#           cfg:
+#             name: static
+#             link_mode: static
 
     name: ${{ matrix.env.name }} / ${{ matrix.cfg.name }}
     container: ${{ matrix.env.container != '' && matrix.env.container || null }}
