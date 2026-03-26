@@ -79,6 +79,10 @@ jobs:
       - name: Install build dependencies
         run: ${{ matrix.env.install }}
 
+      - name: Setup PKG_CONFIG_PATH
+        run: |
+          echo "PKG_CONFIG_PATH=${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled" >> $GITHUB_ENV
+
       - name: Configure libpkgcore
         run: |
           meson setup build-libpkgcore libpkgcore \
@@ -94,8 +98,6 @@ jobs:
         run: meson compile -C build-libpkgcore -v
 
       - name: Configure libpkgaudit
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
         run: |
           meson setup build-libpkgaudit libpkgaudit \
             --buildtype=plain \
@@ -105,8 +107,6 @@ jobs:
             -D b_pie=true
 
       - name: Build libpkgaudit
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled
         run: meson compile -C build-libpkgaudit -v
 
       # For debug
@@ -116,9 +116,6 @@ jobs:
       #    find build-libpkgcore -maxdepth 2 -name '*.pc' -print
 
       - name: Configure pkgutils
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled
-
         run: |
           pkg-config --modversion libpkgcore
           meson setup build \
@@ -130,14 +127,8 @@ jobs:
             -Dlink_mode=${{ matrix.cfg.link_mode }}
 
       - name: Build pkgutils
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled
-
         run: meson compile -C build -v
 
       - name: Install pkgutils to staging
-        env:
-          PKG_CONFIG_PATH: ${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled
-
         run: |
           DESTDIR="$PWD/stage" meson install -C build
