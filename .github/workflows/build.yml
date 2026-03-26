@@ -37,7 +37,8 @@ jobs:
               apk add --no-cache \
                 build-base meson ninja pkgconf \
                 libarchive-dev acl-dev attr-dev scdoc \
-                libarchive-static acl-static attr-static
+                libarchive-static acl-static attr-static \
+                zlib-static zstd-static xz-static bzip2-static lz4-static expat-static
 
         cfg:
           - name: shared
