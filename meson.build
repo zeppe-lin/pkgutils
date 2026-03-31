@@ -19,19 +19,20 @@ configure_file(
   configuration: conf,
 )
 
-libpkgcore_static = get_option('link_mode') == 'static'
-libpkgaudit_static = libpkgcore_static
+want_static = get_option('link_mode') == 'static'
 
 libpkgcore_dep = dependency(
   'libpkgcore',
   required: true,
-  static: libpkgcore_static,
+  static: want_static,
+  fallback: ['libpkgcore', 'libpkgcore_dep'],
 )
 
 libpkgaudit_dep = dependency(
   'libpkgaudit',
   required: true,
-  static: libpkgaudit_static,
+  static: want_static,
+  fallback: ['libpkgaudit', 'libpkgaudit_dep'],
 )
 
 config_inc = include_directories('.')
