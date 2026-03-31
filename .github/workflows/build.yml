@@ -109,15 +109,16 @@ jobs:
       - name: Build libpkgaudit
         run: meson compile -C build-libpkgaudit -v
 
-      # For debug
-      #- name: Inspect uninstalled pkg-config metadata
-      #  run: |
-      #    ls -la build-libpkgcore/meson-uninstalled || true
-      #    find build-libpkgcore -maxdepth 2 -name '*.pc' -print
+      - name: Inspect uninstalled pkg-config metadata
+        run: |
+          ls -la build-libpkgcore/meson-uninstalled || true
+          find build-libpkgcore -maxdepth 2 -name '*.pc' -print
+          ls -la build-libpkgaudit/meson-uninstalled || true
+          find build-libpkgaudit -maxdepth 2 -name '*.pc' -print
 
       - name: Configure pkgutils
         run: |
-          pkg-config --modversion libpkgcore
+          pkg-config --modversion libpkgcore libpkgaudit
           meson setup build \
             --buildtype=plain \
             --wrap-mode=nodownload \
