@@ -68,70 +68,23 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zeppe-lin/libpkgcore
-          path: libpkgcore
+          path: subprojects/libpkgcore
 
       - name: Checkout libpkgaudit
         uses: actions/checkout@v4
         with:
           repository: zeppe-lin/libpkgaudit
-          path: libpkgaudit
+          path: subprojects/libpkgaudit
 
       - name: Install build dependencies
         run: ${{ matrix.env.install }}
-
-      - name: Set dependency prefix
-        run: |
-          echo "DEPS_PREFIX=${{ github.workspace }}/prefix/usr" >> $GITHUB_ENV
-          echo "PKG_CONFIG_PATH=${{ github.workspace }}/prefix/usr/lib/pkgconfig" >> $GITHUB_ENV
-          echo "PKG_CONFIG_LIBDIR=${{ github.workspace }}/prefix/usr/lib/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
-
-      - name: Configure libpkgcore
-        run: |
-          meson setup build-libpkgcore libpkgcore \
-            --buildtype=plain \
-            --wrap-mode=nodownload \
-            --prefix=/usr \
-            -Db_lto=false \
-            -Db_pie=true \
-            -Dextract_acl=false \
-            -Dextract_xattr=true
-
-      - name: Build libpkgcore
-        run: meson compile -C build-libpkgcore -v
-
-      - name: Install libpkgcore into private prefix
-        run: |
-          DESTDIR="${{ github.workspace }}/prefix" meson install -C build-libpkgcore
-          find "${{ github.workspace }}/" -path '*/pkgconfig/*.pc' -print
-          pkg-config --debug --modversion libpkgcore
-
-      - name: Configure libpkgaudit
-        run: |
-          meson setup build-libpkgaudit libpkgaudit \
-            --buildtype=plain \
-            --wrap-mode=nodownload \
-            --prefix=/usr \
-            -D b_lto=false \
-            -D b_pie=true
-
-      - name: Build libpkgaudit
-        run: meson compile -C build-libpkgaudit -v
-
-      - name: Install libpkgaudit into private prefix
-        run: |
-          DESTDIR="${{ github.workspace }}/prefix" meson install -C build-libpkgaudit
-
-      - name: Inspect uninstalled pkg-config metadata
-        run: |
-          find "${{ github.workspace }}/prefix" -name '*.pc' -print
-          pkg-config --variable pc_path pkg-config || true
-          pkg-config --modversion libpkgcore libpkgaudit
 
       - name: Configure pkgutils
         run: |
           meson setup build \
             --buildtype=plain \
             --wrap-mode=nodownload \
+            --force-fallback-for=libpkgcore,libpkgaudit \
             --prefix=/usr \
             -Db_lto=false \
             -Db_pie=true \
