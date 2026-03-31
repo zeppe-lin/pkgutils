@@ -101,6 +101,8 @@ jobs:
       - name: Install libpkgcore into private prefix
         run:
           DESTDIR="${{ github.workspace }}/prefix" meson install -C build-libpkgcore
+          find "$DEPS_DESTDIR" -path '*/pkgconfig/*.pc' -print
+          pkg-config --debug --modversion libpkgcore
 
       - name: Configure libpkgaudit
         run: |
