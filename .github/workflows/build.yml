@@ -88,6 +88,7 @@ jobs:
             --prefix=/usr \
             -Db_lto=false \
             -Db_pie=true \
+            -Dprefer_static_deps=${{ matrix.cfg.link_mode == 'static' && 'true' || 'false' }} \
             -Dlink_mode=${{ matrix.cfg.link_mode }}
 
       - name: Build pkgutils
