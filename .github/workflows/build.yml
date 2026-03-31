@@ -83,7 +83,7 @@ jobs:
         run: |
           echo "DEPS_PREFIX=${{ github.workspace }}/prefix/usr" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=${{ github.workspace }}/prefix/usr/lib/pkgconfig" >> $GITHUB_ENV
-          echo "PKG_CONFIG_LIBDIR=${{ github.workspace }}/prefix/usr/lib/pkgconfig" >> $GITHUB_ENV
+          echo "PKG_CONFIG_LIBDIR=${{ github.workspace }}/prefix/usr/lib/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
 
       - name: Configure libpkgcore
         run: |
