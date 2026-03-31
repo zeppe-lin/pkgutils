@@ -79,9 +79,10 @@ jobs:
       - name: Install build dependencies
         run: ${{ matrix.env.install }}
 
-      - name: Setup PKG_CONFIG_PATH
+      - name: Set dependency prefix
         run: |
-          echo "PKG_CONFIG_PATH=${{ github.workspace }}/build-libpkgcore/meson-uninstalled:${{ github.workspace }}/build-libpkgaudit/meson-uninstalled" >> $GITHUB_ENV
+          echo "DEPS_PREFIX=${{ github.workspace }}/prefix/usr" >> $GITHUB_ENV
+          echo "PKG_CONFIG_PATH=${{ github.workspace }}/prefix/usr/lib/pkgconfig" >> $GITHUB_ENV
 
       - name: Configure libpkgcore
         run: |
@@ -97,6 +98,10 @@ jobs:
       - name: Build libpkgcore
         run: meson compile -C build-libpkgcore -v
 
+      - name: Install libpkgcore into private prefix
+        run:
+          DESTDIR="${{ github.workspace }}/prefix" meson install -C build-libpkgcore
+
       - name: Configure libpkgaudit
         run: |
           meson setup build-libpkgaudit libpkgaudit \
@@ -109,16 +114,18 @@ jobs:
       - name: Build libpkgaudit
         run: meson compile -C build-libpkgaudit -v
 
+      - name: Install libpkgaudit into private prefix
+        run: |
+          DESTDIR="${{ github.workspace }}/prefix" meson install -C build-libpkgaudit
+
       - name: Inspect uninstalled pkg-config metadata
         run: |
-          ls -la build-libpkgcore/meson-uninstalled || true
-          find build-libpkgcore -maxdepth 2 -name '*.pc' -print
-          ls -la build-libpkgaudit/meson-uninstalled || true
-          find build-libpkgaudit -maxdepth 2 -name '*.pc' -print
+          find "${{ github.workspace }}/prefix" -name '*.pc' -print
+          pkg-config --variable pc_path pkg-config || true
+          pkg-config --modversion libpkgcore libpkgaudit
 
       - name: Configure pkgutils
         run: |
-          pkg-config --modversion libpkgcore libpkgaudit
           meson setup build \
             --buildtype=plain \
             --wrap-mode=nodownload \
