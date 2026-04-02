@@ -69,7 +69,7 @@ void
 print_version()
 {
   pkgutil util("pkginfo");
-  cout << "pkginfo (pkgutils) " << PKGUTILS_VERSION << endl;
+  cout << "pkginfo (" << PACKAGE_NAME << ") " << PACKAGE_VERSION << endl;
   util.print_version();
 }
 

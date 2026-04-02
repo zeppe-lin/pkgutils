@@ -55,7 +55,7 @@ void
 print_version()
 {
   pkgutil util("pkgrm");
-  cout << "pkgrm (pkgutils) " << PKGUTILS_VERSION << endl;
+  cout << "pkgrm (" << PACKAGE_NAME << ") " << PACKAGE_VERSION << endl;
   util.print_version();
 }
 
