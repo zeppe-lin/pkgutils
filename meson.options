@@ -8,3 +8,13 @@ option('build_man',
   type: 'boolean',
   value: true,
   description: 'Build and install manual pages')
+
+option('bashcomp',
+  type: 'boolean',
+  value: false,
+  description: 'Install bash completion')
+
+option('bashcompdir',
+  type: 'string',
+  value: '',
+  description: 'Install directory for bash completion files')
