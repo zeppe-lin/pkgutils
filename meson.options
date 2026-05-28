@@ -18,3 +18,13 @@ option('bashcompdir',
   type: 'string',
   value: '',
   description: 'Install directory for bash completion files')
+
+option('vimfiles',
+  type: 'boolean',
+  value: false,
+  description: 'Install Vim files')
+
+option('vimfilesdir',
+  type: 'string',
+  value: '',
+  description: 'Install directory for Vim files')
