@@ -4,7 +4,7 @@ option('link_mode',
   value: 'shared',
   description: 'How pkgutils links against libpkgcore/libpkgaudit')
 
-option('build_man',
+option('manpages',
   type: 'boolean',
   value: true,
   description: 'Build and install manual pages')
