@@ -1,7 +1,6 @@
 " Vim syntax file
 " Language:     pkgadd.conf(5) configuration file
 " Maintainer:   Alexandr Savca <alexandr.savca89@gmail.com>
-" Last Change:  December 31, 2024
 
 " Quit when a syntax file was already loaded.
 if exists("b:current_syntax")
@@ -47,5 +46,4 @@ let b:current_syntax = "pkgaddconf"
 let &cpo = s:cpo_save
 unlet s:cpo_save
 
-" vim: cc=72
 " End of file.
