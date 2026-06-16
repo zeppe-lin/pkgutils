@@ -33,10 +33,11 @@ Build-time
   * C++11 compiler (GCC 4.8.1+, Clang 3.3+)
   * Meson
   * Ninja
+  * `scdoc(1)` to generate manual pages
+    (enabled by default via the `manpages` option)
   * `pkg-config(1)`
   * [libpkgcore][1]
   * [libpkgaudit][2]
-  * `scdoc(1)` to generate manual pages
 
 Also see [rejmerge][3], a utility for merging files rejected by
 `pkgadd(8)` during package upgrades.
