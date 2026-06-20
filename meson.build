@@ -27,17 +27,7 @@ libpkgaudit_dep = dependency(
   fallback: ['libpkgaudit', 'libpkgaudit_dep'],
 )
 
-conf = configuration_data()
-conf.set_quoted('PACKAGE_NAME', meson.project_name())
-conf.set_quoted('PACKAGE_VERSION', meson.project_version())
-
-configure_file(
-  output: 'pkgutils-config.h',
-  configuration: conf,
-)
-
-config_inc = include_directories('.')
-
+subdir('internal')
 subdir('src')
 subdir('man')
 subdir('completion')

@@ -1,5 +1,5 @@
 common_deps = [libpkgcore_dep, libpkgaudit_dep]
-common_incs = [config_inc]
+common_incs = [internal_inc]
 common_link_args = []
 
 if want_static
