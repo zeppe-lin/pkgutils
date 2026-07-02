@@ -10,6 +10,7 @@ exe_kwargs = {
   'dependencies': common_deps,
   'include_directories': common_incs,
   'link_args': common_link_args,
+  'pie': not want_static,
   'install': true,
 }
 
