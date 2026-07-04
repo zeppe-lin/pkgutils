@@ -75,10 +75,8 @@ jobs:
             --wrap-mode=nodownload \
             --force-fallback-for=libpkgcore,libpkgaudit \
             --prefix=/usr \
-            -Db_lto=false \
-            -Db_pie=true \
-            -Dlibpkgcore:prefer_static_deps=${{ matrix.cfg.link_mode == 'static' && 'true' || 'false' }} \
-            -Dlink_mode=${{ matrix.cfg.link_mode }}
+            -D link_mode=${{ matrix.cfg.link_mode }} \
+            -D libpkgcore:link_mode=${{ matrix.cfg.link_mode }}
 
       - name: Build pkgutils
         run: meson compile -C build -v
