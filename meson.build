@@ -1,7 +1,7 @@
 project(
   'pkgutils',
   'cpp',
-  version: '6.3',
+  version: '6.4',
   meson_version: '>=1.2.0',
   default_options: [
     'cpp_std=c++11',
