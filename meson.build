@@ -7,7 +7,6 @@ project(
     'cpp_std=c++11',
     'warning_level=3',
     'b_ndebug=if-release',
-    'b_lto=false',
   ],
 )
 
