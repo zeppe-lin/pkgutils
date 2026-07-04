@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include <libpkgcore/pkgcore.h>
+#include <libpkgcore/libpkgcore.h>
 
 #include "pkgutils-config.h"
 

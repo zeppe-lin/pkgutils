@@ -25,7 +25,7 @@
 #include <cstring>
 #include <regex.h>
 
-#include <libpkgcore/pkgcore.h>
+#include <libpkgcore/libpkgcore.h>
 
 #include <libpkgaudit/auditor.h>
 #include <libpkgaudit/probe.h>

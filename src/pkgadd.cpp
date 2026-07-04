@@ -22,7 +22,7 @@
 #include <getopt.h>
 #include <regex.h>
 
-#include <libpkgcore/pkgcore.h>
+#include <libpkgcore/libpkgcore.h>
 
 #include "pkgutils-config.h"
 

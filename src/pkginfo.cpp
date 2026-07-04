@@ -21,7 +21,7 @@
 #include <regex.h>
 #include <iterator> // Required for ostream_iterator
 
-#include <libpkgcore/pkgcore.h>
+#include <libpkgcore/libpkgcore.h>
 
 #include "pkgutils-config.h"
 
