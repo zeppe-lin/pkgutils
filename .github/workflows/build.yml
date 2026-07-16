@@ -81,6 +81,9 @@ jobs:
       - name: Build pkgutils
         run: meson compile -C build -v
 
+      - name: Run pkgutils tests
+        run: meson test -C build -v
+
       - name: Install pkgutils to staging
         run: |
           DESTDIR="$PWD/stage" meson install -C build
