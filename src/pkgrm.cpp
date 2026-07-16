@@ -163,7 +163,7 @@ main(int argc, char** argv)
      */
     if (deferred_signal != 0)
       cerr << "note: termination request was deferred during package "
-              "mutation" << end;
+              "mutation" << endl;
 
     return EXIT_FAILURE;
   }
