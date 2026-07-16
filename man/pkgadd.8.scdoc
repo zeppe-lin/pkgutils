@@ -62,12 +62,34 @@ _/var/lib/pkg/db_
 _/var/lib/pkg/rejected/_
 	Directory for rejected files.
 
+# SIGNALS
+
+During argument processing and read-only preflight, signals have their
+normal process dispositions.
+
+Once package filesystem and database mutation begins, *pkgadd* defers
+*SIGHUP*, *SIGINT*, *SIGQUIT*, and *SIGTERM*.
+The critical sequence is allowed to finish, after which the command
+exits with status 128 plus the deferred signal number.
+The requested package operation may therefore have completed even
+though the command reports interruption.
+
+*SIGKILL* cannot be deferred.
+
+This behavior narrows the interruption window but does not provide
+transactional rollback.
+A crash, *SIGKILL*, I/O failure, or power loss may still leave partial
+filesystem or database state.
+
 # EXIT STATUS
 
 *0*
 	Success.
 *>0*
 	An error occurred.
+*129*, *130*, *131*, *143*
+	A *SIGHUP*, *SIGINT*, *SIGQUIT*, or *SIGTERM* request was
+	deferred until the package mutation sequence completed.
 
 # EXAMPLES
 

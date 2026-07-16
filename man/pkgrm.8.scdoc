@@ -37,12 +37,34 @@ The options are as follows:
 _/var/lib/pkg/db_
 	Package database.
 
+# SIGNALS
+
+During argument processing and read-only preflight, signals have their
+normal process dispositions.
+
+Once package filesystem and database mutation begins, *pkgrm* defers
+*SIGHUP*, *SIGINT*, *SIGQUIT*, and *SIGTERM*.
+The critical sequence is allowed to finish, after which the command
+exits with status 128 plus the deferred signal number.
+The package may therefore have been removed even though the command
+reports interruption.
+
+*SIGKILL* cannot be deferred.
+
+This behavior narrows the interruption window but does not provide
+transactional rollback.
+A crash, *SIGKILL*, I/O failure, or power loss may still leave partial
+filesystem or database state.
+
 # EXIT STATUS
 
 *0*
 	Success.
 *>0*
 	An error occurred.
+*129*, *130*, *131*, *143*
+	A *SIGHUP*, *SIGINT*, *SIGQUIT*, or *SIGTERM* request was
+	deferred until the package mutation sequence completed.
 
 # EXAMPLES
 

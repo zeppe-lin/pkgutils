@@ -14,7 +14,13 @@ exe_kwargs = {
   'install': true,
 }
 
-executable('pkgadd',  'pkgadd.cpp',  kwargs: exe_kwargs, install_dir: get_option('sbindir'))
-executable('pkgrm',   'pkgrm.cpp',   kwargs: exe_kwargs, install_dir: get_option('sbindir'))
+mutation_frontend_sources = ['deferred_signals.cpp']
+
+executable('pkgadd', ['pkgadd.cpp'] + mutation_frontend_sources,
+  kwargs: exe_kwargs, install_dir: get_option('sbindir'))
+
+executable('pkgrm', ['pkgrm.cpp'] + mutation_frontend_sources,
+  kwargs: exe_kwargs, install_dir: get_option('sbindir'))
+
 executable('pkgchk',  'pkgchk.cpp',  kwargs: exe_kwargs, install_dir: get_option('bindir'))
 executable('pkginfo', 'pkginfo.cpp', kwargs: exe_kwargs, install_dir: get_option('bindir'))

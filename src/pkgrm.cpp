@@ -16,6 +16,7 @@
 
 #include <libpkgcore/libpkgcore.h>
 
+#include "deferred_signals.h"
 #include "pkgutils-config.h"
 
 using namespace std;
@@ -74,6 +75,7 @@ main(int argc, char** argv)
 {
   // --- Option Parsing ---
   string o_root, o_package;
+  int deferred_signal = 0;
   int o_verbose = 0;
   int opt;
 
@@ -133,18 +135,26 @@ main(int argc, char** argv)
     if (!util.db_find_pkg(o_package))
       throw runtime_error("package " + o_package + " not installed");
 
-    if (o_verbose)
-      cout << "removing " << o_package << endl;
+    {
+      pkgutils::deferred_signals signals(deferred_signal);
 
-    util.db_rm_pkg(o_package);
-    util.ldconfig();
-    util.db_commit();
+      if (o_verbose)
+        cout << "removing " << o_package << endl;
+
+      util.db_rm_pkg(o_package);
+      util.ldconfig();
+      util.db_commit();
+    }
   }
   catch (const runtime_error& error)
   {
     cerr << "error: " << error.what() << endl;
-    return EXIT_FAILURE;
+    return deferred_signal != 0 ?
+      128 + deferred_signal : EXIT_FAILURE;
   }
+
+  if (deferred_signal != 0)
+    return 128 + deferred_signal;
 
   return EXIT_SUCCESS;
 }

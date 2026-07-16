@@ -24,6 +24,7 @@
 
 #include <libpkgcore/libpkgcore.h>
 
+#include "deferred_signals.h"
 #include "pkgutils-config.h"
 
 using namespace std;
@@ -478,6 +479,7 @@ main(int argc, char** argv)
 {
   // --- Option Parsing ---
   int o_upgrade = 0, o_force = 0, o_verbose = 0;
+  int deferred_signal = 0;
   string o_root, o_config = PKGADD_CONF;
   string o_package;
   int opt;
@@ -564,51 +566,60 @@ main(int argc, char** argv)
     set<string> conflicting_files =
       util.db_find_conflicts(package.first, package.second);
 
+    set<string> conflict_keep_list;
     if (!conflicting_files.empty())
     {
-      if (o_force)
-      {
-        set<string> keep_list;
-
-        if (o_upgrade)
-          keep_list = make_keep_list(conflicting_files, config_rules);
-
-        util.db_rm_files(conflicting_files, keep_list);
-      }
-      else
+      if (!o_force)
       {
         copy(conflicting_files.begin(), conflicting_files.end(),
              ostream_iterator<string>(cerr, "\n"));
         throw runtime_error("listed file(s) already installed "
                             "(use -f to ignore and overwrite)");
       }
+
+      if (o_upgrade)
+        conflict_keep_list =
+          make_keep_list(conflicting_files, config_rules);
     }
 
     set<string> keep_list;
     if (o_upgrade)
-    {
       keep_list = make_keep_list(package.second.files, config_rules);
-      util.db_rm_pkg(package.first, keep_list);
-    }
 
-    util.db_add_pkg(package.first, package.second);
-    util.db_commit();
-
-    if (o_verbose)
     {
-      cout << (o_upgrade ? "upgrading " : "installing ")
-           << package.first << endl;
-    }
+      pkgutils::deferred_signals signals(deferred_signal);
 
-    util.pkg_install(o_package, keep_list, non_install_files, o_upgrade);
+      if (!conflicting_files.empty())
+        util.db_rm_files(conflicting_files, conflict_keep_list);
+
+      if (o_upgrade)
+        util.db_rm_pkg(package.first, keep_list);
+
+      util.db_add_pkg(package.first, package.second);
+      util.db_commit();
+
+      if (o_verbose)
+      {
+        cout << (o_upgrade ? "upgrading " : "installing ")
+             << package.first << endl;
+      }
+
+      util.pkg_install(o_package, keep_list,
+                       non_install_files, o_upgrade);
+    }
 
   }
   catch (const runtime_error& error)
   {
     cerr << "Error: " << error.what() << endl;
-    return EXIT_FAILURE;
+    return deferred_signal != 0 ?
+      128 + deferred_signal : EXIT_FAILURE;
   }
 
   util.ldconfig();
+
+  if (deferred_signal != 0)
+    return 128 + deferred_signal;
+
   return EXIT_SUCCESS;
 }
