@@ -135,6 +135,12 @@ main(int argc, char** argv)
     if (!util.db_find_pkg(o_package))
       throw runtime_error("package " + o_package + " not installed");
 
+    /*
+     * File removal and database commit form one frontend critical
+     * sequence.  Deferral prevents an ordinary termination request
+     * from splitting that sequence, but provides no rollback or crash
+     * consistency.
+     */
     {
       pkgutils::deferred_signals signals(deferred_signal);
 
@@ -142,15 +148,24 @@ main(int argc, char** argv)
         cout << "removing " << o_package << endl;
 
       util.db_rm_pkg(o_package);
-      util.ldconfig();
       util.db_commit();
     }
+
+    util.ldconfig();
   }
   catch (const runtime_error& error)
   {
     cerr << "error: " << error.what() << endl;
-    return deferred_signal != 0 ?
-      128 + deferred_signal : EXIT_FAILURE;
+
+    /*
+     * An operation error remains authoritative.  Report a deferred
+     * termination request without hiding the failure.
+     */
+    if (deferred_signal != 0)
+      cerr << "note: termination request was deferred during package "
+              "mutation" << end;
+
+    return EXIT_FAILURE;
   }
 
   if (deferred_signal != 0)
