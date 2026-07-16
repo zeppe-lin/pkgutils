@@ -69,8 +69,19 @@ normal process dispositions.
 
 Once package filesystem and database mutation begins, *pkgadd* defers
 *SIGHUP*, *SIGINT*, *SIGQUIT*, and *SIGTERM*.
-The critical sequence is allowed to finish, after which the command
-exits with status 128 plus the deferred signal number.
+The mutation sequence is allowed to reach its existing completion
+boundary.
+
+The previous signal dispositions are then restored before the dynamic
+linker cache is refreshed.
+If the package operation and cache refresh complete successfully,
+*pkgadd* exits with status 128 plus the first deferred signal number.
+If an operation fails, that error remains authoritative and the
+deferred termination request is reported only as additional context.
+
+Signals delivered during cache refresh use the restored process
+dispositions and are not deferred by this mechanism.
+
 The requested package operation may therefore have completed even
 though the command reports interruption.
 
@@ -89,7 +100,8 @@ filesystem or database state.
 	An error occurred.
 *129*, *130*, *131*, *143*
 	A *SIGHUP*, *SIGINT*, *SIGQUIT*, or *SIGTERM* request was
-	deferred until the package mutation sequence completed.
+	deferred during package mutation, and the package operation
+	and cache refresh otherwise completed successfully.
 
 # EXAMPLES
 
