@@ -586,6 +586,17 @@ main(int argc, char** argv)
     if (o_upgrade)
       keep_list = make_keep_list(package.second.files, config_rules);
 
+    /*
+     * From this point onward pkgadd mutates package-owned filesystem
+     * state and the package database.  Defer ordinary termination
+     * requests until the current sequence reaches its existing
+     * completion boundary.
+     *
+     * This deliberately preserves the historical operation ordering.
+     * It is frontend interruption policy, not an atomic transaction;
+     * a future libpkgcore transaction API must replace this raw
+     * primitive sequence.
+     */
     {
       pkgutils::deferred_signals signals(deferred_signal);
 
@@ -608,15 +619,26 @@ main(int argc, char** argv)
                        non_install_files, o_upgrade);
     }
 
+    /*
+     * Refresh derived loader state after leaving the package mutation
+     * boundary.  Failures are still handled by the frontend.
+     */
+    util.ldconfig();
   }
   catch (const runtime_error& error)
   {
     cerr << "Error: " << error.what() << endl;
-    return deferred_signal != 0 ?
-      128 + deferred_signal : EXIT_FAILURE;
-  }
 
-  util.ldconfig();
+    /*
+     * An operator error remains authoritative.  Report a deferred
+     * termination request without hiding the failure.
+     */
+    if (deferred_signal != 0)
+      cerr << "note: termination request was deferred during package "
+              "mutation" << endl;
+
+    return EXIT_FAILURE;
+  }
 
   if (deferred_signal != 0)
     return 128 + deferred_signal;
