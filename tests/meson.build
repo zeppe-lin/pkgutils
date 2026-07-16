@@ -1,4 +1,6 @@
 if get_option('tests').allowed()
+  # Exercise the frontend helper without linking libpkgcore:
+  # the test verifies process signal policy only.
   deferred_signals_test = executable(
     'deferred-signals-test',
     [

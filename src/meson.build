@@ -14,6 +14,8 @@ exe_kwargs = {
   'install': true,
 }
 
+# Signal policy belongs to the mutating command frontends, not
+# libpkgcore and not the read-only pkginfo/pkgchk consumers.
 mutation_frontend_sources = ['deferred_signals.cpp']
 
 executable('pkgadd', ['pkgadd.cpp'] + mutation_frontend_sources,
